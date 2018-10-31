@@ -1,0 +1,51 @@
+name: multi-generators
+
+dag_args:
+    schedule_interval: '@daily'
+
+default_task_args:
+    start_date: '2017-07-01'
+    retries: 2
+    owner: mgrit@etsy.com
+generators:
+    - name: file_lister_1
+      type: list_generator
+      target: file_list_processor
+      properties:
+          items:
+              - fileA
+              - fileB
+    - name: file_lister_2
+      type: list_generator
+      target: file_list_processor
+      properties:
+          items:
+              - file0
+              - file1
+    - name: file_lister_3
+      type: list_generator
+      target: file_list_processor
+      upstream_dependencies:
+          - file_lister_1
+          - file_lister_2
+      properties:
+          items:
+              - file1
+              - file2
+    - name: file_lister
+      type: list_generator
+      target: file_list_processor
+      upstream_dependencies:
+          - file_lister_3
+      properties:
+          items:
+              - file3
+              - file4
+---
+name: file_list_processor
+operators:
+    - name: SubDagSuccessFileSensor
+      type: gcs_object_sensor
+      properties:
+          bucket: my-bucket
+          object: <<item_name>>

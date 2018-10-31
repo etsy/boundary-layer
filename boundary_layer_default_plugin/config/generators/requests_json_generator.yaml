@@ -1,0 +1,66 @@
+# Copyright 2018 Etsy Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+
+name: requests_json_generator
+
+iterator_builder_method_code: |
+    response = requests.get(
+        url,
+        timeout=timeout_sec,
+        headers=headers)
+
+    if response.status_code != 200:
+        raise AirflowException('Error retrieving url {}: {}'.format(
+            url,
+            response.content))
+
+    response_json = response.json()
+    if list_json_key not in response_json:
+        raise AirflowException('Error extracting list at key {} in response from {}: valid keys are {}'.format(
+            list_json_key,
+            url,
+            ','.join(response_json.keys())))
+
+    return response_json[list_json_key]
+
+item_name_builder_code: return str(index)
+
+imports:
+    modules:
+        - requests
+    objects:
+        - module: airflow.exceptions
+          objects:
+              - AirflowException
+
+parameters_jsonschema:
+    properties:
+        url:
+            type: string
+
+        timeout_sec:
+            type: integer
+            default: 5
+
+        list_json_key:
+            type: string
+
+        headers:
+            type: object
+            default: {}
+
+    additionalProperties: false
+    required:
+        - url
+        - list_json_key

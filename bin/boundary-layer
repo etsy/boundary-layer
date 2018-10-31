@@ -1,0 +1,129 @@
+#! /usr/bin/env python2
+# -*- coding: utf-8 -*-
+import argparse
+from boundary_layer.workflow import Workflow
+from boundary_layer.oozier.parse import OozieWorkflowParser
+from boundary_layer.oozier.file_fetcher import LocalFileFetcher, GithubFileFetcher
+from boundary_layer.plugins import manager
+from boundary_layer.builders import PrimaryDagBuilder, SubDagBuilder, GeneratorBuilder
+
+
+def _apply_prune_args(subparser):
+    group = subparser.add_mutually_exclusive_group()
+    group.add_argument(
+        '--prune-nodes',
+        default=None,
+        nargs='+',
+        help='Delete these nodes before building the DAG')
+
+    group.add_argument(
+        '--only-nodes',
+        default=None,
+        nargs='+',
+        help='Delete all nodes except these before building the DAG')
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+
+    subparsers = parser.add_subparsers(dest='cmd')
+
+    parser_build_dag = subparsers.add_parser('build-dag')
+    parser_build_dag.add_argument('input_filename', help='YAML file from which to build dag')
+
+    _apply_prune_args(parser_build_dag)
+
+    parser_prune_dag = subparsers.add_parser('prune-dag')
+    parser_prune_dag.add_argument('input_filename', help='YAML file from which to load dag config')
+
+    _apply_prune_args(parser_prune_dag)
+
+    parser_oozie = subparsers.add_parser('parse-oozie')
+    parser_oozie.add_argument('workflow_name')
+    parser_oozie.add_argument(
+        '--dag-name',
+        default=None,
+        help="Optional.  Name for the generated dag.  Defaults to the workflow name.")
+    parser_oozie.add_argument('--local-workflow-base-path', default=None)
+    parser_oozie.add_argument('--prune-forks', default=False, action='store_true')
+    parser_oozie.add_argument('--prune-joins', default=False, action='store_true')
+
+    _apply_prune_args(parser_oozie)
+
+    parser_oozie.add_argument('--debug', default=False, action='store_true')
+
+    parser_oozie.add_argument('--production', default=False, action='store_true')
+
+    github_group = parser_oozie.add_argument_group(
+        'Optional arguments for reading workflows from Github')
+    parser_oozie.add_argument('--workflow-git-base-path', default=None)
+    github_group.add_argument('--workflow-git-url', default=None)
+    github_group.add_argument('--workflow-git-repo-owner', default=None)
+    github_group.add_argument('--workflow-git-repo-name', default=None)
+    github_group.add_argument('--workflow-git-repo-ref', default=None)
+    github_group.add_argument('--workflow-git-username', default=None)
+    github_group.add_argument('--workflow-git-password', default=None)
+    github_group.add_argument('--workflow-git-token', default=None)
+
+    manager.register_oozie_parser_arguments(parser_oozie)
+
+    return parser.parse_args()
+
+
+def get_file_fetcher(_args):
+    if _args.local_workflow_base_path:
+        return LocalFileFetcher(_args.local_workflow_base_path)
+
+    if not all([
+            _args.workflow_git_base_path,
+            _args.workflow_git_repo_owner,
+            _args.workflow_git_repo_name]):
+        raise Exception(
+            'Invalid arguments: please set either '
+            'local_workflow_base_path or provide github file fetcher '
+            'arguments')
+
+    return GithubFileFetcher(
+        base_path=_args.workflow_git_base_path,
+        repo_owner=_args.workflow_git_repo_owner,
+        repo_name=_args.workflow_git_repo_name,
+        repo_ref=_args.workflow_git_repo_ref,
+        github_url=_args.workflow_git_url,
+        github_token=_args.workflow_git_token,
+        github_username=_args.workflow_git_username,
+        github_password=_args.workflow_git_password)
+
+
+if __name__ == '__main__':
+    args = parse_args()
+
+    if args.cmd == 'build-dag':
+        workflow = Workflow.load(args.input_filename)
+
+        print(workflow.prune(
+            prune_nodes=args.prune_nodes,
+            only_nodes=args.only_nodes).build_dag(
+                PrimaryDagBuilder,
+                sub_dag_builder=SubDagBuilder,
+                generator_builder=GeneratorBuilder))
+
+    elif args.cmd == 'prune-dag':
+        workflow = Workflow.load(args.input_filename)
+
+        print(workflow.prune(
+            prune_nodes=args.prune_nodes,
+            only_nodes=args.only_nodes).yaml_config)
+
+    elif args.cmd == 'parse-oozie':
+        oozie_parser = OozieWorkflowParser(
+            file_fetcher=get_file_fetcher(args),
+            prune_forks=args.prune_forks,
+            prune_joins=args.prune_joins,
+            production=args.production,
+            debug=args.debug,
+        )
+
+        workflow = oozie_parser.load_workflow(args.workflow_name, args)
+        print(workflow.yaml_config)
+    else:
+        raise NotImplementedError('Invalid command: {}'.format(args.cmd))

@@ -1,0 +1,32 @@
+name: simple-dataproc-dag
+
+dag_args:
+    schedule_interval: '@daily'
+
+default_task_args:
+    start_date: '2017-07-01'
+    retries: 2
+    depends_on_past: true
+    owner: mgrit@etsy.com
+    project_id: my-project
+
+resources:
+    - name: dataproc_cluster
+      type: dataproc_cluster
+      properties:
+          cluster_name: 'test-cluster'
+          region: 'us-central1'
+          num_workers: 10
+          zone: us-central1-a
+
+operators:
+- name: Datacopier
+  type: dataproc_hadoop
+  requires_resources:
+      - dataproc_cluster
+
+  properties:
+      main_class: distcp.DistCp
+      arguments:
+          - my-src
+          - my-dest

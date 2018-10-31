@@ -1,0 +1,8 @@
+venv
+*.pyc
+*.egg-info
+dist/*
+coverage.xml
+.coverage
+.tox
+.*.sw[op]

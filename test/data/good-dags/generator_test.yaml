@@ -1,0 +1,58 @@
+name: generator-test
+
+dag_args:
+    schedule_interval: '@daily'
+
+default_task_args:
+    start_date: '2017-07-01'
+    retries: 2
+    owner: mgrit@etsy.com
+    project_id: my-project
+
+resources:
+    - name: dataproc_cluster
+      type: dataproc_cluster
+      properties:
+          cluster_name: my-cluster
+          region: us-central1
+          num_workers: 10
+          zone: us-central1-a
+before:
+- name: SuccessFileSensor
+  type: gcs_object_sensor
+  requires_resources:
+      - dataproc_cluster
+  properties:
+      bucket: test-bucket
+      object: test-object
+
+operators:
+- name: Datacopier
+  type: dataproc_hadoop
+  requires_resources:
+      - dataproc_cluster
+
+  properties:
+      main_class: distcp.DistCp
+      arguments:
+          - my-src
+          - my-dest
+
+generators:
+    - name: file_lister
+      type: requests_json_generator
+      target: file_list_processor
+      upstream_dependencies:
+          - Datacopier
+      properties:
+          url: http://my.host.com/my-endpoint
+          list_json_key: my-key
+
+---
+name: file_list_processor
+operators:
+    - name: SubDagSuccessFileSensor
+      type: gcs_object_sensor
+      properties:
+          bucket: my-bucket
+          object: "<<item_name>>"

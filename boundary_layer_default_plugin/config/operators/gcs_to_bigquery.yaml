@@ -1,0 +1,54 @@
+# Copyright 2018 Etsy Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+
+name: gcs_to_bigquery
+operator_class: GoogleCloudStorageToBigQueryOperator
+operator_class_module: airflow.contrib.operators.gcs_to_bq
+schema_extends: base
+parameters_jsonschema:
+    properties:
+        bucket:
+            type: string
+        source_objects:
+            type: array
+            items:
+                type: string
+        source_format:
+            type: string
+            enum: [ AVRO, PARQUET, NEWLINE_DELIMITED_JSON, CSV ]
+        destination_project_dataset_table:
+            type: string
+        create_disposition:
+            type: string
+            enum: [ CREATE_IF_NEEDED, CREATE_NEVER ]
+        write_disposition:
+            type: string
+            enum: [ WRITE_EMPTY, WRITE_APPEND, WRITE_TRUNCATE ]
+        compression:
+            type: string
+            enum: [ GZIP, NONE ]
+        skip_leading_rows:
+            type: integer
+        field_delimiter:
+            type: string
+        max_bad_records:
+            type: integer
+        src_fmt_configs:
+            type: object
+
+    required:
+        - bucket
+        - source_objects
+        - source_format
+        - destination_project_dataset_table

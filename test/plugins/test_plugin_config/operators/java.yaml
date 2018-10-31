@@ -1,0 +1,9 @@
+name: java
+operator_class: MyCustomClass
+operator_class_module: my.class.module
+parameters_jsonschema:
+    properties:
+        main_class:
+            type: string
+
+    additionalProperties: false

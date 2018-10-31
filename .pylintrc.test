@@ -1,0 +1,14 @@
+[MESSAGES CONTROL]
+disable=C0103,C0325,C0111,R0903,R0201,R0901,R0902,R0913,W0212,R0914
+
+[BASIC]
+argument-rgx=[a-z_][a-z0-9_]{0,30}$
+variable-rgx=[a-z_][a-z0-9_]{0,30}$
+function-rgx=[a-z_][a-z0-9_]{0,60}$
+attr-rgx=[a-z_][a-z0-9_]{0,30}$
+method-rgx=([a-z_][a-z0-9_]{0,50}|setUp|tearDown|setUpClass|tearDownClass)$
+no-docstring-rgx=((__.*__)|setUp|tearDown)$
+
+[REPORTS]
+reports=no
+msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}

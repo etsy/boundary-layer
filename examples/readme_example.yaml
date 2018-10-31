@@ -1,0 +1,33 @@
+name: my_dag
+dag_args:
+  schedule_interval: '@daily'
+resources:
+- name: dataproc-cluster
+  type: dataproc_cluster
+  properties:
+    cluster_name: my-cluster-{{ execution_date.strftime('%s') }}
+    num_workers: 10
+    region: us-central1
+default_task_args:
+  owner: etsy-data-platform
+  project_id: my-project-id
+  retries: 2
+  start_date: '2018-10-31'
+  dataproc_hadoop_jars:
+  - gs://my-bucket/my/path/to/my.jar
+before:
+- name: data-sensor
+  type: gcs_object_sensor
+  properties:
+    bucket: my-bucket
+    object: my/object
+operators:
+- name: my-job
+  type: dataproc_hadoop
+  requires_resources:
+  - dataproc-cluster
+  properties:
+    main_class: com.etsy.my.job.ClassName
+    dataproc_hadoop_properties:
+      mapreduce.map.output.compress: 'true'
+    arguments: [ '--date', '{{ ds }}' ]
