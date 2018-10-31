@@ -322,8 +322,7 @@ class OperatorNode(RegistryNode):
 
         return (sources, property_values)
 
-    @staticmethod
-    def _apply_preprocessors(args, preprocessors):
+    def _apply_preprocessors(self, args, preprocessors):
         """ Apply any necessary preprocessing to the alread-validated args.
             This must be the last step in case any preprocessors are defined on
             fields that are inserted by the schema defaults.
@@ -334,7 +333,10 @@ class OperatorNode(RegistryNode):
             if property_name not in args:
                 continue
 
-            processed_value = preprocessor.process_arg(args[property_name])
+            processed_value = preprocessor.process_arg(
+                args[property_name],
+                node=self,
+                raw_args=args)
             logger.debug(
                 'Property `%s` raw value: `%s`, processed value: `%s`',
                 property_name,

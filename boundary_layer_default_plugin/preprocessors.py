@@ -15,6 +15,7 @@
 
 import re
 import datetime
+from collections import namedtuple
 import marshmallow as ma
 import jinja2
 from boundary_layer.registry.types.preprocessor import PropertyPreprocessor
@@ -28,7 +29,7 @@ class DateStringToDatetime(PropertyPreprocessor):
     def imports(self):
         return {'modules': ['datetime']}
 
-    def process_arg(self, arg):
+    def process_arg(self, arg, node, raw_args):
         date = None
         try:
             date = datetime.datetime.strptime(arg, '%Y-%m-%d')
@@ -48,7 +49,7 @@ class SecondsToTimedelta(PropertyPreprocessor):
     def imports(self):
         return {'modules': ['datetime']}
 
-    def process_arg(self, arg):
+    def process_arg(self, arg, node, raw_args):
         delta = None
 
         try:
@@ -72,7 +73,7 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
 
     properties_schema_cls = EnsureRenderedStringPatternSchema
 
-    def process_arg(self, arg):
+    def process_arg(self, arg, node, raw_args):
         regex = None
         try:
             regex = re.compile(self.pattern)
@@ -84,7 +85,7 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
 
         rendered_arg = None
         try:
-            rendered_arg = self.render_template(arg)
+            rendered_arg = self.render_template(arg, raw_args)
         except jinja2.exceptions.UndefinedError:
             logger.warning(
                 'Could not render template `%s`; cannot verify that the argument '
@@ -113,13 +114,13 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
 
         return pattern + '$'
 
-    def render_template(self, arg):
+    def render_template(self, arg, raw_args):
         env = jinja2.Environment(undefined=jinja2.StrictUndefined)
 
-        return env.from_string(arg).render(**self._template_context())
+        return env.from_string(arg).render(**self._template_context(raw_args))
 
     @staticmethod
-    def _template_context():
+    def _template_context(raw_args):
         """ Create an emulated jinja context for common airflow date-related
             macros. The actual values of the macros do not matter, we are only
             concerned with general formatting which will be properly represented
@@ -133,8 +134,13 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
 
         context = {
             'ts': now.isoformat(),
-            'ts_nodash': now.isoformat().replace('-', '')
+            'ts_nodash': now.isoformat().replace('-', ''),
         }
+
+        TaskTuple = namedtuple('TaskTuple', ['task_id'])
+        task_id = raw_args.get('task_id')
+        if task_id:
+            context['task'] = TaskTuple(task_id=task_id)
 
         for field_name in ['ds', 'yesterday_ds', 'tomorrow_ds', 'next_ds', 'prev_ds']:
             context[field_name] = now.strftime('%Y-%m-%d')

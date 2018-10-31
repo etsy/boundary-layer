@@ -21,7 +21,7 @@ class PropertyPreprocessor(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def process_arg(self, arg):
+    def process_arg(self, arg, node, raw_args):
         pass
 
     @abc.abstractproperty
@@ -68,8 +68,8 @@ class PropertyPreprocessorNode(RegistryNode):
     def configured_preprocessor(self):
         return self.config(self.item.get('properties', {}))
 
-    def process_arg(self, arg):
-        return self.configured_preprocessor.process_arg(arg)
+    def process_arg(self, arg, node, raw_args):
+        return self.configured_preprocessor.process_arg(arg, node, raw_args)
 
     def imports(self):
         return self.configured_preprocessor.imports()
