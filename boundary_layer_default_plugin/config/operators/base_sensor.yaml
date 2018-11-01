@@ -12,29 +12,19 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-name: external_task_sensor
-operator_class: ExternalTaskSensor
-operator_class_module: airflow.operators.sensors
-schema_extends: base_sensor
+# This operator matches the airflow base operator.  For information on
+# its parameters, see:
+# https://github.com/apache/incubator-airflow/blob/1.9.0/airflow/models.py#L1986
+name: base_sensor
+operator_class: BaseSensorOperator
+operator_class_module: airflow.sensors
+schema_extends: base
 parameters_jsonschema:
     properties:
-        external_dag_id:
-            type: string
-        external_task_id:
-            type: string
-        execution_delta:
+        soft_fail:
+            type: boolean
+        poke_interval:
             type: integer
-        allowed_states:
-            type: array
-            items:
-                type: string
-        execution_date_fn:
-            type: string
-    required:
-        - external_dag_id
-        - external_task_id
+        timeout:
+            type: integer
     additionalProperties: false
-property_preprocessors:
-    - type: seconds_to_timedelta
-      apply_to_properties:
-      - execution_delta
