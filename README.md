@@ -1,6 +1,6 @@
 # boundary-layer
 `boundary-layer` is a tool for building [Airflow](https://www.github.com/apache/incubator-airflow) DAGs from human-friendly, structured, maintainable yaml configuration.  It includes first-class support for various usability enhancements that are not built into Airflow itself:
- - Managed resources created and destroyed by Airflow within a DAG: for example, ephemeral DAG-scoped hadoop clusters on [Dataproc](https://cloud.google.com/dataproc/) or [EMR](https://aws.amazon.com/emr/)
+ - Managed resources created and destroyed by Airflow within a DAG: for example, ephemeral DAG-scoped hadoop clusters on [Dataproc](https://cloud.google.com/dataproc/)
  - Type checking and automatic preprocessing on all arguments to all operators, based on flexible schemas
  - Automatic imports of required classes
  - Distinct `before` and `after` operator groups, to make it easier to manage actions taken at the beginning or end of workflows
