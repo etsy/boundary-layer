@@ -4,12 +4,18 @@ extras = {
         'github': [ 'github3.py>=1.1' ],
         }
 
+long_description = None
+with open(os.path.join(os.path.dirname(__file__), 'README.md'), encoding='utf-8') as _in:
+    long_description = _in.read()
+
 setuptools.setup(
     name = 'boundary-layer',
     version='1.6.3-dev0',
     author = 'Kevin McHale',
     author_email = 'kmchale@etsy.com',
-    description = 'Builds Airflow DAGs from configuration files.  Includes a converter for Oozie workflows',
+    description = 'Builds Airflow DAGs from configuration files',
+    long_description = long_description,
+    long_description_content_type = 'text/markdown',
     url = 'https://github.com/etsy/boundary-layer',
     packages = setuptools.find_packages(),
     package_data = {
