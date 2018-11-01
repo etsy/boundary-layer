@@ -1,12 +1,13 @@
 import setuptools
+import os
 
 extras = {
         'github': [ 'github3.py>=1.1' ],
         }
 
 long_description = None
-with open(os.path.join(os.path.dirname(__file__), 'README.md'), encoding='utf-8') as _in:
-    long_description = _in.read()
+with open(os.path.join(os.path.dirname(__file__), 'README.md')) as _in:
+    long_description = _in.read().decode('utf-8')
 
 setuptools.setup(
     name = 'boundary-layer',
