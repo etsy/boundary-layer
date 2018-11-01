@@ -43,8 +43,23 @@ class DateStringToDatetime(PropertyPreprocessor):
         return date
 
 
-class SecondsToTimedelta(PropertyPreprocessor):
-    type = "seconds_to_timedelta"
+class BuildTimedeltaSchema(StrictSchema):
+    units = ma.fields.String(required=True)
+
+    @ma.validates_schema
+    def check_valid_units(self, data):
+        ALLOWED_UNITS = ['seconds', 'minutes', 'hours', 'days']
+        if data.get('units') not in ALLOWED_UNITS:
+            raise ma.ValidationError(
+                '`units` must be one of `{}`'.format(
+                    '`, `'.join(ALLOWED_UNITS)),
+                ['units'])
+
+
+class BuildTimedelta(PropertyPreprocessor):
+    type = "to_timedelta"
+
+    properties_schema_cls = BuildTimedeltaSchema
 
     def imports(self):
         return {'modules': ['datetime']}
@@ -53,7 +68,8 @@ class SecondsToTimedelta(PropertyPreprocessor):
         delta = None
 
         try:
-            delta = datetime.timedelta(seconds=arg)
+            timedelta_arg = {self.properties['units']: arg}
+            delta = datetime.timedelta(**timedelta_arg)
         except TypeError as e:
             raise Exception(
                 'Error in preprocessor {} for argument `{}`: {}'.format(

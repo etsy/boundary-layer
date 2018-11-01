@@ -35,6 +35,8 @@ parameters_jsonschema:
         - external_task_id
     additionalProperties: false
 property_preprocessors:
-    - type: seconds_to_timedelta
+    - type: to_timedelta
+      properties:
+          units: days
       apply_to_properties:
       - execution_delta
