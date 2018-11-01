@@ -1,3 +1,6 @@
 prune test
 recursive-include boundary_layer *.j2
 recursive-include boundary_layer_default_plugin *.yaml
+include *.md
+include LICENSE
+include NOTICE
