@@ -6,7 +6,7 @@ extras = {
 
 setuptools.setup(
     name = 'boundary-layer',
-    version='1.6.2-dev0',
+    version='1.6.2',
     author = 'Kevin McHale',
     author_email = 'kmchale@etsy.com',
     description = 'Builds Airflow DAGs from configuration files.  Includes a converter for Oozie workflows',
