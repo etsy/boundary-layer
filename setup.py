@@ -7,7 +7,7 @@ extras = {
 
 long_description = None
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as _in:
-    long_description = _in.read().decode('utf-8')
+    long_description = _in.read()
 
 setuptools.setup(
     name = 'boundary-layer',
