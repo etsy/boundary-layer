@@ -1,3 +1,4 @@
+[![Coverage Status](https://coveralls.io/repos/github/etsy/boundary-layer/badge.svg?branch=master)](https://coveralls.io/github/etsy/boundary-layer?branch=master)
 # boundary-layer
 `boundary-layer` is a tool for building [Airflow](https://www.github.com/apache/incubator-airflow) DAGs from human-friendly, structured, maintainable yaml configuration.  It includes first-class support for various usability enhancements that are not built into Airflow itself:
  - Managed resources created and destroyed by Airflow within a DAG: for example, ephemeral DAG-scoped hadoop clusters on [Dataproc](https://cloud.google.com/dataproc/)
@@ -5,12 +6,12 @@
  - Automatic imports of required classes
  - Distinct `before` and `after` operator groups, to make it easier to manage actions taken at the beginning or end of workflows
  - DAG pruning, for extracting or eliminating sections of the graph while maintaining dependency relationships
- 
-`boundary-layer` also performs various checks to find errors that would only be made visible upon deployment to an Airflow instance, such as cycles in the DAG, duplicate task names, etc.
- 
-`boundary-layer` is used heavily on the Etsy Data Platform.  Every DAG on our platform is defined by a `boundary-layer` configuration instead of in raw python, which greatly reduces the barrier to entry for our data scientists and engineers to develop DAGs, while ensuring that best practices are always observed in the generated python code.  `boundary-layer` is the core of our fully self-service deployment process, in which DAGs are tested by our CI tools and errors are surfaced prior to allowing DAGs to be merged and deployed to our Airflow instances.  
 
-In addition, our migration from Oozie to Airflow relied heavily on `boundary-layer`'s included conversion tool.  
+`boundary-layer` also performs various checks to find errors that would only be made visible upon deployment to an Airflow instance, such as cycles in the DAG, duplicate task names, etc.
+
+`boundary-layer` is used heavily on the Etsy Data Platform.  Every DAG on our platform is defined by a `boundary-layer` configuration instead of in raw python, which greatly reduces the barrier to entry for our data scientists and engineers to develop DAGs, while ensuring that best practices are always observed in the generated python code.  `boundary-layer` is the core of our fully self-service deployment process, in which DAGs are tested by our CI tools and errors are surfaced prior to allowing DAGs to be merged and deployed to our Airflow instances.
+
+In addition, our migration from Oozie to Airflow relied heavily on `boundary-layer`'s included conversion tool.
 
 `boundary-layer` is _pluggable_, supporting custom configuration and extensions via plugins that are installed using `pip`.  The [core](core) package does not contain any etsy-specific customizations; instead, those are all defined in an internally-distributed etsy plugin package.
 
