@@ -17,6 +17,6 @@ matrix:
           env: TOXENV=py3
 
 install:
-  - pip install --upgrade tox
+  - pip install --upgrade tox coveralls
 
 script: tox
