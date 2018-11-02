@@ -10,7 +10,7 @@ if [ "$TRAVIS_BRANCH" != "master" ]; then
     exit 0
 fi
 
-if [ "$TOX_ENV_NAME" != "py27" ]; then
+if [ "$TOXENV" != "py27" ]; then
     echo "Not running coveralls because we are in the build environment '$TOX_ENV_NAME'"
     exit 0
 fi
