@@ -20,3 +20,6 @@ install:
   - pip install --upgrade tox coveralls
 
 script: tox
+
+after_success:
+    - ./run_coveralls.sh
