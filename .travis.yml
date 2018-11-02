@@ -16,4 +16,7 @@ matrix:
         - python: 3.6
           env: TOXENV=py3
 
+install:
+  - pip install --upgrade tox
+
 script: tox
