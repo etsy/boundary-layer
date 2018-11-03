@@ -14,6 +14,7 @@
 #     limitations under the License.
 
 from collections import namedtuple
+from boundary_layer.oozier.config import DataprocHadoopClusterConfig
 from boundary_layer.plugins import BaseOozieParserPlugin
 from .oozie_actions import \
         OozieSubWorkflowBuilder, \
@@ -101,3 +102,10 @@ class DefaultOozieParserPlugin(BaseOozieParserPlugin):
             result['concurrency'] = self.args.dag_concurrency
 
         return result
+
+    def cluster_config(self):
+        return DataprocHadoopClusterConfig(
+            project_id='my-project',
+            region='us-central1',
+            cluster_name='my-cluster',
+            num_workers=128)

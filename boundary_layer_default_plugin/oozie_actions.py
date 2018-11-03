@@ -68,3 +68,19 @@ class OozieSshActionBuilder(OozieActionBuilderWithSchema):
             'type': 'ssh',
             'properties': {},
         }
+
+
+class OozieMapReduceActionSchema(OozieBaseSchema):
+    arguments = ma.fields.List(ma.fields.String(), missing=[])
+
+
+class OozieMapReduceActionBuilder(OozieActionBuilderWithSchema):
+    key = 'map-reduce'
+    schema = OozieMapReduceActionSchema
+
+    def get_operator(self):
+        return {
+            'name': self.name,
+            'type': self.context['cluster_config'].mapreduce_operator_type,
+            'properties': self.properties,
+        }
