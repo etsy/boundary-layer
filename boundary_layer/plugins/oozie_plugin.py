@@ -55,8 +55,12 @@ class OozieMetaPlugin(object):
             plugin.dag_imports() for plugin in self._plugins.values())
 
     def cluster_config(self):
-        return util.merge_dicts(
-            plugin.cluster_config() for plugin in self._plugins.values())
+        configs = [plugin.cluster_config() for plugin in self._plugins.values()]
+
+        if len(configs) == 1:
+            return configs[0]
+
+        raise Exception('Multiple cluster configs found: {}'.format(configs))
 
     def upstream_operators(self):
         return util.merge_lists(

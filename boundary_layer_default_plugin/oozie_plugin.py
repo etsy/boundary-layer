@@ -19,7 +19,8 @@ from boundary_layer.plugins import BaseOozieParserPlugin
 from .oozie_actions import \
         OozieSubWorkflowBuilder, \
         OozieFileSystemActionBuilder, \
-        OozieSshActionBuilder
+        OozieSshActionBuilder, \
+        OozieMapReduceActionBuilder
 
 
 ExternalTaskSpec = namedtuple('ExternalTaskSpec', ['dag_id', 'task_id'])
@@ -65,6 +66,7 @@ class DefaultOozieParserPlugin(BaseOozieParserPlugin):
             OozieSubWorkflowBuilder,
             OozieFileSystemActionBuilder,
             OozieSshActionBuilder,
+            OozieMapReduceActionBuilder,
         ]
 
     def upstream_operators(self):
