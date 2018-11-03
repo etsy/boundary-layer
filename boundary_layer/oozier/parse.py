@@ -45,16 +45,17 @@ class OozieWorkflowParser(object):
 
     def load_workflow(self, primary_workflow_name, args):
         oozie_config = plugins.manager.get_oozie_config(args)
-        cluster_name = oozie_config.cluster_config()['name']
+
+        cluster_config = oozie_config.cluster_config()
 
         (primary_dag, sub_dags) = self._parse_and_build_dags(
             primary_workflow_name,
-            cluster_name,
+            cluster_config,
             oozie_config)
 
-        if self._requires_dataproc_cluster(primary_dag, sub_dags, cluster_name):
-            primary_dag = self._insert_dataproc_cluster(
-                primary_dag, oozie_config.cluster_config())
+        if self._requires_cluster_resource(primary_dag, sub_dags, cluster_config):
+            primary_dag = self._insert_cluster_resource(
+                primary_dag, cluster_config)
 
         primary_dag['compatibility_version'] = VERSION_STRING
 
@@ -115,12 +116,12 @@ class OozieWorkflowParser(object):
             'sub_workflows': sub_workflows,
         }
 
-    def _parse_workflow(self, filename, cluster_name, oozie_config):
+    def _parse_workflow(self, filename, cluster_config, oozie_config):
         parsed = xmltodict.parse(
             self.file_fetcher.fetch_file_content(filename))
 
         loaded = OozieWorkflowSchema(context={
-            'cluster_name': cluster_name,
+            'cluster_config': cluster_config,
             'oozie_plugin': oozie_config,
             'macro_translator': JspMacroTranslator(oozie_config.jsp_macros()),
             'production': self.production,
@@ -143,7 +144,7 @@ class OozieWorkflowParser(object):
     def _parse_all(
             self,
             primary_workflow_path_name,
-            cluster_name,
+            cluster_config,
             oozie_config):
 
         def _build_workflow_path(name):
@@ -151,7 +152,7 @@ class OozieWorkflowParser(object):
 
         path = _build_workflow_path(primary_workflow_path_name)
         logger.debug('parsing primary workflow from path %s', path)
-        primary = self._parse_workflow(path, cluster_name, oozie_config)
+        primary = self._parse_workflow(path, cluster_config, oozie_config)
 
         sub_workflows = {}
         parsed_sub_workflow_targets = set()
@@ -169,7 +170,7 @@ class OozieWorkflowParser(object):
 
             logger.debug('parsing sub workflow from path %s', swf_path)
             swf = self._parse_workflow(
-                swf_path, cluster_name, oozie_config)
+                swf_path, cluster_config, oozie_config)
 
             sub_workflows[swf['name']] = swf
             item.set_target_name(swf['name'])
@@ -332,12 +333,12 @@ class OozieWorkflowParser(object):
     def _parse_and_build_dags(
             self,
             primary_workflow_name,
-            cluster_name,
+            cluster_config,
             oozie_plugin):
 
         (primary, sub) = self._parse_all(
             primary_workflow_name,
-            cluster_name,
+            cluster_config,
             oozie_plugin)
 
         primary_dag = self._build_dag(primary)
@@ -346,23 +347,23 @@ class OozieWorkflowParser(object):
         for (name, swf) in six.iteritems(sub):
             sub_dags[name] = self._build_dag(swf)
 
-        return self._fixup_dags(primary_dag, sub_dags, cluster_name)
+        return self._fixup_dags(primary_dag, sub_dags, cluster_config)
 
-    def _fixup_dags(self, primary_dag, sub_dags, cluster_name):
+    def _fixup_dags(self, primary_dag, sub_dags, cluster_config):
         fixedup_primary_dag = self._fixup_subdags(
-            primary_dag, sub_dags, cluster_name)
+            primary_dag, sub_dags, cluster_config)
 
         # re-key the sub_dags by their actual name, rather than by their
         # path name
         fixedup_sub_dags = {
             dag['name']: dag for dag in
-            [self._fixup_subdags(sub_dag, sub_dags, cluster_name)
+            [self._fixup_subdags(sub_dag, sub_dags, cluster_config)
              for sub_dag in sub_dags.values()]
         }
 
         return (fixedup_primary_dag, fixedup_sub_dags)
 
-    def _fixup_subdags(self, dag, all_sub_dags, cluster_name):
+    def _fixup_subdags(self, dag, all_sub_dags, cluster_config):
         """
             Once we have loaded the primary dag and all of the sub-dags in
             isolation, we have to fill-in some values that can only be
@@ -379,20 +380,24 @@ class OozieWorkflowParser(object):
         copy['sub_dags'] = [sd.copy() for sd in subdags]
         for sd in copy['sub_dags']:
             target_subdag = all_sub_dags.get(sd['target'])
-            if self._requires_dataproc_cluster(target_subdag, all_sub_dags, cluster_name):
-                sd['requires_resources'] = [cluster_name]
+            if self._requires_cluster_resource(target_subdag, all_sub_dags, cluster_config):
+                sd['requires_resources'] = [cluster_config.managed_resource['name']]
 
         return copy
 
-    def _requires_dataproc_cluster(self, dag, sub_dags, cluster_name):
-        return any(cluster_name in op.get('requires_resources', [])
+    def _requires_cluster_resource(self, dag, sub_dags, cluster_config):
+        if not cluster_config.managed_resource:
+            return False
+
+        resource_name = cluster_config.managed_resource['name']
+        return any(resource_name in op.get('requires_resources', [])
                    for op in dag.get('operators', [])) or \
-            any(self._requires_dataproc_cluster(sub_dags[sd['target']], sub_dags, cluster_name)
+            any(self._requires_cluster_resource(sub_dags[sd['target']], sub_dags, cluster_config)
                 for sd in dag.get('sub_dags', []))
 
     @staticmethod
-    def _insert_dataproc_cluster(wf, cluster_config):
+    def _insert_cluster_resource(wf, cluster_config):
         copy = wf.copy()
-        copy['resources'] = [cluster_config]
+        copy['resources'] = [cluster_config.managed_resource]
 
         return copy
