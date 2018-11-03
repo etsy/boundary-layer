@@ -1,0 +1,78 @@
+<workflow-app name="sub-workflow" xmlns="uri:oozie:workflow:0.2">
+	<start to="fork-wordcount" />
+	
+	<!-- Fork two MapReduce jobs -->
+	<fork name="fork-wordcount">
+        <path start="mr-wordcount-p1" />
+        <path start="mr-wordcount-p2" />
+    </fork>
+	
+	<join name="join-wordcount" to="sub-workflow-end" />
+	
+	<!-- First WordCount MapReduce job -->
+	<action name="mr-wordcount-p1">
+		<map-reduce>
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="${nameNode}/workflows/oozie-examples/data/output/wc1" />
+			</prepare>
+			<job-xml>../conf/wordcount-mr-config.xml</job-xml>
+			<configuration>
+				<property>
+					<name>mapred.input.dir</name>
+					<value>${nameNode}/workflows/oozie-examples/data/*.txt
+					</value>
+				</property>
+				<property>
+					<name>mapred.output.dir</name>
+					<value>${nameNode}/workflows/oozie-examples/data/output/wc1
+					</value>
+				</property>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+		</map-reduce>
+		<ok to="join-wordcount" />
+		<error to="kill" />
+	</action>
+	
+	<!-- Second WordCount MapReduce job -->
+	<action name="mr-wordcount-p2">
+		<map-reduce>
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="${nameNode}/workflows/oozie-examples/data/output/wc2" />
+			</prepare>
+			<job-xml>../conf/wordcount-mr-config.xml</job-xml>
+			<configuration>
+				<property>
+					<name>mapred.input.dir</name>
+					<value>${nameNode}/workflows/oozie-examples/data/*.txt
+					</value>
+				</property>
+				<property>
+					<name>mapred.output.dir</name>
+					<value>${nameNode}/workflows/oozie-examples/data/output/wc2
+					</value>
+				</property>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+		</map-reduce>
+		<ok to="join-wordcount" />
+		<error to="kill" />
+	</action>
+	
+	<kill name="kill">
+		<message>Sub-workflow failed with error message ${wf:errorMessage()}
+		</message>
+	</kill>
+
+	<end name="sub-workflow-end" />
+</workflow-app>

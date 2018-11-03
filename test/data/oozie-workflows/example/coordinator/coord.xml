@@ -1,0 +1,30 @@
+<coordinator-app name="wordcount-coord" frequency="${coord:minutes(5)}"
+	start="${start}" end="${end}" timezone="Europe/London" xmlns="uri:oozie:coordinator:0.1">
+	<controls>
+		<timeout>0</timeout>
+		<concurrency>1</concurrency>
+	</controls>
+	<action>
+		<workflow>
+			<app-path>${nameNode}/workflows/oozie-examples</app-path>
+			<configuration>
+				<property>
+					<name>nameNode</name>
+					<value>${nameNode}</value>
+				</property>
+				<property>
+					<name>jobTracker</name>
+					<value>${jobTracker}</value>
+				</property>
+				<property>
+					<name>jump.to</name>
+					<value>${mode}</value>
+				</property>
+				<property>
+					<name>queueName</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+		</workflow>
+	</action>
+</coordinator-app>
