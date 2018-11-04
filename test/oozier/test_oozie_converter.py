@@ -3,7 +3,7 @@ from boundary_layer.oozier.parse import OozieWorkflowParser
 from boundary_layer.oozier.file_fetcher import LocalFileFetcher
 
 def test_workflow_parser():
-    workflow_dir = "test/data/oozie-workflows/"
+    workflow_dir = "test/data/oozie-workflows"
     file_fetcher = LocalFileFetcher(workflow_dir)
 
     oozie_parser = OozieWorkflowParser(

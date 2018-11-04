@@ -37,7 +37,7 @@
 	<!-- Sub-workflow which runs two WordCount MapReduce jobs in parallel -->
 	<action name="sub-wf-wordcount">
 		<sub-workflow>
-            <app-path>${nameNode}/example/sub-workflows/sub-workflow.xml
+            <app-path>${nameNode}/todo/fix-this/example/sub-workflows
 			</app-path>
 			<propagate-configuration />
 		</sub-workflow>
