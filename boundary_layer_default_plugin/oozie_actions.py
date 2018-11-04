@@ -65,7 +65,7 @@ class OozieSshActionBuilder(OozieActionBuilderWithSchema):
     def get_operator(self):
         properties = {
             'remote_host': self.data['host'],
-            'command': self.data['command'],
+            'command': ' '.join([self.data['command']] + self.data['args']),
         }
         return {
             'name': self.name,
