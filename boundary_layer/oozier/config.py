@@ -51,15 +51,3 @@ class DataprocHadoopClusterConfig(HadoopClusterConfig):
         self.region = region
         self.cluster_name = cluster_name
         self.num_workers = num_workers
-
-
-class OozieWorkflowParserConfig(object):
-    def __init__(
-            self,
-            hadoop_cluster_config,
-            prune_forks,
-            prune_joins,
-            ):
-        self.hadoop_cluster_config = hadoop_cluster_config
-        self.prune_forks = prune_forks
-        self.prune_joins = prune_joins
