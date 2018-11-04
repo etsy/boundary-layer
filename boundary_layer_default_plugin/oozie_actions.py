@@ -79,8 +79,16 @@ class OozieMapReduceActionBuilder(OozieActionBuilderWithSchema):
     schema = OozieMapReduceActionSchema
 
     def get_operator(self):
-        return {
+        cluster_config = self.context['cluster_config']
+        operator = {
             'name': self.name,
-            'type': self.context['cluster_config'].mapreduce_operator_type,
+            'type': cluster_config.mapreduce_operator_type,
             'properties': self.data,
         }
+
+        if cluster_config.managed_resource:
+            operator['requires_resources'] = [
+                cluster_config.managed_resource['name']
+            ]
+
+        return operator

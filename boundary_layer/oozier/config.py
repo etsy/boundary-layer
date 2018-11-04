@@ -31,6 +31,9 @@ class DataprocHadoopClusterConfig(HadoopClusterConfig):
     mapreduce_operator_type = 'dataproc_hadoop'
     hive_operator_type = 'dataproc_hive'
 
+    resource_type = 'dataproc_cluster'
+    resource_name = 'dataproc-cluster'
+
     @property
     def managed_resource(self):
         properties = {
@@ -41,8 +44,8 @@ class DataprocHadoopClusterConfig(HadoopClusterConfig):
         }
 
         return {
-            'name': 'dataproc-cluster',
-            'type': 'dataproc_cluster',
+            'name': self.resource_name,
+            'type': self.resource_type,
             'properties': properties,
         }
 

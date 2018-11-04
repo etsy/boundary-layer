@@ -18,6 +18,9 @@ def test_workflow_parser():
         dag_schedule_interval='@daily',
         dag_disable_catchup=False,
         dag_name=None,
+        prune_nodes=None,
+        only_nodes=None,
+        with_external_task_sensors=[],
         )
 
     workflow = oozie_parser.load_workflow(
