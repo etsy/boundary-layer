@@ -75,7 +75,7 @@ class OozieSshActionBuilder(OozieActionBuilderWithSchema):
 
 
 class OozieMapReduceActionSchema(OozieBaseSchema):
-    arguments = ma.fields.List(ma.fields.String(), missing=[])
+    arguments = ma.fields.List(ma.fields.String())
 
 
 class OozieMapReduceActionBuilder(OozieActionBuilderWithSchema):
