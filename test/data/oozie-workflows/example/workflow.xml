@@ -7,23 +7,9 @@
         <path start="ssh-hadoop-get" />
     </fork>
 
-	<!-- 
-		SSH action example
-	
-		Note: the oozie users public key must be added to the users ~/.ssh/authorized_keys2 
-		file on the destination server. E.g:
-		
-		On Oozie server:
-		sudo -u oozie ssh-keygen -t rsa
-		sudo -u oozie scp /var/lib/oozie/.ssh/id_rsa.pub kinley@localhost:/home/kinley/.ssh/oozie_id_rsa.pub
-		
-		On destination server:
-		sudo cat /home/kinley/.ssh/oozie_id_rsa.pub >> /home/kinley/.ssh/authorized_keys2
-		sudo rm -f /home/kinley/.ssh/oozie_id_rsa.pub
-	-->
 	<action name="ssh-hadoop-get">
 		<ssh xmlns="uri:oozie:ssh-action:0.1">
-			<host>kinley@localhost</host>
+			<host>airflow@localhost</host>
 			<command>hadoop</command>
 			<args>fs</args>
 			<args>-copyToLocal</args>
