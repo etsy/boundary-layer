@@ -12,7 +12,13 @@ def test_workflow_parser():
         prune_joins=False,
         debug=False) 
 
-    args = Namespace()
+    args = Namespace(
+        dag_concurrency=16,
+        dag_max_active_runs=1,
+        dag_schedule_interval='@daily',
+        dag_disable_catchup=False,
+        dag_name=None,
+        )
 
     workflow = oozie_parser.load_workflow(
         "example",
