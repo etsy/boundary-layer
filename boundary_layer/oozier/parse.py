@@ -182,11 +182,11 @@ class OozieWorkflowParser(object):
     def _flow_control_nodes(self, wf):
         result = {
             'start': ([wf['start']['to']], wf['start']),
-            'end': ([], wf['end'])
+            wf['end'].get('name', 'end'): ([], wf['end'])
         }
 
         if wf.get('kill'):
-            result[wf['kill']['name']] = ([], wf['kill'])
+            result[wf['kill'].get('name', 'kill')] = ([], wf['kill'])
 
         for decision in wf['decision']:
             if not self.debug:

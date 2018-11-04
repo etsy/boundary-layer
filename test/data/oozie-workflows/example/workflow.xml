@@ -1,5 +1,5 @@
 <workflow-app name="example-workflow" xmlns="uri:oozie:workflow:0.2">
-	<start to="fork" />
+	<start to="fork-node" />
 
     <fork name="fork-node">
         <path start="mr-wordcount" />

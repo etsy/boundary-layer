@@ -82,5 +82,5 @@ class OozieMapReduceActionBuilder(OozieActionBuilderWithSchema):
         return {
             'name': self.name,
             'type': self.context['cluster_config'].mapreduce_operator_type,
-            'properties': self.properties,
+            'properties': self.data,
         }
