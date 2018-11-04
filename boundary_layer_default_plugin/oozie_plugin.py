@@ -14,7 +14,7 @@
 #     limitations under the License.
 
 from collections import namedtuple
-from boundary_layer.oozier.config import DataprocHadoopClusterConfig
+from boundary_layer.oozier.cluster_config import DataprocHadoopClusterConfig
 from boundary_layer.plugins import BaseOozieParserPlugin
 from .oozie_actions import \
         OozieSubWorkflowBuilder, \
