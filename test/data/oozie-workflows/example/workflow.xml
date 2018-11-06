@@ -23,7 +23,7 @@
 	<!-- Sub-workflow which runs two WordCount MapReduce jobs in parallel -->
 	<action name="sub-wf-wordcount">
 		<sub-workflow>
-            <app-path>${nameNode}/todo/fix-this/example/sub-workflows
+            <app-path>namenode/todo/fix-this/example/sub-workflows
 			</app-path>
 			<propagate-configuration />
 		</sub-workflow>
@@ -35,29 +35,25 @@
 	<action name="mr-wordcount">
 		<map-reduce>
 			<job-tracker>${jobTracker}</job-tracker>
-			<name-node>${nameNode}</name-node>
+            <name-node>hdfs://nameNode</name-node>
 			<prepare>
-				<delete path="${nameNode}/workflows/oozie-examples/data/output/wc0" />
+                <delete path="hdfs://nameNode/workflows/oozie-examples/data/output/wc0" />
 			</prepare>
 			<job-xml>conf/wordcount-mr-config.xml</job-xml>
 			<configuration>
-				<!-- If you need to do any custom setup before launching the MapReduce 
+				<!-- If you need to do any custom setup before launching the MapReduce
 					action you can override the launcher by setting this property. -->
-				<!-- <property> <name>oozie.launcher.action.main.class</name> <value>com.cloudera.examples.oozie.action.CustomLauncher</value> 
+				<!-- <property> <name>oozie.launcher.action.main.class</name> <value>com.cloudera.examples.oozie.action.CustomLauncher</value>
 					</property> -->
 				<property>
 					<name>mapred.input.dir</name>
-					<value>${nameNode}/workflows/oozie-examples/data/*.txt
+                    <value>hdfs://nameNode/workflows/oozie-examples/data/*.txt
 					</value>
 				</property>
 				<property>
 					<name>mapred.output.dir</name>
-					<value>${nameNode}/workflows/oozie-examples/data/output/wc0
+                    <value>hdfs://nameNode/workflows/oozie-examples/data/output/wc0
 					</value>
-				</property>
-				<property>
-					<name>mapred.job.queue.name</name>
-					<value>${queueName}</value>
 				</property>
 			</configuration>
 		</map-reduce>

@@ -73,6 +73,7 @@ class OozieSshActionBuilder(OozieActionBuilderWithSchema):
             'properties': properties,
         }
 
+
 class OozieNameValueSchema(OozieBaseSchema):
     name = ma.fields.String(required=True)
     value = ma.fields.String(required=True)

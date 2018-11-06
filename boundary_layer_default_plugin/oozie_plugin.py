@@ -61,10 +61,12 @@ class DefaultOozieParserPlugin(BaseOozieParserPlugin):
             type=int,
             help='argument for DAG concurrency parameter')
 
-
         dataproc_group = parser.add_argument_group('Arguments for dataproc cluster configuration')
         dataproc_group.add_argument('--cluster-depends-on-past', default=None, action='store_true')
-        dataproc_group.add_argument('--cluster-wait-for-downstream', default=None, action='store_true')
+        dataproc_group.add_argument(
+            '--cluster-wait-for-downstream',
+            default=None,
+            action='store_true')
 
         dataproc_group.add_argument('--cluster-num-workers', type=int, default=128)
         dataproc_group.add_argument('--cluster-base-name', default=None)

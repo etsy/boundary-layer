@@ -14,14 +14,22 @@ def test_workflow_parser():
         debug=False)
 
     args = Namespace(
+        cluster_base_name=None,
+        cluster_depends_on_past=False,
+        cluster_name_suffix=None,
+        cluster_num_workers=128,
+        cluster_project_id='my-project',
+        cluster_region='us-central1',
+        cluster_wait_for_downstream=False,
         dag_concurrency=16,
-        dag_max_active_runs=1,
-        dag_schedule_interval='@daily',
         dag_disable_catchup=False,
+        dag_max_active_runs=1,
         dag_name=None,
-        prune_nodes=None,
+        dag_schedule_interval='@daily',
         only_nodes=None,
+        prune_nodes=None,
         with_external_task_sensors=[],
+        workflow_name='test-workflow',
         )
 
     workflow = oozie_parser.load_workflow(

@@ -26,6 +26,11 @@ class StandardHadoopClusterConfig(HadoopClusterConfig):
     mapreduce_operator_type = 'mapreduce'
     hive_operator_type = 'hive'
 
+    def apply_config_properties(self, operator_properties, config_properties):
+        raise NotImplementedError(
+            'Sorry, the class `{}` is not fully implemented right now'.format(
+                self.__class__.__name__))
+
     def __init__(self, namenode):
         self.namenode = namenode
 

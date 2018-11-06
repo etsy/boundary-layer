@@ -13,7 +13,7 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from collections import OrderedDict, namedtuple
+from collections import namedtuple
 import six
 from boundary_layer.plugins import util
 from boundary_layer.logger import logger
