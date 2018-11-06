@@ -80,7 +80,7 @@ class OozieMetaPlugin(object):
 
     def upstream_operators(self):
         return util.merge_lists(
-            pc.upstream_operators() for pc in self._plugin_containers)
+            pc.plugin.upstream_operators() for pc in self._plugin_containers)
 
     def jsp_macros(self):
         return util.merge_dicts(
@@ -104,7 +104,7 @@ class BaseOozieParserPlugin(object):
         return {}
 
     def cluster_config(self):
-        return {}
+        return None
 
     def dag_imports(self):
         return {}

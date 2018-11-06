@@ -9,6 +9,10 @@ class HadoopClusterConfig(object):
         pass
 
     @abc.abstractproperty
+    def apply_config_properties(self, operator_properties, config_properties):
+        pass
+
+    @abc.abstractproperty
     def mapreduce_operator_type(self):
         pass
 
@@ -35,21 +39,19 @@ class DataprocHadoopClusterConfig(HadoopClusterConfig):
 
     @property
     def managed_resource(self):
-        properties = {
-            'project_id': self.project_id,
-            'region': self.region,
-            'cluster_name': self.cluster_name,
-            'num_workers': self.num_workers,
-        }
-
         return {
             'name': self.resource_name,
             'type': self.resource_type,
-            'properties': properties,
+            'properties': self.create_operator_args,
         }
 
-    def __init__(self, project_id, region, cluster_name, num_workers):
-        self.project_id = project_id
-        self.region = region
-        self.cluster_name = cluster_name
-        self.num_workers = num_workers
+    def apply_config_properties(self, operator_properties, config_properties):
+        result = operator_properties.copy()
+
+        if config_properties:
+            result['dataproc_hadoop_properties'] = config_properties
+
+        return result
+
+    def __init__(self, **create_operator_args):
+        self.create_operator_args = create_operator_args

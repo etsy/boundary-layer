@@ -94,7 +94,7 @@ class OozieMapReduceActionSchema(OozieBaseSchema):
     configuration = ma.fields.Nested(OozieHadoopConfigurationSchema)
     job_tracker = ma.fields.String(required=True, load_from='job-tracker')
     name_node = ma.fields.String(required=True, load_from='name-node')
-    main_class = ma.fields.String(required=True, load_from='main-class')
+    main_class = ma.fields.String(load_from='main-class')
 
 
 class OozieMapReduceActionBuilder(OozieActionBuilderWithSchema):
@@ -109,6 +109,10 @@ class OozieMapReduceActionBuilder(OozieActionBuilderWithSchema):
     def operator_properties(self):
         properties = {'arguments': self.translated_args()}
 
+        if self.data.get('main_class'):
+            properties['main_class'] = self.data['main_class']
+
+        config_properties = {}
         if self.data.get('configuration', {}).get('property'):
             config_properties = self.context['macro_translator'].translate({
                 item['name']: item['value']
@@ -119,7 +123,8 @@ class OozieMapReduceActionBuilder(OozieActionBuilderWithSchema):
             if config_properties:
                 properties['dataproc_hadoop_properties'] = config_properties
 
-        return properties
+        cluster_config = self.context['cluster_config']
+        return cluster_config.apply_config_properties(properties, config_properties)
 
     def get_operator(self):
         cluster_config = self.context['cluster_config']
