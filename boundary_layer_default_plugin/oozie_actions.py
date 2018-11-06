@@ -73,21 +73,60 @@ class OozieSshActionBuilder(OozieActionBuilderWithSchema):
             'properties': properties,
         }
 
+class OozieNameValueSchema(OozieBaseSchema):
+    name = ma.fields.String(required=True)
+    value = ma.fields.String(required=True)
+
+
+class OozieHadoopConfigurationSchema(OozieBaseSchema):
+    _property = ma.fields.List(
+        ma.fields.Nested(OozieNameValueSchema),
+        required=True,
+        load_from='property',
+        dump_to='property',
+        attribute='property')
+
+    singletons_to_lists = ['property']
+
 
 class OozieMapReduceActionSchema(OozieBaseSchema):
-    arguments = ma.fields.List(ma.fields.String())
+    arg = ma.fields.List(ma.fields.String(), missing=[])
+    configuration = ma.fields.Nested(OozieHadoopConfigurationSchema)
+    job_tracker = ma.fields.String(required=True, load_from='job-tracker')
+    name_node = ma.fields.String(required=True, load_from='name-node')
+    main_class = ma.fields.String(required=True, load_from='main-class')
 
 
 class OozieMapReduceActionBuilder(OozieActionBuilderWithSchema):
     key = 'map-reduce'
     schema = OozieMapReduceActionSchema
 
+    discard_property_keys = []
+
+    def translated_args(self):
+        return self.context['macro_translator'].translate(self.data['arg'])
+
+    def operator_properties(self):
+        properties = {'arguments': self.translated_args()}
+
+        if self.data.get('configuration', {}).get('property'):
+            config_properties = self.context['macro_translator'].translate({
+                item['name']: item['value']
+                for item in self.data['configuration']['property']
+                if item['name'] not in self.discard_property_keys
+            })
+
+            if config_properties:
+                properties['dataproc_hadoop_properties'] = config_properties
+
+        return properties
+
     def get_operator(self):
         cluster_config = self.context['cluster_config']
         operator = {
             'name': self.name,
             'type': cluster_config.mapreduce_operator_type,
-            'properties': self.data,
+            'properties': self.operator_properties(),
         }
 
         if cluster_config.managed_resource:
