@@ -150,16 +150,14 @@ class PluginManager(object):
     def property_preprocessors(self, item):
         return self._registry_lookup(item, 'property_preprocessor')
 
+    def get_oozie_config(self, args):
+        return OozieMetaPlugin(self._plugins, args)
+
     def _get_oozie_plugin_classes(self):
         return {
             plugin.name: plugin.oozie_plugin_cls for plugin in self._plugins
             if plugin.oozie_plugin_cls
         }
-
-    def get_oozie_config(self, args):
-        return OozieMetaPlugin(
-            self._get_oozie_plugin_classes(),
-            args)
 
     def register_oozie_parser_arguments(self, parser):
         for cls in self._get_oozie_plugin_classes().values():
