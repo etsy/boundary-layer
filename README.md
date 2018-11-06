@@ -13,11 +13,11 @@
 
 In addition, our migration from Oozie to Airflow relied heavily on `boundary-layer`'s included conversion tool.
 
-`boundary-layer` is _pluggable_, supporting custom configuration and extensions via plugins that are installed using `pip`.  The [core](core) package does not contain any etsy-specific customizations; instead, those are all defined in an internally-distributed etsy plugin package.
+`boundary-layer` is _pluggable_, supporting custom configuration and extensions via plugins that are installed using `pip`.  The core package does not contain any etsy-specific customizations; instead, those are all defined in an internally-distributed etsy plugin package.
 
 ## Installation
 
-`boundary-layer` is distributed via Pypi and can be installed using pip.
+`boundary-layer` is distributed via [PyPI](https://pypi.org/project/boundary-layer/) and can be installed using pip.
 
 ```
 pip install boundary-layer --upgrade
