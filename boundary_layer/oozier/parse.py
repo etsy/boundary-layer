@@ -76,7 +76,7 @@ class OozieWorkflowParser(object):
         # Build the workflow
         wf = Workflow(
             primary=primary_dag,
-            secondary=sub_dags.values(),
+            secondary=list(sub_dags.values()),
             filename='oozie:' + primary_workflow_name,
         )
 
