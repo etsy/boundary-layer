@@ -1,0 +1,37 @@
+<!-- Hadoop job configuration. Referenced using <job-xml> Properties defined 
+	here can be overridden by the action configuration properties -->
+<configuration>
+	<!-- Need to tell Oozie to use the new Hadoop API -->
+	<property>
+		<name>mapred.mapper.new-api</name>
+		<value>true</value>
+	</property>
+	<property>
+		<name>mapred.reducer.new-api</name>
+		<value>true</value>
+	</property>
+	<property>
+		<name>mapred.output.key.class</name>
+		<value>org.apache.hadoop.io.Text</value>
+	</property>
+	<property>
+		<name>mapred.output.value.class</name>
+		<value>org.apache.hadoop.io.IntWritable</value>
+	</property>
+	<property>
+		<name>mapreduce.map.class</name>
+		<value>com.cloudera.examples.wordcount.WordCount$Map</value>
+	</property>
+	<property>
+		<name>mapreduce.reduce.class</name>
+		<value>com.cloudera.examples.wordcount.WordCount$Reduce</value>
+	</property>
+	<property>
+		<name>mapreduce.inputformat.class</name>
+		<value>org.apache.hadoop.mapreduce.lib.input.TextInputFormat</value>
+	</property>
+	<property>
+		<name>mapreduce.outputformat.class</name>
+		<value>org.apache.hadoop.mapreduce.lib.output.TextOutputFormat</value>
+	</property>
+</configuration>

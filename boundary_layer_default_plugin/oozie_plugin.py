@@ -14,11 +14,13 @@
 #     limitations under the License.
 
 from collections import namedtuple
+from boundary_layer.oozier.cluster_config import DataprocHadoopClusterConfig
 from boundary_layer.plugins import BaseOozieParserPlugin
 from .oozie_actions import \
         OozieSubWorkflowBuilder, \
         OozieFileSystemActionBuilder, \
-        OozieSshActionBuilder
+        OozieSshActionBuilder, \
+        OozieMapReduceActionBuilder
 
 
 ExternalTaskSpec = namedtuple('ExternalTaskSpec', ['dag_id', 'task_id'])
@@ -59,11 +61,31 @@ class DefaultOozieParserPlugin(BaseOozieParserPlugin):
             type=int,
             help='argument for DAG concurrency parameter')
 
+        dataproc_group = parser.add_argument_group('Arguments for dataproc cluster configuration')
+        dataproc_group.add_argument('--cluster-depends-on-past', default=None, action='store_true')
+        dataproc_group.add_argument(
+            '--cluster-wait-for-downstream',
+            default=None,
+            action='store_true')
+
+        dataproc_group.add_argument('--cluster-num-workers', type=int, default=128)
+        dataproc_group.add_argument('--cluster-base-name', default=None)
+        dataproc_group.add_argument('--cluster-name-suffix', default=None)
+        dataproc_group.add_argument(
+            '--cluster-project-id',
+            default=None,
+            help='The GCP project in which to run the dataproc cluster')
+        dataproc_group.add_argument(
+            '--cluster-region',
+            default=None,
+            help='The GCP region in which to run the dataproc cluster')
+
     def action_builders(self):
         return [
             OozieSubWorkflowBuilder,
             OozieFileSystemActionBuilder,
             OozieSshActionBuilder,
+            OozieMapReduceActionBuilder,
         ]
 
     def upstream_operators(self):
@@ -101,3 +123,28 @@ class DefaultOozieParserPlugin(BaseOozieParserPlugin):
             result['concurrency'] = self.args.dag_concurrency
 
         return result
+
+    def cluster_config(self):
+        cluster_base_name = self.args.cluster_base_name or \
+            self.args.workflow_name
+
+        cluster_name_suffix = self.args.cluster_name_suffix or "{{ ds }}"
+
+        cluster_properties = {
+            'cluster_name': cluster_base_name + "-" + cluster_name_suffix,
+            'num_workers': self.args.cluster_num_workers,
+        }
+
+        if self.args.cluster_project_id:
+            cluster_properties['project_id'] = self.args.cluster_project_id
+
+        if self.args.cluster_region:
+            cluster_properties['region'] = self.args.cluster_region
+
+        if self.args.cluster_depends_on_past:
+            cluster_properties['depends_on_past'] = True
+
+        if self.args.cluster_wait_for_downstream:
+            cluster_properties['wait_for_downstream'] = True
+
+        return DataprocHadoopClusterConfig(**cluster_properties)

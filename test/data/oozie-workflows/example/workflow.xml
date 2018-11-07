@@ -1,0 +1,70 @@
+<workflow-app name="example-workflow" xmlns="uri:oozie:workflow:0.2">
+	<start to="fork-node" />
+
+    <fork name="fork-node">
+        <path start="mr-wordcount" />
+        <path start="sub-wf-wordcount" />
+        <path start="ssh-hadoop-get" />
+    </fork>
+
+	<action name="ssh-hadoop-get">
+		<ssh xmlns="uri:oozie:ssh-action:0.1">
+			<host>airflow@localhost</host>
+			<command>hadoop</command>
+			<args>fs</args>
+			<args>-copyToLocal</args>
+			<args>${hdfsPath}</args>
+			<args>${localPath}</args>
+		</ssh>
+		<ok to="example-workflow-end" />
+		<error to="kill" />
+	</action>
+
+	<!-- Sub-workflow which runs two WordCount MapReduce jobs in parallel -->
+	<action name="sub-wf-wordcount">
+		<sub-workflow>
+            <app-path>namenode/todo/fix-this/example/sub-workflows
+			</app-path>
+			<propagate-configuration />
+		</sub-workflow>
+		<ok to="example-workflow-end" />
+		<error to="kill" />
+	</action>
+
+	<!-- WordCount MapReduce job -->
+	<action name="mr-wordcount">
+		<map-reduce>
+			<job-tracker>${jobTracker}</job-tracker>
+            <name-node>hdfs://nameNode</name-node>
+			<prepare>
+                <delete path="hdfs://nameNode/workflows/oozie-examples/data/output/wc0" />
+			</prepare>
+			<job-xml>conf/wordcount-mr-config.xml</job-xml>
+			<configuration>
+				<!-- If you need to do any custom setup before launching the MapReduce
+					action you can override the launcher by setting this property. -->
+				<!-- <property> <name>oozie.launcher.action.main.class</name> <value>com.cloudera.examples.oozie.action.CustomLauncher</value>
+					</property> -->
+				<property>
+					<name>mapred.input.dir</name>
+                    <value>hdfs://nameNode/workflows/oozie-examples/data/*.txt
+					</value>
+				</property>
+				<property>
+					<name>mapred.output.dir</name>
+                    <value>hdfs://nameNode/workflows/oozie-examples/data/output/wc0
+					</value>
+				</property>
+			</configuration>
+		</map-reduce>
+		<ok to="example-workflow-end" />
+		<error to="kill" />
+	</action>
+
+	<kill name="kill">
+		<message>Workflow failed with error message ${wf:errorMessage()}
+		</message>
+	</kill>
+
+	<end name="example-workflow-end" />
+</workflow-app>

@@ -53,7 +53,6 @@ parameters_jsonschema:
         delegate_to:
             type: string
     required:
-        - main_class
         - cluster_name
         - region
     additionalProperties: false

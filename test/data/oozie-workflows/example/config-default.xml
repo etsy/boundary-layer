@@ -1,0 +1,15 @@
+<!-- Default values for the workflow job parameters -->
+<configuration>
+	<property>
+		<name>jobTracker</name>
+		<value>ubuntu:8021</value>
+	</property>
+	<property>
+		<name>nameNode</name>
+		<value>hdfs://ubuntu:8020</value>
+	</property>
+	<property>
+		<name>queueName</name>
+		<value>default</value>
+	</property>
+</configuration>
