@@ -11,7 +11,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as _in:
 
 setuptools.setup(
     name = 'boundary-layer',
-    version='1.6.6',
+    version='1.6.7-dev0',
     author = 'Kevin McHale',
     author_email = 'kmchale@etsy.com',
     description = 'Builds Airflow DAGs from configuration files',
