@@ -34,6 +34,7 @@ parameters_jsonschema:
             type: string
         scale_tier:
             type: string
+            enum: [BASIC, STANDARD_1, PREMIUM_1, BASIC_GPU, BASIC_TPU, CUSTOM]
         runtime_version:
             type: string
         python_version:
@@ -42,6 +43,7 @@ parameters_jsonschema:
             type: string
         mode:
             type: string
+            enum: [DRY_RUN, CLOUD]
     required:
         - project_id
         - job_id
