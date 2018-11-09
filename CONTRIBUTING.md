@@ -18,3 +18,4 @@ Every pull request will be built with [Travis CI](https://travis-ci.org/etsy/bou
 - Nikki Thean [nixsticks](https://github.com/nixsticks)
 - Julie Chien [jj-ian](https://github.com/jj-ian)
 - Andrey Polyakov [andpol](https://github.com/andpol)
+- Sahil Khanna [SahilKhanna129](https://github.com/SahilKhanna129)
