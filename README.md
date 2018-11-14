@@ -15,6 +15,14 @@ In addition, our migration from Oozie to Airflow relied heavily on `boundary-lay
 
 `boundary-layer` is _pluggable_, supporting custom configuration and extensions via plugins that are installed using `pip`.  The core package does not contain any etsy-specific customizations; instead, those are all defined in an internally-distributed etsy plugin package.
 
+For more information, see our article on Etsy's [Code as Craft](https://codeascraft.com/2018/11/14/boundary-layer%e2%80%89-declarative-airflow-workflows/) blog.
+
+## Supported operators and Airflow versions
+
+`boundary-layer` requires that each operator have a configuration file to define its schema, the python class it corresponds to, etc.  These configuration files are stored in the [boundary-layer-default-plugin](boundary_layer_default_plugin/config/operators).  We currently include configurations for a number of common Airflow operators (sufficient to support our needs at Etsy, plus a few more), but we know that we are missing quite a few operators that may be needed to satisfy common Airflow use cases.  We are committed to continuing to add support for more operators, and we also commit to supporting a quick turn-around time for any contributed pull requests that only add support for additional operators.  So please, submit a pull request if something is missing, or at least drop an [issue](https://github.com/etsy/boundary-layer/issues) to let us know.
+
+Furthermore, due to some differences in the operators and sensors between Airflow release versions, there may be incompatibilities between `boundary-layer` and some Airflow versions.  All of our operators are known to work with Airflow release version 1.9.  If demand materializes for support for additional Airflow versions, we can consider an approach to building multi-version compatibility.  Again, please drop an [issue](https://github.com/etsy/boundary-layer/issues) to let us know what you're trying to do.
+
 ## Installation
 
 `boundary-layer` is distributed via [PyPI](https://pypi.org/project/boundary-layer/) and can be installed using pip.
@@ -173,7 +181,7 @@ This python DAG is now ready for ingestion directly into a running Airflow insta
 A few things to note:
  - `boundary-layer` converted the `start_date` parameter from a string to a python `datetime` object.  This is an example of the boundary-layer argument-preprocessor feature, which allows config parameters to be specified as user-friendly strings and converted to the necessary python data structures automatically.
  - `boundary-layer` added a `sentinel` node in parallel with the cluster-destroy node, which serves as an indicator to Airflow itself regarding the ultimate outcome of the Dag Run.  Airflow determines the Dag Run status from the leaf nodes of the DAG, and normally the cluster-destroy node will always execute (irrespective of upstream failures) and will likely succeed. This would cause DAGs with failures in critical nodes to be marked as successes, if not for the sentinel node.  The sentinel node will only trigger if all of its upstream dependencies succeed --- otherwise it will be marked as `upstream-failed`, which induces a failure state for the Dag Run.
-
+ 
 # Oozie Migration tools
 
 In addition to allowing us to define Airflow workflows using YAML configurations, `boundary-layer` also provides a module for converting Oozie XML configuration files into `boundary-layer` YAML configurations, which can then be used to create Airflow DAGs.
