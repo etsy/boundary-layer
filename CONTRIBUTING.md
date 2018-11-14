@@ -22,7 +22,7 @@ These are the steps for submitting a proposed contribution to boundary-layer:
 7. Push your changes to your fork
 8. Send a pull request!
 
-Every pull request will be tested by [Travis CI](https://travis-ci.org/etsy/boundary-layer).  The CI build runs unit tests, [pycodestyle](https://pypi.org/project/pycodestyle/) and [pylint](https://www.pylint.org/).
+Every pull request will be tested by [Travis CI](https://travis-ci.org/etsy/boundary-layer).  The CI build runs unit tests, [pycodestyle](https://pypi.org/project/pycodestyle/) and [pylint](https://www.pylint.org/).  All tests must pass, including the code style and linter tests, before a pull request will be considered.
 
 # Contributors
 - Kevin McHale [mchalek](https://github.com/mchalek)
