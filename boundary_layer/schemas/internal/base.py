@@ -23,7 +23,7 @@ from boundary_layer.schemas.dag import ImportSchema
 class JsonSchemaSchema(StrictSchema):
     properties = ma.fields.Dict()
     additionalProperties = ma.fields.Boolean()
-    required = ma.fields.List(ma.fields.String)
+    required = ma.fields.List(ma.fields.String())
 
 
 class BaseSpecSchema(StrictSchema):

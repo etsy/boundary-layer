@@ -16,11 +16,7 @@ You may obtain a copy of the License at
 def {{ generator_operator_name | sanitize_operator_name }}_builder(
         index,
         item,
+        item_name,
         dag,
         upstream_dependencies,
         downstream_dependencies):
-
-    def build_item_name():
-    {{ referring_node.config.item_name_builder_code | add_leading_spaces(1) }}
-
-    item_name = build_item_name()

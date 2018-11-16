@@ -18,6 +18,9 @@ You may obtain a copy of the License at
 def {{ iterable_builder }}({{ ', '.join(builder_args) }}):
 {{ node.config.iterator_builder_method_code | add_leading_spaces(1) }}
 
+{% set blocklist_set = (node.name + '_blocklist') | sanitize_operator_name %}
+{{ blocklist_set }} = set({{ node.blocklist }})
+
 {# Note: we use resolved_properties rather than operator_args, because the
  latter would discard any default task args, expecting them to be filled-in
  by airflow, while in fact airflow would not fill them in at all. #}
@@ -29,9 +32,17 @@ for (index, item) in enumerate({{ iterable_builder }}(
 {% endif %}
 {% endfor %}
         )):
+    def build_item_name(index, item):
+    {{ node.config.item_name_builder_code | add_leading_spaces(1) }}
+
+    item_name = build_item_name(index, item)
+    if item_name in {{ blocklist_set }}:
+        continue
+
     {{ node.target | sanitize_operator_name }}_builder(
         index = index,
         item = item,
+        item_name = item_name,
         dag = dag,
         upstream_dependencies = {{ upstream_dependencies | sanitize_operator_name | verbatim | format_value }},
         downstream_dependencies = {{ downstream_dependencies | sanitize_operator_name | verbatim | format_value }})
