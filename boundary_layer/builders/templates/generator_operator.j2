@@ -19,7 +19,11 @@ def {{ iterable_builder }}({{ ', '.join(builder_args) }}):
 {{ node.config.iterator_builder_method_code | add_leading_spaces(1) }}
 
 {% set blocklist = (node.name + '_blocklist') | sanitize_operator_name %}
-{{ blocklist }} = {{ node.blocklist }}
+{{ blocklist }} = {{ node.regex_blocklist }}
+
+{% set item_name_builder = (node.name + '_item_name_builder') | sanitize_operator_name %}
+def {{ item_name_builder }}(index, item):
+{{ node.config.item_name_builder_code | add_leading_spaces(1) }}
 
 {# Note: we use resolved_properties rather than operator_args, because the
  latter would discard any default task args, expecting them to be filled-in
@@ -32,11 +36,9 @@ for (index, item) in enumerate({{ iterable_builder }}(
 {% endif %}
 {% endfor %}
         )):
-    def build_item_name(index, item):
-    {{ node.config.item_name_builder_code | add_leading_spaces(1) }}
 
-    item_name = build_item_name(index, item)
-    blocklist_match = any([re.match(i, item_name) for i in {{ blocklist }}])
+    item_name = {{ item_name_builder }}(index, item)
+    blocklist_match = any(re.match(i, item_name) for i in {{ blocklist }})
     if blocklist_match:
         continue
 

@@ -37,7 +37,7 @@ class ReferenceSchema(OperatorSchema):
 
 class GeneratorSchema(ReferenceSchema):
     auto_task_id_mode = fields.String()
-    blocklist = fields.List(fields.String())
+    regex_blocklist = fields.List(fields.String())
 
     @validates_schema
     def check_task_id_mode(self, data):
