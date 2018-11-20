@@ -37,6 +37,8 @@ generators:
       target: file_list_processor
       upstream_dependencies:
           - file_lister_3
+      regex_blocklist:
+          - file3
       properties:
           items:
               - file3

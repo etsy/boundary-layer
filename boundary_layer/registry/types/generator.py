@@ -24,6 +24,10 @@ class GeneratorNode(SubdagNode):
     operator_class = None
     operator_class_module = None
 
+    @property
+    def regex_blocklist(self):
+        return self.item.get('regex_blocklist', ())
+
 
 class GeneratorRegistry(ConfigFileRegistry):
     node_cls = GeneratorNode
