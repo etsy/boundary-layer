@@ -366,6 +366,9 @@ class OperatorNode(RegistryNode):
         def aggregator(previous_result, node):
             return previous_result + node.config.get('property_preprocessors', [])
 
+        if not preprocessor_loader:
+            return {}
+
         preprocessor_configs = self._aggregate_over_hierarchy(
             base_loader=base_loader,
             initial_value=self.config.get('property_preprocessors', []),
