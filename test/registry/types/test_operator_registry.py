@@ -1,3 +1,4 @@
+import pytest
 from boundary_layer.containers import ExecutionContext
 
 
@@ -11,7 +12,7 @@ def test_operator_registry(valid_operator_registry):
     operator.resolve_properties(
         execution_context=ExecutionContext(None, {}),
         default_task_args={},
-        base_operator_loader=valid_operator_registry,
+        base_operator_loader=valid_operator_registry.get,
         preprocessor_loader=None)
 
     assert operator.resolved_properties.values == {
@@ -34,7 +35,7 @@ def test_reject_unknown_properties(valid_operator_registry):
         operator.resolve_properties(
             execution_context=ExecutionContext(None, {}),
             default_task_args={},
-            base_operator_loader=valid_operator_registry,
+            base_operator_loader=valid_operator_registry.get,
             preprocessor_loader=None)
 
 
@@ -51,7 +52,7 @@ def test_accept_unknown_properties_for_flexible_schema(valid_operator_registry):
     operator.resolve_properties(
         execution_context=ExecutionContext(None, {}),
         default_task_args={},
-        base_operator_loader=valid_operator_registry,
+        base_operator_loader=valid_operator_registry.get,
         preprocessor_loader=None)
 
     assert operator.resolved_properties.values == {
