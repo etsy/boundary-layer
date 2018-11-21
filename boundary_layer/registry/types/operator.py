@@ -231,7 +231,8 @@ class OperatorNode(RegistryNode):
             resources=set(),
             schema=set(),
             global_defaults=set(),
-            fixed_args=set())
+            fixed_args=set(),
+            unknown_to_schema=set())
 
         property_values = {}
 
@@ -319,6 +320,19 @@ class OperatorNode(RegistryNode):
                 '%s: No resources or defaults available for property `%s`',
                 self.name,
                 property_name)
+
+        unknown_to_schema = set(
+            property_name for property_name in self.properties
+            if property_name not in schema_properties)
+
+        for property_name in unknown_to_schema:
+            logger.debug(
+                '%s: Inserting value `%s` for user-property `%s` which is not '
+                'part of the schema for this operator',
+                self.name,
+                property_name)
+            property_values[property_name] = self.properties[property_name]
+            sources.unknown_to_schema.add(property_name)
 
         return (sources, property_values)
 

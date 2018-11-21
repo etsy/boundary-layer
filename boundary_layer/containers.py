@@ -23,6 +23,7 @@ PropertySources = namedtuple('PropertySources', [
     'schema',
     'global_defaults',
     'fixed_args',
+    'unknown_to_schema',
 ])
 ResolvedProperties = namedtuple('ResolvedProperties', ['sources', 'values'])
 
