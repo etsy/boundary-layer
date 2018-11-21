@@ -1,0 +1,88 @@
+# Copyright 2018 Etsy Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+
+# This operator matches the airflow base operator.  For information on
+# its parameters, see:
+# https://github.com/apache/incubator-airflow/blob/1.9.0/airflow/models.py#L1986
+name: base
+operator_class: BaseOperator
+operator_class_module: airflow.model
+parameters_jsonschema:
+    properties:
+        owner:
+            type: string
+        email:
+            type: array
+            items:
+                type: string
+                format: email
+        retries:
+            type: integer
+        retry_delay:
+            type: integer
+        retry_exponential_backoff:
+            type: boolean
+        max_retry_delay:
+            type: string
+        start_date:
+            type: string
+        end_date:
+            type: string
+        depends_on_past:
+            type: boolean
+        wait_for_downstream:
+            type: boolean
+        queue:
+            type: string
+        priority_weight:
+            type: string
+        pool:
+            type: string
+        sla:
+            type: integer
+        execution_timeout:
+            type: integer
+        on_failure_callback:
+            type: string
+        on_retry_callback:
+            type: string
+        on_success_callback:
+            type: string
+        trigger_rule:
+            type: string
+            enum: [ all_success, all_failed, all_done, one_success, one_failed, dummy ]
+        task_concurrency:
+            type: integer
+        dag:
+            type: string
+        task_id:
+            type: string
+    additionalProperties: false
+    required:
+        - dag
+        - task_id
+
+property_preprocessors:
+    - type: date_string_to_datetime
+      apply_to_properties:
+      - start_date
+      - end_date
+    - type: to_timedelta
+      properties:
+          units: seconds
+      apply_to_properties:
+      - retry_delay
+      - max_retry_delay
+      - sla
+      - execution_timeout

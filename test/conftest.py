@@ -2,6 +2,7 @@ import functools
 from argparse import Namespace
 import pytest
 from boundary_layer import util
+from boundary_layer.registry.types import OperatorRegistry
 
 
 @pytest.fixture
@@ -29,3 +30,11 @@ def parse_oozie_default_args():
         with_external_task_sensors=[],
         workflow_name='test-workflow',
         )
+
+
+@pytest.fixture
+def valid_operator_registry():
+    path = "test/data/registry/valid/operators"
+    return OperatorRegistry([path])
+
+
