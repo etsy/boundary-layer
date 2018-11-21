@@ -381,10 +381,6 @@ class OperatorNode(RegistryNode):
     def _load_preprocessors(self, base_loader, preprocessor_loader):
         def aggregator(previous_result, node):
             return previous_result + node.config.get('property_preprocessors', [])
-
-        if not preprocessor_loader:
-            return {}
-
         preprocessor_configs = self._aggregate_over_hierarchy(
             base_loader=base_loader,
             initial_value=self.config.get('property_preprocessors', []),
@@ -393,12 +389,13 @@ class OperatorNode(RegistryNode):
         if not preprocessor_configs:
             return {}
 
-        assert preprocessor_loader is not None, \
-            'load_preprocessors called for node {} with preprocessor config {}, ' \
-            'but preprocessor_loader is {}!'.format(
-                self,
-                preprocessor_configs,
-                preprocessor_loader)
+        if not preprocessor_loader:
+            raise Exception(
+                'Node {} of type {} requires preprocessors {}, but no '
+                'preprocessor_loader is available!'.format(
+                    self,
+                    self.type,
+                    [config['type'] for config in preprocessor_configs]))
 
         result = {}
         for preprocessor_conf in preprocessor_configs:
