@@ -326,12 +326,14 @@ class OperatorNode(RegistryNode):
             if property_name not in schema_properties)
 
         for property_name in unknown_to_schema:
+            value = self.properties[property_name]
             logger.debug(
                 '%s: Inserting value `%s` for user-property `%s` which is not '
                 'part of the schema for this operator',
                 self.name,
+                value,
                 property_name)
-            property_values[property_name] = self.properties[property_name]
+            property_values[property_name] = value
             sources.unknown_to_schema.add(property_name)
 
         return (sources, property_values)

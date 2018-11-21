@@ -36,5 +36,3 @@ def parse_oozie_default_args():
 def valid_operator_registry():
     path = "test/data/registry/valid/operators"
     return OperatorRegistry([path])
-
-
