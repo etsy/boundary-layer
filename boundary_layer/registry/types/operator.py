@@ -20,6 +20,7 @@ from boundary_layer.schemas.internal.operators import OperatorSpecSchema
 from boundary_layer.schemas.dag import ImportSchema
 from boundary_layer import validator, util
 from boundary_layer.containers import PropertySources, ResolvedProperties
+from boundary_layer.exceptions import MissingPreprocessorException
 
 
 class OperatorNode(RegistryNode):
@@ -390,7 +391,7 @@ class OperatorNode(RegistryNode):
             return {}
 
         if not preprocessor_loader:
-            raise Exception(
+            raise MissingPreprocessorException(
                 'Node {} of type {} requires preprocessors {}, but no '
                 'preprocessor_loader is available!'.format(
                     self,

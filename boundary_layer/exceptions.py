@@ -52,3 +52,7 @@ class InvalidNodeReference(Exception):
 
 class InvalidFlowControlNode(Exception):
     pass
+
+
+class MissingPreprocessorException(Exception):
+    pass
