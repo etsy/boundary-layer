@@ -72,17 +72,3 @@ parameters_jsonschema:
     required:
         - dag
         - task_id
-
-property_preprocessors:
-    - type: date_string_to_datetime
-      apply_to_properties:
-      - start_date
-      - end_date
-    - type: to_timedelta
-      properties:
-          units: seconds
-      apply_to_properties:
-      - retry_delay
-      - max_retry_delay
-      - sla
-      - execution_timeout
