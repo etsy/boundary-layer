@@ -321,9 +321,9 @@ class OperatorNode(RegistryNode):
                 self.name,
                 property_name)
 
-        unknown_to_schema = set(
+        unknown_to_schema = [
             property_name for property_name in self.properties
-            if property_name not in schema_properties)
+            if property_name not in schema_properties]
 
         for property_name in unknown_to_schema:
             value = self.properties[property_name]
