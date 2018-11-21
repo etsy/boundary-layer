@@ -1,4 +1,5 @@
 import pytest
+import jsonschema
 from boundary_layer.containers import ExecutionContext
 
 
@@ -31,7 +32,7 @@ def test_reject_unknown_properties(valid_operator_registry):
     }
 
     operator = valid_operator_registry.get(operator_config)
-    with pytest.raises(Exception):
+    with pytest.raises(jsonschema.ValidationError):
         operator.resolve_properties(
             execution_context=ExecutionContext(None, {}),
             default_task_args={},
