@@ -20,6 +20,7 @@ from boundary_layer.schemas.internal.operators import OperatorSpecSchema
 from boundary_layer.schemas.dag import ImportSchema
 from boundary_layer import validator, util
 from boundary_layer.containers import PropertySources, ResolvedProperties
+from boundary_layer.exceptions import MissingPreprocessorException
 
 
 class OperatorNode(RegistryNode):
@@ -231,7 +232,8 @@ class OperatorNode(RegistryNode):
             resources=set(),
             schema=set(),
             global_defaults=set(),
-            fixed_args=set())
+            fixed_args=set(),
+            unknown_to_schema=set())
 
         property_values = {}
 
@@ -320,6 +322,21 @@ class OperatorNode(RegistryNode):
                 self.name,
                 property_name)
 
+        unknown_to_schema = [
+            property_name for property_name in self.properties
+            if property_name not in schema_properties]
+
+        for property_name in unknown_to_schema:
+            value = self.properties[property_name]
+            logger.debug(
+                '%s: Inserting value `%s` for user-property `%s` which is not '
+                'part of the schema for this operator',
+                self.name,
+                value,
+                property_name)
+            property_values[property_name] = value
+            sources.unknown_to_schema.add(property_name)
+
         return (sources, property_values)
 
     def _apply_preprocessors(self, args, preprocessors):
@@ -365,7 +382,6 @@ class OperatorNode(RegistryNode):
     def _load_preprocessors(self, base_loader, preprocessor_loader):
         def aggregator(previous_result, node):
             return previous_result + node.config.get('property_preprocessors', [])
-
         preprocessor_configs = self._aggregate_over_hierarchy(
             base_loader=base_loader,
             initial_value=self.config.get('property_preprocessors', []),
@@ -374,12 +390,13 @@ class OperatorNode(RegistryNode):
         if not preprocessor_configs:
             return {}
 
-        assert preprocessor_loader is not None, \
-            'load_preprocessors called for node {} with preprocessor config {}, ' \
-            'but preprocessor_loader is {}!'.format(
-                self,
-                preprocessor_configs,
-                preprocessor_loader)
+        if not preprocessor_loader:
+            raise MissingPreprocessorException(
+                'Node {} of type {} requires preprocessors {}, but no '
+                'preprocessor_loader is available!'.format(
+                    self,
+                    self.type,
+                    [config['type'] for config in preprocessor_configs]))
 
         result = {}
         for preprocessor_conf in preprocessor_configs:

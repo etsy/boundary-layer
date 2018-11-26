@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018 Etsy Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,19 +12,17 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-from collections import namedtuple
+name: requires_preprocessors
+operator_class: DummyOperator
+operator_class_module: airflow.operators.dummy_operator
+schema_extends: base
+parameters_jsonschema:
+    properties:
+        my_property:
+            type: string
+    additionalProperties: false
+property_preprocessors:
+- type: date_string_to_datetime
+  apply_to_properties:
+  - my_property
 
-ExecutionContext = namedtuple('ExecutionContext', ['referrer', 'resources'])
-PropertySources = namedtuple('PropertySources', [
-    'dag',
-    'default_task_args',
-    'resources',
-    'schema',
-    'global_defaults',
-    'fixed_args',
-    'unknown_to_schema',
-])
-ResolvedProperties = namedtuple('ResolvedProperties', ['sources', 'values'])
-
-WorkflowMetadata = namedtuple(
-    'WorkflowMetadata', ['filename', 'yaml_config'])
