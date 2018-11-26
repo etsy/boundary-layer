@@ -20,7 +20,7 @@ import yaml
 
 from boundary_layer.logger import logger
 from boundary_layer import util
-from boundary_layer.exceptions import DuplicateRegistryConfigName
+from boundary_layer.exceptions import DuplicateRegistryConfigName, InvalidConfig
 
 
 class NodeTypes(Enum):
@@ -180,7 +180,7 @@ class ConfigFileRegistry(Registry):
 
         loaded = self.spec_schema_cls().load(item)
         if loaded.errors:
-            raise Exception('Invalid config spec in file {}: {}'.format(
+            raise InvalidConfig('Invalid config spec in file {}: {}'.format(
                 filename, loaded.errors))
 
         return loaded.data

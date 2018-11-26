@@ -60,3 +60,7 @@ class MissingPreprocessorException(Exception):
 
 class DuplicateRegistryConfigName(Exception):
     pass
+
+
+class InvalidConfig(Exception):
+    pass

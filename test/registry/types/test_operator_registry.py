@@ -1,7 +1,7 @@
 import pytest
 import jsonschema
 from boundary_layer.containers import ExecutionContext
-from boundary_layer.exceptions import MissingPreprocessorException, DuplicateRegistryConfigName
+from boundary_layer.exceptions import MissingPreprocessorException, DuplicateRegistryConfigName, InvalidConfig
 from boundary_layer.registry.types import OperatorRegistry
 
 
@@ -87,4 +87,11 @@ def test_detect_duplicate_names():
     path = "test/data/registry/invalid-duplicate-names/operators"
 
     with pytest.raises(DuplicateRegistryConfigName):
+        OperatorRegistry([path])
+
+
+def test_detect_invalid_jsonschema():
+    path = "test/data/registry/invalid-bad-config/operators"
+
+    with pytest.raises(InvalidConfig):
         OperatorRegistry([path])
