@@ -11,6 +11,8 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+#
+# Operation documentation: https://airflow.apache.org/integration.html#mlenginebatchpredictionoperator
 name: ml_engine_batch_prediction
 operator_class: MLEngineBatchPredictionOperator
 operator_class_module: airflow.contrib.operators.mlengine_operator
