@@ -32,3 +32,4 @@ Every pull request will be tested by [Travis CI](https://travis-ci.org/etsy/boun
 - Julie Chien [jj-ian](https://github.com/jj-ian)
 - Andrey Polyakov [andpol](https://github.com/andpol)
 - Sahil Khanna [SahilKhanna129](https://github.com/SahilKhanna129)
+- Kiril Zvezdarov [kzvezdarov](https://github.com/kzvezdarov)
