@@ -1,7 +1,10 @@
 import pytest
 import jsonschema
 from boundary_layer.containers import ExecutionContext
-from boundary_layer.exceptions import MissingPreprocessorException, DuplicateRegistryConfigName, InvalidConfig
+from boundary_layer.exceptions import \
+        MissingPreprocessorException, \
+        DuplicateRegistryConfigName, \
+        InvalidConfig
 from boundary_layer.registry.types import OperatorRegistry
 
 

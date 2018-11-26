@@ -216,7 +216,8 @@ class ConfigFileRegistry(Registry):
 
         if duplicates:
             raise DuplicateRegistryConfigName(
-                'Duplicate names found while loading registry: `{}` (full configurations: {})'.format(
+                'Duplicate names found while loading registry: `{}` '
+                '(full configurations: {})'.format(
                     '`, `'.join(duplicates.keys()),
                     duplicates))
 
