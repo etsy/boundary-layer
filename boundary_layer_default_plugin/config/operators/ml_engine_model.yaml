@@ -12,51 +12,32 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 #
-# Operation documentation: https://airflow.apache.org/integration.html#mlenginebatchpredictionoperator
-name: ml_engine_batch_prediction
-operator_class: MLEngineBatchPredictionOperator
+# Operator documentation: https://airflow.apache.org/integration.html#mlenginemodeloperator
+name: ml_engine_model
+operator_class: MLEngineModelOperator
 operator_class_module: airflow.contrib.operators.mlengine_operator
 schema_extends: base
 parameters_jsonschema:
     properties:
         project_id:
             type: string
-        job_id:
-            type: string
-        data_format:
+        model:
+            type: object
+            properties:
+                name:
+                    type: string
+            additionalProperties:
+                type: string
+        operation:
             type: string
             enum:
-                - DATA_FORMAT_UNSPECIFIED
-                - JSON
-                - TEXT
-                - TF_RECORD
-                - TF_RECORD_GZIP
-        input_paths:
-            type: array
-        items:
-            type: string
-        output_path:
-            type: string
-        region:
-            type: string
-        model_name:
-            type: string
-        version_name:
-            type: string
-        uri:
-            type: string
-        max_worker_count:
-            type: integer
-        runtime_version:
-            type: string
+                - create
+                - get
         gcp_conn_id:
             type: string
         delegate_to:
             type: string
     required:
         - project_id
-        - job_id
-        - input_paths
-        - output_path
-        - region
+        - model
     additionalProperties: false

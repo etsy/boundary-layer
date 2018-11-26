@@ -11,7 +11,8 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
-
+#
+# Operator documentation: https://airflow.apache.org/integration.html#mlenginetrainingoperator
 name: ml_engine_training
 operator_class: MLEngineTrainingOperator
 operator_class_module: airflow.contrib.operators.mlengine_operator
