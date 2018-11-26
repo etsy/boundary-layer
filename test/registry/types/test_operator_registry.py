@@ -1,7 +1,11 @@
 import pytest
 import jsonschema
 from boundary_layer.containers import ExecutionContext
-from boundary_layer.exceptions import MissingPreprocessorException
+from boundary_layer.exceptions import \
+        MissingPreprocessorException, \
+        DuplicateRegistryConfigName, \
+        InvalidConfig
+from boundary_layer.registry.types import OperatorRegistry
 
 
 def test_operator_registry(valid_operator_registry):
@@ -80,3 +84,17 @@ def test_fail_on_missing_preprocessor(valid_operator_registry):
             default_task_args={},
             base_operator_loader=valid_operator_registry.get,
             preprocessor_loader=None)
+
+
+def test_detect_duplicate_names():
+    path = "test/data/registry/invalid-duplicate-names/operators"
+
+    with pytest.raises(DuplicateRegistryConfigName):
+        OperatorRegistry([path])
+
+
+def test_detect_invalid_jsonschema():
+    path = "test/data/registry/invalid-bad-config/operators"
+
+    with pytest.raises(InvalidConfig):
+        OperatorRegistry([path])

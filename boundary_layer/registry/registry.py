@@ -20,6 +20,7 @@ import yaml
 
 from boundary_layer.logger import logger
 from boundary_layer import util
+from boundary_layer.exceptions import DuplicateRegistryConfigName, InvalidConfig
 
 
 class NodeTypes(Enum):
@@ -179,7 +180,7 @@ class ConfigFileRegistry(Registry):
 
         loaded = self.spec_schema_cls().load(item)
         if loaded.errors:
-            raise Exception('Invalid config spec in file {}: {}'.format(
+            raise InvalidConfig('Invalid config spec in file {}: {}'.format(
                 filename, loaded.errors))
 
         return loaded.data
@@ -191,7 +192,7 @@ class ConfigFileRegistry(Registry):
                 'list<str>, got {}'.format(config_paths))
 
         registry = {}
-        errors = {}
+        duplicates = {}
 
         for path in config_paths:
             logger.debug('Loading configs from path %s', path)
@@ -207,14 +208,17 @@ class ConfigFileRegistry(Registry):
                 name = config['name']
 
                 if name in registry:
-                    errors[name].setdefault(registry[name])
-                    errors[name].append(config)
+                    duplicates.setdefault(name, [registry[name]])
+                    duplicates[name].append(config)
                     continue
 
                 registry[name] = config
 
-        if errors:
-            raise Exception(
-                'Errors found in loading registry: {}'.format(errors))
+        if duplicates:
+            raise DuplicateRegistryConfigName(
+                'Duplicate names found while loading registry: `{}` '
+                '(full configurations: {})'.format(
+                    '`, `'.join(duplicates.keys()),
+                    duplicates))
 
         return registry
