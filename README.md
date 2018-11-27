@@ -185,3 +185,14 @@ A few things to note:
 # Oozie Migration tools
 
 In addition to allowing us to define Airflow workflows using YAML configurations, `boundary-layer` also provides a module for converting Oozie XML configuration files into `boundary-layer` YAML configurations, which can then be used to create Airflow DAGs.
+
+Admittedly, `boundary-layer`'s Oozie support is currently limited: it is only capable of building DAGs that submit their Hadoop jobs to [Dataproc](https://cloud.google.com/dataproc/) (it does not support stand-alone Hadoop clusters, for example), and it does not support Oozie coordinators.  We are open to working on improved Oozie support if there is community demand for it, and of course, we are open to community contributions toward this goal.
+
+The following command will translate an [example Oozie workflow](test/data/oozie-workflows/example) to a boundary-layer DAG that will execute on a 64-node Dataproc cluster in GCP's `us-east1` region, for the GCP project `my-project-id`:
+```
+boundary-layer parse-oozie example \
+  --local-workflow-base-path test/data/oozie-workflows/ \
+  --cluster-project-id my-project-id \
+  --cluster-region us-east1 \
+  --cluster-num-workers 64
+```
