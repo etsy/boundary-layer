@@ -26,19 +26,6 @@ def {{ iterable_builder }}({{ ', '.join(builder_args) }}):
  by airflow, while in fact airflow would not fill them in at all. #}
 {% set properties = node.resolved_properties.values %}
 
-{% if node.batching.enabled %}
-{# Generate code for batched situations #}
-{% set batch_name_builder = (node.name + '_batch_name_builder') | sanitize_operator_name %}
-def {{ batch_name_builder }}(index, items):
-    return 'batch_%d_%d' % (index, len(items))
-
-
-{# TODO: Import this from some util module #}
-{# https://stackoverflow.com/a/312464 #}
-def grouped(l, n):
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
-
 items = {{ iterable_builder }}(
 {% for arg in builder_args %}
 {% if arg in properties %}
@@ -46,6 +33,19 @@ items = {{ iterable_builder }}(
 {% endif %}
 {% endfor %}
         )
+
+{% if node.batching.enabled %}
+{# Generate code for batched situations #}
+{% set batch_name_builder = (node.name + '_batch_name_builder') | sanitize_operator_name %}
+def {{ batch_name_builder }}(index, items):
+    return 'batch_%d_%d' % (index, len(items))
+
+{# TODO: Import this from some util module #}
+{# https://stackoverflow.com/a/312464 #}
+def grouped(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
 for (index, batch) in enumerate(grouped(items, {{ node.batching.batch_size }})):
     batch_name = {{ batch_name_builder }}(index, items)
     {# TODO: How do we handle this? #}
@@ -66,14 +66,7 @@ for (index, batch) in enumerate(grouped(items, {{ node.batching.batch_size }})):
 def {{ item_name_builder }}(index, item):
 {{ node.config.item_name_builder_code | add_leading_spaces(1) }}
 
-for (index, item) in enumerate({{ iterable_builder }}(
-{% for arg in builder_args %}
-{% if arg in properties %}
-            {{ arg }} = {{ properties[arg] | format_value }},
-{% endif %}
-{% endfor %}
-        )):
-
+for (index, item) in enumerate(items):
     item_name = {{ item_name_builder }}(index, item)
     blocklist_match = any(re.match(i, item_name) for i in {{ blocklist }})
     if blocklist_match:
