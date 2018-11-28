@@ -53,13 +53,8 @@ for (index, batch) in enumerate(grouped(items, {{ node.batching.batch_size }})):
     if blocklist_match:
         continue
 
-    {{ node.target | sanitize_operator_name }}_builder(
-        index = index,
-        items = items,
-        batch_name = batch_name,
-        dag = dag,
-        upstream_dependencies = {{ upstream_dependencies | sanitize_operator_name | verbatim | format_value }},
-        downstream_dependencies = {{ downstream_dependencies | sanitize_operator_name | verbatim | format_value }})
+    {% set item_input = 'items' %}
+    {% set name_input = 'batch_name' %}
 {% else %}
 {# Generate code for non-batched situations #}
 {% set item_name_builder = (node.name + '_item_name_builder') | sanitize_operator_name %}
@@ -72,12 +67,14 @@ for (index, item) in enumerate(items):
     if blocklist_match:
         continue
 
+    {% set item_input = 'item' %}
+    {% set name_input = 'item_name' %}
+{% endif %}
     {{ node.target | sanitize_operator_name }}_builder(
         index = index,
-        item = item,
-        item_name = item_name,
+        {{ item_input }} = {{ item_input }},
+        {{ name_input }} = {{ name_input }},
         dag = dag,
         upstream_dependencies = {{ upstream_dependencies | sanitize_operator_name | verbatim | format_value }},
         downstream_dependencies = {{ downstream_dependencies | sanitize_operator_name | verbatim | format_value }})
-{% endif %}
 
