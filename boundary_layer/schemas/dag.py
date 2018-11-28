@@ -35,9 +35,15 @@ class ReferenceSchema(OperatorSchema):
     target = fields.String(required=True)
 
 
+class BatchingSchema(StrictSchema):
+    enabled = fields.Boolean(required=True)
+    batch_size = fields.Integer(required=True)
+
+
 class GeneratorSchema(ReferenceSchema):
     auto_task_id_mode = fields.String()
     regex_blocklist = fields.List(fields.String())
+    batching = fields.Nested(BatchingSchema)
 
     @validates_schema
     def check_task_id_mode(self, data):

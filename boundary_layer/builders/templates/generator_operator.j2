@@ -21,14 +21,51 @@ def {{ iterable_builder }}({{ ', '.join(builder_args) }}):
 {% set blocklist = (node.name + '_blocklist') | sanitize_operator_name %}
 {{ blocklist }} = {{ node.regex_blocklist }}
 
-{% set item_name_builder = (node.name + '_item_name_builder') | sanitize_operator_name %}
-def {{ item_name_builder }}(index, item):
-{{ node.config.item_name_builder_code | add_leading_spaces(1) }}
-
 {# Note: we use resolved_properties rather than operator_args, because the
  latter would discard any default task args, expecting them to be filled-in
  by airflow, while in fact airflow would not fill them in at all. #}
 {% set properties = node.resolved_properties.values %}
+
+{% if node.batching.enabled %}
+{# Generate code for batched situations #}
+{% set batch_name_builder = (node.name + '_batch_name_builder') | sanitize_operator_name %}
+def {{ batch_name_builder }}(index, items):
+    return 'batch_%d_%d' % (index, len(items))
+
+
+{# TODO: Import this from some util module #}
+{# https://stackoverflow.com/a/312464 #}
+def grouped(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+items = {{ iterable_builder }}(
+{% for arg in builder_args %}
+{% if arg in properties %}
+            {{ arg }} = {{ properties[arg] | format_value }},
+{% endif %}
+{% endfor %}
+        )
+for (index, batch) in enumerate(grouped(items, {{ node.batching.batch_size }})):
+    batch_name = {{ batch_name_builder }}(index, items)
+    {# TODO: How do we handle this? #}
+    blocklist_match = any(re.match(i, item_name) for i in {{ blocklist }})
+    if blocklist_match:
+        continue
+
+    {{ node.target | sanitize_operator_name }}_builder(
+        index = index,
+        items = items,
+        batch_name = batch_name,
+        dag = dag,
+        upstream_dependencies = {{ upstream_dependencies | sanitize_operator_name | verbatim | format_value }},
+        downstream_dependencies = {{ downstream_dependencies | sanitize_operator_name | verbatim | format_value }})
+{% else %}
+{# Generate code for non-batched situations #}
+{% set item_name_builder = (node.name + '_item_name_builder') | sanitize_operator_name %}
+def {{ item_name_builder }}(index, item):
+{{ node.config.item_name_builder_code | add_leading_spaces(1) }}
+
 for (index, item) in enumerate({{ iterable_builder }}(
 {% for arg in builder_args %}
 {% if arg in properties %}
@@ -49,4 +86,5 @@ for (index, item) in enumerate({{ iterable_builder }}(
         dag = dag,
         upstream_dependencies = {{ upstream_dependencies | sanitize_operator_name | verbatim | format_value }},
         downstream_dependencies = {{ downstream_dependencies | sanitize_operator_name | verbatim | format_value }})
+{% endif %}
 

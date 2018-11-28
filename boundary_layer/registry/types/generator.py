@@ -28,6 +28,10 @@ class GeneratorNode(SubdagNode):
     def regex_blocklist(self):
         return self.item.get('regex_blocklist', ())
 
+    @property
+    def batching(self):
+        return self.item.get('batching', {'enabled': False, 'batch_size': 1})
+
 
 class GeneratorRegistry(ConfigFileRegistry):
     node_cls = GeneratorNode
