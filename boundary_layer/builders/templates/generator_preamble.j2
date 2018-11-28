@@ -13,10 +13,17 @@ You may obtain a copy of the License at
     See the License for the specific language governing permissions and
     limitations under the License.
 #}
+{% if referring_node.batching.enabled %}
+    {%- set item_input = 'items' %}
+    {%- set name_input = 'batch_name' %}
+{% else %}
+    {%- set item_input = 'item' %}
+    {%- set name_input = 'item_name' %}
+{% endif %}
 def {{ generator_operator_name | sanitize_operator_name }}_builder(
         index,
-        item,
-        item_name,
+        {{ item_input }},
+        {{ name_input }},
         dag,
         upstream_dependencies,
         downstream_dependencies):
