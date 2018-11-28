@@ -18,6 +18,10 @@ You may obtain a copy of the License at
 def {{ iterable_builder }}({{ ', '.join(builder_args) }}):
 {{ node.config.iterator_builder_method_code | add_leading_spaces(1) }}
 
+{% set item_name_builder = (node.name + '_item_name_builder') | sanitize_operator_name %}
+def {{ item_name_builder }}(index, item):
+{{ node.config.item_name_builder_code | add_leading_spaces(1) }}
+
 {% set blocklist = (node.name + '_blocklist') | sanitize_operator_name %}
 {{ blocklist }} = {{ node.regex_blocklist }}
 
@@ -26,7 +30,8 @@ def {{ iterable_builder }}({{ ', '.join(builder_args) }}):
  by airflow, while in fact airflow would not fill them in at all. #}
 {% set properties = node.resolved_properties.values %}
 
-items = {{ iterable_builder }}(
+{% set all_items = (node.name + '_all_items') | sanitize_operator_name %}
+{{ all_items }} = {{ iterable_builder }}(
 {% for arg in builder_args %}
 {% if arg in properties %}
             {{ arg }} = {{ properties[arg] | format_value }},
@@ -41,27 +46,32 @@ def {{ batch_name_builder }}(index, items):
     return 'batch_%d_%d' % (index, len(items))
 
 {# TODO: Import this from some util module #}
+def filter_with_blocklist(items, item_name_builder, blocklist):
+    def not_in_blocklist(index, item):
+        item_name = item_name_builder(index, item)
+        return not any(re.match(i, item_name) for i in blocklist)
+
+    filtered = filter(lambda (index, item): not_in_blocklist(index, item), enumerate(items))
+
+    return map(lambda t: t[1], filtered)
+
+{# TODO: Import this from some util module #}
 {# https://stackoverflow.com/a/312464 #}
 def grouped(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
-for (index, batch) in enumerate(grouped(items, {{ node.batching.batch_size }})):
+{% set filtered = (node.name + '_filtered') | sanitize_operator_name %}
+{{ filtered }} = filter_with_blocklist({{ all_items }}, {{ item_name_builder }}, {{ blocklist }})
+
+for (index, items) in enumerate(grouped({{ filtered }}, {{ node.batching.batch_size }})):
     batch_name = {{ batch_name_builder }}(index, items)
-{# TODO: How do we handle this? #}
-    blocklist_match = any(re.match(i, item_name) for i in {{ blocklist }})
-    if blocklist_match:
-        continue
 
 {% set item_input = 'items' %}
 {% set name_input = 'batch_name' %}
 {% else %}
 {# Generate code for non-batched situations #}
-{% set item_name_builder = (node.name + '_item_name_builder') | sanitize_operator_name %}
-def {{ item_name_builder }}(index, item):
-{{ node.config.item_name_builder_code | add_leading_spaces(1) }}
-
-for (index, item) in enumerate(items):
+for (index, item) in enumerate({{ all_items }}):
     item_name = {{ item_name_builder }}(index, item)
     blocklist_match = any(re.match(i, item_name) for i in {{ blocklist }})
     if blocklist_match:
