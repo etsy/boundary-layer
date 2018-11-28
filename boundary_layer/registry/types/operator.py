@@ -422,7 +422,8 @@ class OperatorNode(RegistryNode):
             return base_name
 
         suffix_mode = execution_context.referrer.item.get('auto_task_id_mode')
-        name_var = 'batch_name' if execution_context.referrer.item.get('batching', {'enabled': False})['enabled'] else 'item_name'
+        batching_config = execution_context.referrer.item.get('batching', {'enabled': False})
+        name_var = 'batch_name' if batching_config['enabled'] else 'item_name'
         if not suffix_mode or suffix_mode == name_var:
             return base_name + '-<<' + name_var + '>>'
         elif suffix_mode == 'index':
