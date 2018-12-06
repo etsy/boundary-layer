@@ -14,7 +14,7 @@
 #     limitations under the License.
 
 import semver
-from marshmallow import fields, validates_schema, ValidationError
+from marshmallow import fields, post_load, pre_dump, validates_schema, ValidationError
 from boundary_layer import VERSION, MIN_SUPPORTED_VERSION
 from boundary_layer.schemas.base import StrictSchema
 
@@ -36,8 +36,28 @@ class ReferenceSchema(OperatorSchema):
 
 
 class BatchingSchema(StrictSchema):
-    enabled = fields.Boolean(required=True)
+    enabled = fields.Boolean()
     batch_size = fields.Integer(required=True)
+    # This is a "transient" field to help with implicit enablement behavior
+    original_enabled = fields.Boolean(load_only=True)
+
+    @post_load
+    def fix_enabled_pre_load(self, data):
+        """
+        If batching config is set at all, it's assumed to be enabled.
+        """
+        enabled = data.get('enabled', None)
+        data['original_enabled'] = enabled
+        if enabled is None:
+            data['enabled'] = True
+
+    @pre_dump
+    def fix_enabled_pre_dump(self, data):
+        """
+        Don't persist the enabled field if it wasn't explicitly configured.
+        """
+        if data['original_enabled'] is None:
+            del data['enabled']
 
 
 class GeneratorSchema(ReferenceSchema):
