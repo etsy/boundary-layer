@@ -45,8 +45,8 @@ def {{ item_name_builder }}(index, item):
 def {{ batch_name_builder }}(index, items):
     return 'batch_%d_%d' % (index, len(items))
 
-{# TODO: Import this from some util module #}
-def filter_with_blocklist(items, item_name_builder, blocklist):
+{# TODO: Import this from some util module when such functionality is possible #}
+def generator_helper_filter_with_blocklist(items, item_name_builder, blocklist):
     def not_in_blocklist(index, item):
         item_name = item_name_builder(index, item)
         return not any(re.match(i, item_name) for i in blocklist)
@@ -55,16 +55,16 @@ def filter_with_blocklist(items, item_name_builder, blocklist):
 
     return map(lambda t: t[1], filtered)
 
-{# TODO: Import this from some util module #}
-{# https://stackoverflow.com/a/312464 #}
-def grouped(l, n):
+{# TODO: Import this from some util module when such functionality is possible #}
+{# Borrowed from: https://stackoverflow.com/a/312464 #}
+def generator_helper_grouped_list(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
 {% set filtered = (node.name + '_filtered') | sanitize_operator_name %}
-{{ filtered }} = filter_with_blocklist({{ all_items }}, {{ item_name_builder }}, {{ blocklist }})
+{{ filtered }} = generator_helper_filter_with_blocklist({{ all_items }}, {{ item_name_builder }}, {{ blocklist }})
 
-for (index, items) in enumerate(grouped({{ filtered }}, {{ node.batching.batch_size }})):
+for (index, items) in enumerate(generator_helper_grouped_list({{ filtered }}, {{ node.batching.batch_size }})):
     batch_name = {{ batch_name_builder }}(index, items)
 
 {% set item_input = 'items' %}

@@ -423,6 +423,14 @@ class OperatorNode(RegistryNode):
 
         suffix_mode = execution_context.referrer.item.get('auto_task_id_mode')
         batching_config = execution_context.referrer.item.get('batching', {'enabled': False})
+        # Validate suffix_mode based on batching config
+        if batching_config['enabled'] and suffix_mode == 'item_name':
+            raise Exception(
+                'Cannot use `item_name` for auto_task_id_mode when batching is enabled')
+        elif not batching_config['enabled'] and suffix_mode == 'batch_name':
+            raise Exception(
+                'Cannot use `batch_name` for auto_task_id_mode when batching is disabled')
+
         name_var = 'batch_name' if batching_config['enabled'] else 'item_name'
         if not suffix_mode or suffix_mode == name_var:
             return base_name + '-<<' + name_var + '>>'
