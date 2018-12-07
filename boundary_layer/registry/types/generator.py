@@ -30,7 +30,7 @@ class GeneratorNode(SubdagNode):
 
     @property
     def batching(self):
-        return self.item.get('batching', {'enabled': False, 'batch_size': 1})
+        return self.item.get('batching', {})
 
 
 class GeneratorRegistry(ConfigFileRegistry):
