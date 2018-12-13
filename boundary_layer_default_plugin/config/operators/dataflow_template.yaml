@@ -30,7 +30,7 @@ parameters_jsonschema:
                 zone:
                     type: string
                 maxWorkers:
-                    type: integer
+                    type: string
                 serviceAccountEmail:
                     type: string
                 tempLocation:
