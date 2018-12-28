@@ -1,57 +1,65 @@
 from boundary_layer.schemas.dag import BatchingSchema
 
 
+_batching_schema = BatchingSchema()
+
+
+def _load_and_validate(data):
+    loaded = _batching_schema.load(data)
+    assert not loaded[1]
+
+    return loaded[0]
+
+
+def _dump_and_validate(data):
+    dumped = _batching_schema.dump(data)
+    assert not dumped[1]
+
+    return dumped[0]
+
+
 def test_batching_schema_implicit_enabled():
-    schema = BatchingSchema()
     data = {
         'batch_size': 10
     }
-    batching = schema.load(data)[0]
+    batching = _load_and_validate(data)
 
-    assert batching['enabled'] is True
+    assert 'disabled' not in batching
     assert batching['batch_size'] == 10
-    assert batching['original_enabled'] is None
 
-    dumped = schema.dump(batching)[0]
+    dumped = _dump_and_validate(batching)
 
-    assert 'enabled' not in dumped
+    assert 'disabled' not in dumped
     assert dumped['batch_size'] == 10
-    assert 'original_enabled' not in dumped
 
 
 def test_batching_schema_explicit_enabled():
-    schema = BatchingSchema()
     data = {
-        'enabled': True,
+        'disabled': False,
         'batch_size': 10
     }
-    batching = schema.load(data)[0]
+    batching = _load_and_validate(data)
 
-    assert batching['enabled'] is True
+    assert batching['disabled'] is False
     assert batching['batch_size'] == 10
-    assert batching['original_enabled'] is True
 
-    dumped = schema.dump(batching)[0]
+    dumped = _dump_and_validate(batching)
 
-    assert dumped['enabled'] is True
+    assert dumped['disabled'] is False
     assert dumped['batch_size'] == 10
-    assert 'original_enabled' not in dumped
 
 
 def test_batching_schema_disabled():
-    schema = BatchingSchema()
     data = {
-        'enabled': False,
+        'disabled': True,
         'batch_size': 10
     }
-    batching = schema.load(data)[0]
+    batching = _load_and_validate(data)
 
-    assert batching['enabled'] is False
+    assert batching['disabled'] is True
     assert batching['batch_size'] == 10
-    assert batching['original_enabled'] is False
 
-    dumped = schema.dump(batching)[0]
+    dumped = _dump_and_validate(batching)
 
-    assert dumped['enabled'] is False
+    assert dumped['disabled'] is True
     assert dumped['batch_size'] == 10
-    assert 'original_enabled' not in dumped
