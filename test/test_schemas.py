@@ -1,11 +1,13 @@
 from boundary_layer.schemas.dag import BatchingSchema
 
+# Tests for BatchingSchema
 
 _batching_schema = BatchingSchema()
 
 
 def _load_and_validate(data):
     loaded = _batching_schema.load(data)
+    # Assert no errors occurred
     assert not loaded[1]
 
     return loaded[0]
@@ -13,6 +15,7 @@ def _load_and_validate(data):
 
 def _dump_and_validate(data):
     dumped = _batching_schema.dump(data)
+    # Assert no errors occurred
     assert not dumped[1]
 
     return dumped[0]
