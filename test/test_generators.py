@@ -61,119 +61,130 @@ parameters_jsonschema:
 """
 
 
-def _run_preamble_template_test(batching_conf):
+class BatchingTestHelper(object):
     """
-    Helper to reduce code required to test generator preamble generation under different cases.
+    Helper class to reduce code required to test code generation under different cases.
     """
-    builder = PrimaryDagBuilder(None, None, None, None)
-    template = builder.get_jinja_template('generator_preamble.j2')
-    loaded = GeneratorSpecSchema().load(yaml.load(GENERATOR_CONFIG_YAML))
-    node_conf = copy.deepcopy(BASE_GENERATOR_CONFIG)
-    if batching_conf is not None:
-        node_conf['batching'] = batching_conf
-    node = GeneratorNode(config=loaded.data, item=node_conf)
 
-    rendered = template.render(
-        generator_operator_name='foo',
-        referring_node=node
-    )
+    def __init__(self):
+        self.builder = PrimaryDagBuilder(None, None, None, None)
+        self.generator_spec_schema = GeneratorSpecSchema().load(yaml.load(GENERATOR_CONFIG_YAML))
 
-    items_batch_name_regex = re.compile(r'\s+items,\s+batch_name,')
-    item_item_name_regex = re.compile(r'\s+item,\s+item_name,')
+    def build_generator_node(self, batching_config):
+        node_config = copy.deepcopy(BASE_GENERATOR_CONFIG)
+        if batching_config is not None:
+            node_config['batching'] = batching_config
 
-    items_batch_name_match = items_batch_name_regex.search(rendered)
-    item_item_name_match = item_item_name_regex.search(rendered)
+        return GeneratorNode(config=self.generator_spec_schema.data, item=node_config)
 
-    return {
-        'items_batch_name': items_batch_name_match,
-        'item_item_name': item_item_name_match
-    }
+    def run_preamble_template_test(self, batching_config):
+        node = self.build_generator_node(batching_config)
+        template = self.builder.get_jinja_template('generator_preamble.j2')
+
+        rendered = template.render(
+            generator_operator_name='foo',
+            referring_node=node
+        )
+
+        items_batch_name_regex = re.compile(r'\s+items,\s+batch_name,')
+        item_item_name_regex = re.compile(r'\s+item,\s+item_name,')
+
+        items_batch_name_match = items_batch_name_regex.search(rendered)
+        item_item_name_match = item_item_name_regex.search(rendered)
+
+        return {
+            'items_batch_name': items_batch_name_match,
+            'item_item_name': item_item_name_match
+        }
+
+    def run_operator_template_test(self, batching_config):
+        node = self.build_generator_node(batching_config)
+        template = self.builder.get_jinja_template('generator_operator.j2')
+
+        node.resolve_properties(
+            execution_context=ExecutionContext(None, {}),
+            default_task_args={},
+            base_operator_loader=None,
+            preprocessor_loader=None
+        )
+
+        rendered = template.render(
+            node=node,
+            upstream_dependencies='upstream_foo',
+            downstream_dependencies='downstream_bar'
+        )
+
+        item_name_builder_regex = re.compile(r'.*def %s_item_name_builder\(.*' % node.name)
+        batch_name_builder_regex = re.compile(r'.*def %s_batch_name_builder\(.*' % node.name)
+        filter_helper_regex = re.compile(r'.*def generator_helper_filter_with_blocklist\(.*')
+        grouped_helper_regex = re.compile(r'.*def generator_helper_grouped_list\(.*')
+        builder_invocation = r'\s+%s_builder\(\s+index = index,' % node.target
+        items_batch_name_regex = re.compile(
+            r'%s\s+items = items,\s+batch_name = batch_name,' % builder_invocation
+        )
+        item_item_name_regex = re.compile(
+            r'%s\s+item = item,\s+item_name = item_name,' % builder_invocation
+        )
+
+        return {
+            'item_name_builder': item_name_builder_regex.search(rendered),
+            'batch_name_builder': batch_name_builder_regex.search(rendered),
+            'filter_helper': filter_helper_regex.search(rendered),
+            'grouped_helper': grouped_helper_regex.search(rendered),
+            'items_batch_name': items_batch_name_regex.search(rendered),
+            'item_item_name': item_item_name_regex.search(rendered),
+        }
+
+
+HELPER = BatchingTestHelper()
+
+
+def test_batching_enabled_enabled():
+    batching_config = {'batch_size': 3}
+    node = HELPER.build_generator_node(batching_config)
+
+    assert node.batching_enabled is True
+
+
+def test_batching_enabled_disabled():
+    batching_config = {'batch_size': 3, 'disabled': True}
+    node = HELPER.build_generator_node(batching_config)
+
+    assert node.batching_enabled is False
+
+
+def test_batching_enabled_undefined():
+    node = HELPER.build_generator_node(None)
+
+    assert node.batching_enabled is False
 
 
 def test_preamble_template_batching_enabled():
-    batching_conf = {'batch_size': 3}
-    matches = _run_preamble_template_test(batching_conf)
+    batching_config = {'batch_size': 3}
+    matches = HELPER.run_preamble_template_test(batching_config)
 
     assert matches['items_batch_name'] is not None
     assert matches['item_item_name'] is None
 
 
 def test_preamble_template_batching_disabled():
-    batching_conf = {'batch_size': 3, 'disabled': True}
-    matches = _run_preamble_template_test(batching_conf)
+    batching_config = {'batch_size': 3, 'disabled': True}
+    matches = HELPER.run_preamble_template_test(batching_config)
 
     assert matches['item_item_name'] is not None
     assert matches['items_batch_name'] is None
 
 
 def test_preamble_template_batching_undefined():
-    matches = _run_preamble_template_test(None)
+    matches = HELPER.run_preamble_template_test(None)
 
     assert matches['item_item_name'] is not None
     assert matches['items_batch_name'] is None
 
 
-def _run_operator_template_test(batching_conf):
-    """
-    Helper to reduce code required to test generator operator generation under different cases.
-    """
-    builder = PrimaryDagBuilder(None, None, None, None)
-    template = builder.get_jinja_template('generator_operator.j2')
-    loaded = GeneratorSpecSchema().load(yaml.load(GENERATOR_CONFIG_YAML))
-    node_conf = copy.deepcopy(BASE_GENERATOR_CONFIG)
-    if batching_conf is not None:
-        node_conf['batching'] = batching_conf
-    node = GeneratorNode(config=loaded.data, item=node_conf)
-    node.resolve_properties(
-        execution_context=ExecutionContext(None, {}),
-        default_task_args={},
-        base_operator_loader=None,
-        preprocessor_loader=None
-    )
-
-    rendered = template.render(
-        node=node,
-        upstream_dependencies='upstream_foo',
-        downstream_dependencies='downstream_bar'
-    )
-
-    item_name_builder_regex = re.compile(r'.*def %s_item_name_builder\(.*' % node.name)
-    batch_name_builder_regex = re.compile(r'.*def %s_batch_name_builder\(.*' % node.name)
-    filter_helper_regex = re.compile(r'.*def generator_helper_filter_with_blocklist\(.*')
-    grouped_helper_regex = re.compile(r'.*def generator_helper_grouped_list\(.*')
-    builder_invocation = r'\s+%s_builder\(\s+index = index,' % node.target
-    items_batch_name_regex = re.compile(
-        r'%s\s+items = items,\s+batch_name = batch_name,' % builder_invocation
-    )
-    item_item_name_regex = re.compile(
-        r'%s\s+item = item,\s+item_name = item_name,' % builder_invocation
-    )
-
-    matches = {
-        'item_name_builder': item_name_builder_regex.search(rendered),
-        'batch_name_builder': batch_name_builder_regex.search(rendered),
-        'filter_helper': filter_helper_regex.search(rendered),
-        'grouped_helper': grouped_helper_regex.search(rendered),
-        'items_batch_name': items_batch_name_regex.search(rendered),
-        'item_item_name': item_item_name_regex.search(rendered),
-    }
-
-    return node, matches
-
-
 def test_operator_template_batching_enabled():
-    """
-    Should have:
-    - node.name_item_name_builder
-    - node.name_batch_name_builder
-    - generator_helper_filter_with_blocklist
-    - generator_helper_grouped_list
-    - items = items, batch_name = batch_name
-    """
-    batching_conf = {'batch_size': 3}
-    node, matches = _run_operator_template_test(batching_conf)
-
-    assert node.batching_enabled is True
+    batching_config = {'batch_size': 3}
+    matches = HELPER.run_operator_template_test(batching_config)
 
     assert matches['item_name_builder'] is not None
     assert matches['batch_name_builder'] is not None
@@ -184,15 +195,8 @@ def test_operator_template_batching_enabled():
 
 
 def test_operator_template_batching_disabled():
-    """
-    Should have:
-    - node.name_item_name_builder
-    - item = item, item_name = item_name
-    """
-    batching_conf = {'batch_size': 3, 'disabled': True}
-    node, matches = _run_operator_template_test(batching_conf)
-
-    assert node.batching_enabled is False
+    batching_config = {'batch_size': 3, 'disabled': True}
+    matches = HELPER.run_operator_template_test(batching_config)
 
     assert matches['item_name_builder'] is not None
     assert matches['batch_name_builder'] is None
@@ -203,14 +207,7 @@ def test_operator_template_batching_disabled():
 
 
 def test_operator_template_batching_undefined():
-    """
-    Should have:
-    - node.name_item_name_builder
-    - item = item, item_name = item_name
-    """
-    node, matches = _run_operator_template_test(None)
-
-    assert node.batching_enabled is False
+    matches = HELPER.run_operator_template_test(None)
 
     assert matches['item_name_builder'] is not None
     assert matches['batch_name_builder'] is None
