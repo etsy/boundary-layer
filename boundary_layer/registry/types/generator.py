@@ -32,6 +32,10 @@ class GeneratorNode(SubdagNode):
     def batching(self):
         return self.item.get('batching', {})
 
+    @property
+    def batching_enabled(self):
+        return not self.batching.get('disabled') if self.batching else False
+
 
 class GeneratorRegistry(ConfigFileRegistry):
     node_cls = GeneratorNode

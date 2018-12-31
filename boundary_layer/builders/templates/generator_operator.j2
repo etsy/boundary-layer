@@ -39,7 +39,7 @@ def {{ item_name_builder }}(index, item):
 {% endfor %}
         )
 
-{% if node.batching|length > 0 and not node.batching.disabled %}
+{% if node.batching_enabled %}
 {# Generate code for batched situations #}
 {% set batch_name_builder = (node.name + '_batch_name_builder') | sanitize_operator_name %}
 def {{ batch_name_builder }}(index, items):

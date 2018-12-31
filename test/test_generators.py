@@ -67,9 +67,11 @@ def _run_preamble_template_test(batching_conf):
     """
     builder = PrimaryDagBuilder(None, None, None, None)
     template = builder.get_jinja_template('generator_preamble.j2')
-    node = copy.deepcopy(BASE_GENERATOR_CONFIG)
+    loaded = GeneratorSpecSchema().load(yaml.load(GENERATOR_CONFIG_YAML))
+    node_conf = copy.deepcopy(BASE_GENERATOR_CONFIG)
     if batching_conf is not None:
-        node['batching'] = batching_conf
+        node_conf['batching'] = batching_conf
+    node = GeneratorNode(config=loaded.data, item=node_conf)
 
     rendered = template.render(
         generator_operator_name='foo',
@@ -147,7 +149,7 @@ def _run_operator_template_test(batching_conf):
         r'%s\s+item = item,\s+item_name = item_name,' % builder_invocation
     )
 
-    return {
+    matches = {
         'item_name_builder': item_name_builder_regex.search(rendered),
         'batch_name_builder': batch_name_builder_regex.search(rendered),
         'filter_helper': filter_helper_regex.search(rendered),
@@ -155,6 +157,8 @@ def _run_operator_template_test(batching_conf):
         'items_batch_name': items_batch_name_regex.search(rendered),
         'item_item_name': item_item_name_regex.search(rendered),
     }
+
+    return node, matches
 
 
 def test_operator_template_batching_enabled():
@@ -167,7 +171,9 @@ def test_operator_template_batching_enabled():
     - items = items, batch_name = batch_name
     """
     batching_conf = {'batch_size': 3}
-    matches = _run_operator_template_test(batching_conf)
+    node, matches = _run_operator_template_test(batching_conf)
+
+    assert node.batching_enabled is True
 
     assert matches['item_name_builder'] is not None
     assert matches['batch_name_builder'] is not None
@@ -184,7 +190,9 @@ def test_operator_template_batching_disabled():
     - item = item, item_name = item_name
     """
     batching_conf = {'batch_size': 3, 'disabled': True}
-    matches = _run_operator_template_test(batching_conf)
+    node, matches = _run_operator_template_test(batching_conf)
+
+    assert node.batching_enabled is False
 
     assert matches['item_name_builder'] is not None
     assert matches['batch_name_builder'] is None
@@ -200,7 +208,9 @@ def test_operator_template_batching_undefined():
     - node.name_item_name_builder
     - item = item, item_name = item_name
     """
-    matches = _run_operator_template_test(None)
+    node, matches = _run_operator_template_test(None)
+
+    assert node.batching_enabled is False
 
     assert matches['item_name_builder'] is not None
     assert matches['batch_name_builder'] is None

@@ -13,7 +13,7 @@ You may obtain a copy of the License at
     See the License for the specific language governing permissions and
     limitations under the License.
 #}
-{% if referring_node.batching|length > 0 and not referring_node.batching.disabled %}
+{% if referring_node.batching_enabled %}
     {%- set item_input = 'items' %}
     {%- set name_input = 'batch_name' %}
 {% else %}
