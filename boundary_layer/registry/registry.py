@@ -197,6 +197,10 @@ class ConfigFileRegistry(Registry):
         for path in config_paths:
             logger.debug('Loading configs from path %s', path)
             for filename in os.listdir(path):
+                # Skip Vim swap files (for local development)
+                if os.path.splitext(filename)[1] in ['.swp', '.swo']:
+                    continue
+
                 full_path = os.path.abspath(os.path.join(path, filename))
 
                 if os.path.splitext(filename)[1] not in ['.yaml', '.yml']:
