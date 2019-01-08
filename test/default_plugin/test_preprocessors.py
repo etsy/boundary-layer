@@ -63,4 +63,4 @@ def test_ensure_rendered_string_pattern(mocker):
             {})
 
     with pytest.raises(Exception):
-        renderer.process_arg("My-<<non-item.value>>-cluster", None, {})
+        renderer.process_arg("My-<item.value>-cluster", None, {})
