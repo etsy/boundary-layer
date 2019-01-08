@@ -110,15 +110,23 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
                 regex.pattern)
             return arg
 
-        if not regex.match(rendered_arg):
-            raise Exception(
-                'Invalid argument `{}`: does not match expected pattern `{}`'.format(
-                    rendered_arg,
-                    regex.pattern))
+        if regex.match(rendered_arg):
+            # return the original arg, not the rendered arg, because we are not
+            # actually transforming anything, just validating
+            return arg
 
-        # return the original arg, not the rendered arg, because we are not
-        # actually transforming anything, just validating
-        return arg
+        VERBATIM_REGEX = '<<.+>>'
+        if re.compile(VERBATIM_REGEX).search(rendered_arg):
+            logger.warning(
+                'Argument generated from `%s` may not match the required pattern `%s` and fail.',
+                rendered_arg,
+                regex.pattern)
+            return arg
+
+        raise Exception(
+            'Invalid argument `{}`: does not match expected pattern `{}`'.format(
+                rendered_arg,
+                regex.pattern))
 
     @property
     def pattern(self):
