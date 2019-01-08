@@ -32,7 +32,6 @@ def test_ensure_rendered_string_pattern(mocker):
     ) == "my-cluster-{{unknown_var.task_id}}"
     warning_mock.assert_called_once()
 
-
     warning_mock = Mock()
     mocker.patch.object(logger, 'warning', new=warning_mock)
     assert renderer.process_arg(
