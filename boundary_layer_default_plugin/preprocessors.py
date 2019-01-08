@@ -110,6 +110,14 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
                 regex.pattern)
             return arg
 
+        VERBATIM_REGEX = '<<item_name>>|<<item.name>>|<<item.value>>'
+        if re.compile(VERBATIM_REGEX).search(rendered_arg):
+            logger.warning(
+                'Argument generated from `%s` may not match the required pattern `%s` and fail.',
+                rendered_arg,
+                regex.pattern)
+            return arg
+
         if not regex.match(rendered_arg):
             raise Exception(
                 'Invalid argument `{}`: does not match expected pattern `{}`'.format(

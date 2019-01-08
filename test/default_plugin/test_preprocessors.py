@@ -32,6 +32,21 @@ def test_ensure_rendered_string_pattern(mocker):
     ) == "my-cluster-{{unknown_var.task_id}}"
     warning_mock.assert_called_once()
 
+
+    warning_mock = Mock()
+    mocker.patch.object(logger, 'warning', new=warning_mock)
+    assert renderer.process_arg(
+        "my-<<item_name>>-cluster", None, {},
+    ) == "my-<<item_name>>-cluster"
+    warning_mock.assert_called_once()
+
+    warning_mock = Mock()
+    mocker.patch.object(logger, 'warning', new=warning_mock)
+    assert renderer.process_arg(
+        "my-cluster-<<item.value>>", None, {},
+    ) == "my-cluster-<<item.value>>"
+    warning_mock.assert_called_once()
+
     with pytest.raises(Exception):
         renderer.process_arg("my-cluster-", None, {})
 
@@ -46,3 +61,6 @@ def test_ensure_rendered_string_pattern(mocker):
             "my-cluster-{{execution_date.strftime('%Y_%m_%d')}}",
             None,
             {})
+
+    with pytest.raises(Exception):
+        renderer.process_arg("My-<<non-item.value>>-cluster", None, {})
