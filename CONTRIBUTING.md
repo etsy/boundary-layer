@@ -34,3 +34,4 @@ Every pull request will be tested by [Travis CI](https://travis-ci.org/etsy/boun
 - Sahil Khanna [SahilKhanna129](https://github.com/SahilKhanna129)
 - Kiril Zvezdarov [kzvezdarov](https://github.com/kzvezdarov)
 - Hyun Goo Kang [hyungoos](https://github.com/hyungoos)
+- Nick Sawyer [nickmoorman](https://github.com/nickmoorman)
