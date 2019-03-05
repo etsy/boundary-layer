@@ -186,6 +186,7 @@ class PluginManager(object):
         if not prioritized_hits:
             available_types = frozenset(
                 node_type for plugin in self._plugins
+                if registry_getter(plugin)
                 for node_type in registry_getter(plugin).node_configs)
             raise Exception(
                 'Registry entry type `{}` not found for item `{}`. '
