@@ -186,13 +186,15 @@ class PluginManager(object):
         if not prioritized_hits:
             available_types = frozenset(
                 node_type for plugin in self._plugins
+                if registry_getter(plugin)
                 for node_type in registry_getter(plugin).node_configs)
             raise Exception(
-                'Registry entry type `{}` not found for item `{}`. '
-                'Available types are: {}'.format(
+                'Lookup failed for registry `{}`: `{}` not found for item `{}`. '
+                'Available item types are: [`{}`]'.format(
+                    registry_name,
                     item['type'],
                     item,
-                    available_types))
+                    '`, `'.join(available_types)))
 
         highest_hit_priority = max(
             prioritized_hits.keys(),
