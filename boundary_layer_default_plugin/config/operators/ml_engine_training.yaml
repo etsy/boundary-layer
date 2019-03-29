@@ -24,7 +24,9 @@ parameters_jsonschema:
         job_id:
             type: string
         package_uris:
-            type: string
+            type: array
+            items:
+                type: string
         training_python_module:
             type: string
         training_args:
