@@ -14,11 +14,11 @@
 #     limitations under the License.
 
 import re
+from datetime import timedelta
 import semver
 from marshmallow import fields, validates_schema, ValidationError, post_dump
 from boundary_layer import VERSION, MIN_SUPPORTED_VERSION
 from boundary_layer.schemas.base import StrictSchema
-from datetime import timedelta
 
 
 class OperatorSchema(StrictSchema):
