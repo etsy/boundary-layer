@@ -29,7 +29,8 @@ class PrimaryDagBuilder(DagBuilderBase):
 
         template = self.get_jinja_template('primary_preamble.j2')
 
-        dag_args_dumped = DagArgsSchema().dump(self.dag.get('dag_args', {}))
+        dag_args_dumped = DagArgsSchema(context={'for_dag_output': True}).dump(
+            self.dag.get('dag_args', {}))
         if dag_args_dumped.errors:
             # should not happen because the schema was validated upon load,
             # but we should check
