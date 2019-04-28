@@ -31,7 +31,7 @@ class MockNode(RegistryNode):
     type = NodeTypes.OPERATOR
 
     def __init__(self, item):
-        mock_config = yaml.load(MOCK_NODE_CONFIG_YAML)
+        mock_config = yaml.safe_load(MOCK_NODE_CONFIG_YAML)
         super(MockNode, self).__init__(mock_config, item)
 
 
