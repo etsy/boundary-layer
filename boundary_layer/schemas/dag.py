@@ -163,6 +163,8 @@ class DagArgsSchema(StrictSchema):
 
     @post_dump
     def dagrun_timeout_to_timedelta(self, data):
+        if not self.context.get('for_dag_output'):
+            return data
         if 'dagrun_timeout' in data:
             try:
                 delta = timedelta(seconds=data['dagrun_timeout'])
