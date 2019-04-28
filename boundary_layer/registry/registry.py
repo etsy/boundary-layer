@@ -173,7 +173,7 @@ class ConfigFileRegistry(Registry):
     def load_from_file(self, filename):
         item = None
         with open(filename) as _in:
-            item = yaml.load(_in)
+            item = yaml.safe_load(_in)
 
         logger.debug('validating item %s against schema %s',
                      item, self.spec_schema_cls.__name__)
