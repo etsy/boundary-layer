@@ -46,7 +46,7 @@ parameters_jsonschema:
         uri:
             type: string
         max_worker_count:
-            type: integer
+            type: string
         runtime_version:
             type: string
         gcp_conn_id:
