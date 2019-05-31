@@ -31,6 +31,7 @@ parameters_jsonschema:
             default: 50
         trigger_rule:
             type: string
+            default: all_done
         delegate_to:
             type: string
     required:
