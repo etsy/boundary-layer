@@ -33,7 +33,14 @@ parameters_jsonschema:
             type: string
         delegate_to:
             type: string
+        last_modified_time:
+            type: string
     required:
         - source_bucket
         - source_object
     additionalProperties: false
+
+property_preprocessors:
+    - type: date_string_to_datetime
+      apply_to_properties:
+      - last_modified_time

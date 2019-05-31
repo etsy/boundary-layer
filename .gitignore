@@ -6,3 +6,4 @@ coverage.xml
 .coverage
 .tox
 .*.sw[op]
+.idea/

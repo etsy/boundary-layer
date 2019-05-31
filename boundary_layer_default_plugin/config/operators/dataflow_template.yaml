@@ -20,6 +20,8 @@ parameters_jsonschema:
     properties:
         template:
             type: string
+        job_name:
+            type: string
         dataflow_default_options:
             type: object
             properties:
@@ -44,6 +46,12 @@ parameters_jsonschema:
             type: object
             additionalProperties:
                 type: string
+        gcp_conn_id:
+            type: string
+        delegate_to:
+            type: string
+        poll_sleep:
+            type: string
     required:
         - template
     additionalProperties: false

@@ -47,6 +47,10 @@ parameters_jsonschema:
         mode:
             type: string
             enum: [DRY_RUN, CLOUD]
+        gcp_conn_id:
+            type: string
+        delegate_to:
+            type: string
     required:
         - project_id
         - job_id

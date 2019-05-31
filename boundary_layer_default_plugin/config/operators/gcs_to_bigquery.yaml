@@ -46,6 +46,44 @@ parameters_jsonschema:
             type: integer
         src_fmt_configs:
             type: object
+        schema_fields:
+            type: array
+            items:
+                type: string
+        schema_object:
+            type: string
+        quote_character:
+            type: string
+        ignore_unknown_values:
+            type: boolean
+        allow_quoted_newlines:
+            type: boolean
+        allow_jagged_rows:
+            type: boolean
+        max_id_key:
+            type: string
+        bigquery_conn_id:
+            type: string
+        google_cloud_storage_conn_id:
+            type: string
+        delegate_to:
+            type: string
+        schema_update_options:
+            type: array
+            items:
+                type: string
+        external_table:
+            type: boolean
+        time_partitioning:
+            type: object
+            additionalProperties:
+                type: string
+        cluster_fields:
+            type: array
+            items:
+                type: string
+        autodetect:
+            type: boolean
 
     required:
         - bucket

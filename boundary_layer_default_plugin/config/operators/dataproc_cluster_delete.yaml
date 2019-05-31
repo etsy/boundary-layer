@@ -20,15 +20,14 @@ parameters_jsonschema:
     properties:
         cluster_name:
             type: string
+        project_id:
+            type: string
         region:
             type: string
-        priority_weight:
-            type: integer
-            default: 50
-        trigger_rule:
+        gcp_conn_id:
             type: string
-            default: all_done
+        delegate_to:
+            type: string
     required:
         - cluster_name
-        - region
     additionalProperties: false

@@ -27,4 +27,7 @@ parameters_jsonschema:
             type: integer
         timeout:
             type: integer
+        mode:
+            type: string
+            enum: [ poke, reschedule ]
     additionalProperties: false
