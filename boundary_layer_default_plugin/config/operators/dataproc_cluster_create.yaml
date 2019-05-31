@@ -38,16 +38,24 @@ parameters_jsonschema:
                 type: string
         image_version:
             type: string
+        custom_image:
+            type: string
         properties:
             type: object
             additionalProperties:
                 type: string
         master_machine_type:
             type: string
+        master_disk_type:
+            type: string
+            enum: [ pd-standard, pd-ssd ]
         master_disk_size:
             type: integer
         worker_machine_type:
             type: string
+        worker_disk_type:
+            type: string
+            enum: [ pd-standard, pd-ssd ]
         worker_disk_size:
             type: integer
         num_preemptible_workers:

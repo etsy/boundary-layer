@@ -22,6 +22,10 @@ parameters_jsonschema:
             type: string
         object:
             type: string
+        google_cloud_storage_conn_id:
+            type: string
+        delegate_to:
+            type: string
     required:
         - bucket
         - object

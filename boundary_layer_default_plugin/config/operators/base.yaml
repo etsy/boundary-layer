@@ -46,6 +46,8 @@ parameters_jsonschema:
         queue:
             type: string
         priority_weight:
+            type: integer
+        weight_rule:
             type: string
         pool:
             type: string
@@ -61,7 +63,7 @@ parameters_jsonschema:
             type: string
         trigger_rule:
             type: string
-            enum: [ all_success, all_failed, all_done, one_success, one_failed, dummy ]
+            enum: [ all_success, all_failed, all_done, one_success, one_failed, dummy, none_skipped ]
         task_concurrency:
             type: integer
         dag:

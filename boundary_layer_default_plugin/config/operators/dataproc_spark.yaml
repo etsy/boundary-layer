@@ -52,6 +52,10 @@ parameters_jsonschema:
             type: string
         region:
             type: string
+        job_error_states:
+            type: array
+            items:
+                type: string
     required:
         - main_class
         - cluster_name

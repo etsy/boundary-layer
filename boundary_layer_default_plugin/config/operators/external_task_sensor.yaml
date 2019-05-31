@@ -30,6 +30,8 @@ parameters_jsonschema:
                 type: string
         execution_date_fn:
             type: string
+        check_existence:
+            type: boolean
     required:
         - external_dag_id
         - external_task_id

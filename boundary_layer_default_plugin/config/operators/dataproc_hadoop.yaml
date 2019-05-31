@@ -19,6 +19,8 @@ operator_class_module: airflow.contrib.operators.dataproc_operator
 schema_extends: base
 parameters_jsonschema:
     properties:
+        main_jar:
+            type: string
         main_class:
             type: string
         arguments:
@@ -48,6 +50,10 @@ parameters_jsonschema:
                 type: string
         region:
             type: string
+        job_error_states:
+            type: array
+            items:
+                type: string
         gcp_conn_id:
             type: string
         delegate_to:
