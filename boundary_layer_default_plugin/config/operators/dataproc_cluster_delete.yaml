@@ -26,8 +26,14 @@ parameters_jsonschema:
             type: string
         gcp_conn_id:
             type: string
+        priority_weight:
+            type: integer
+            default: 50
+        trigger_rule:
+            type: string
         delegate_to:
             type: string
     required:
         - cluster_name
+        - region
     additionalProperties: false

@@ -60,4 +60,5 @@ parameters_jsonschema:
             type: string
     required:
         - cluster_name
+        - region
     additionalProperties: false

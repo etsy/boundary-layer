@@ -63,4 +63,5 @@ parameters_jsonschema:
     required:
         - main
         - cluster_name
+        - region
     additionalProperties: false
