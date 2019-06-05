@@ -46,7 +46,7 @@ parameters_jsonschema:
         queue:
             type: string
         priority_weight:
-            type: integer
+            type: string
         weight_rule:
             type: string
         pool:
