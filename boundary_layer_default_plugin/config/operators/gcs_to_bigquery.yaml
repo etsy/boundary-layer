@@ -84,6 +84,13 @@ parameters_jsonschema:
                 type: string
         autodetect:
             type: boolean
+        oneOf:
+            - required:
+                - autodetect
+            - required:
+                - schema_object
+            - required:
+                - schema_fields
 
     required:
         - bucket
