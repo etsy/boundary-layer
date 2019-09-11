@@ -21,6 +21,16 @@ import six
 from boundary_layer.containers import ExecutionContext
 
 
+class GenericShell:
+
+    def __init__(self,type,args):
+        self.type = type
+        self.args = args
+
+    def __repr__(self):
+        return  '{}({})'.format(self.type,",".join([k + "=" + repr(v) for k,v in self.args.items()]))
+
+
 def freeze(item):
     if isinstance(item, dict):
         return frozenset((key, freeze(value)) for (key, value) in six.iteritems(item))
