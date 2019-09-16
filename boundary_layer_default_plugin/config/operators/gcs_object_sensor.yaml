@@ -15,7 +15,7 @@
 name: gcs_object_sensor
 operator_class: GoogleCloudStorageObjectSensor
 operator_class_module: airflow.contrib.sensors.gcs_sensor
-schema_extends: base
+schema_extends: base_sensor
 parameters_jsonschema:
     properties:
         bucket:
