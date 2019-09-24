@@ -20,7 +20,7 @@ parameters_jsonschema:
         items:
             type: array
             items:
-                type: string
+                type: object
     additionalProperties: false
     required:
         - items
