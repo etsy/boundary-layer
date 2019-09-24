@@ -14,7 +14,7 @@
 
 name: list_generator
 iterator_builder_method_code: return items
-item_name_builder_code: return item
+item_name_builder_code: return item.name
 parameters_jsonschema:
     properties:
         items:
