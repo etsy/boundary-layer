@@ -12,15 +12,15 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-name: list_generator
+name: list_object_generator
 iterator_builder_method_code: return items
-item_name_builder_code: return item
+item_name_builder_code: return item['name']
 parameters_jsonschema:
     properties:
         items:
             type: array
             items:
-                type: string
+                type: object
     additionalProperties: false
     required:
         - items
