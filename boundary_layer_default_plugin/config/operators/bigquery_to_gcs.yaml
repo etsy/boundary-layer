@@ -20,24 +20,24 @@ operator_class_module: airflow.contrib.operators.bigquery_to_gcs
 schema_extends: base
 parameters_jsonschema:
     properties:
-    	source_project_dataset_table:
-			type: string
-		destination_cloud_storage_uris:
-			type: array
-		compression:
-			type: string
-		export_format:
-			type: string
-		field_delimiter:
-			type: string
-		print_header:
-			type: boolean
-		bigquery_conn_id:
-			type: string
-		delegate_to:
-			type: string
-		labels:
-			type: dict
+        source_project_dataset_table:
+			      type: string
+        destination_cloud_storage_uris:
+            type: array
+        compression:
+            type: string
+        export_format:
+            type: string
+        field_delimiter:
+            type: string
+        print_header:
+            type: boolean
+        bigquery_conn_id:
+            type: string
+        delegate_to:
+            type: string
+        labels:
+            type: dict
 		
     required:
         - source_project_dataset_table

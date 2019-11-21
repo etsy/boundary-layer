@@ -20,48 +20,48 @@ operator_class_module: airflow.contrib.operators.bigquery_operator
 schema_extends: base
 parameters_jsonschema:
     properties:
-    	sql:
-			type: string
-		destination_dataset_table:
-			type: string
-		write_disposition:
-			type: string
-		create_disposition:
-			type: string
-		allow_large_results:
-			type: boolean
-		flatten_results:
-			type: boolean
-		bigquery_conn_id:
-			type: string
-		delegate_to:
-			type: string
-		udf_config:
-			type: array
-		use_legacy_sql:
-			type: boolean
-		maximum_billing_tier:
-			type: integer
-		maximum_bytes_billed:
-			type: number
-		api_resource_configs:
-			type: dict
-		schema_update_options:
-			type: object
-		query_params:
-			type: array
-		labels:
-			type: dict
-		priority:
-			type: string
-		time_partitioning:
-			type: dict
-		cluster_fields:
-			type: array
+        sql:
+            type: string
+        destination_dataset_table:
+            type: string
+        write_disposition:
+            type: string
+        create_disposition:
+            type: string
+        allow_large_results:
+            type: boolean
+        flatten_results:
+            type: boolean
+        bigquery_conn_id:
+            type: string
+        delegate_to:
+            type: string
+        udf_config:
+            type: array
+        use_legacy_sql:
+            type: boolean
+        maximum_billing_tier:
+            type: integer
+        maximum_bytes_billed:
+            type: number
+        api_resource_configs:
+            type: dict
+        schema_update_options:
+            type: object
+        query_params:
+            type: array
+        labels:
+            type: dict
+        priority:
+            type: string
+        time_partitioning:
+            type: dict
+        cluster_fields:
+            type: array
             items:
                 type: string
-		location:
-			type: string
+        location:
+            type: string
 
     required:
         - sql
