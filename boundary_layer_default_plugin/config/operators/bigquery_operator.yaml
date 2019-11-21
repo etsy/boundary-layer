@@ -45,17 +45,25 @@ parameters_jsonschema:
         maximum_bytes_billed:
             type: number
         api_resource_configs:
-            type: dict
+            type: object
+            additionalProperties:
+                type: string
         schema_update_options:
             type: object
+            additionalProperties:
+                type: string
         query_params:
             type: array
         labels:
-            type: dict
+            type: object
+            additionalProperties:
+                type: string
         priority:
             type: string
         time_partitioning:
-            type: dict
+            type: object
+            additionalProperties:
+                type: string
         cluster_fields:
             type: array
             items:

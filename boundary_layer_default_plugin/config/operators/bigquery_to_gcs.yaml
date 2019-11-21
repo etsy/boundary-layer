@@ -37,7 +37,9 @@ parameters_jsonschema:
         delegate_to:
             type: string
         labels:
-            type: dict
+            type: object
+            additionalProperties:
+                type: string
 
     required:
         - source_project_dataset_table
