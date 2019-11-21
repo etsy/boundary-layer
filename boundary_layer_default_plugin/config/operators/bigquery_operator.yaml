@@ -20,7 +20,7 @@ operator_class_module: airflow.contrib.operators.bigquery_operator
 schema_extends: base
 parameters_jsonschema:
     properties:
-        sql:
+    	sql:
 			type: string
 		destination_dataset_table:
 			type: string
