@@ -21,7 +21,7 @@ schema_extends: base
 parameters_jsonschema:
     properties:
         source_project_dataset_table:
-			      type: string
+            type: string
         destination_cloud_storage_uris:
             type: array
         compression:
@@ -38,7 +38,7 @@ parameters_jsonschema:
             type: string
         labels:
             type: dict
-		
+
     required:
         - source_project_dataset_table
         - destination_cloud_storage_uris
