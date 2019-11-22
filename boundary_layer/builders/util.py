@@ -19,6 +19,7 @@ from six.moves import filter, map
 from boundary_layer.util import sanitize_operator_name
 from boundary_layer.util import GenericNamedParameterPasser
 
+
 def verbatim(item):
     if isinstance(item, list):
         return list(map(verbatim, item))

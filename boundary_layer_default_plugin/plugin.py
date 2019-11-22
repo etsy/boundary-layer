@@ -16,7 +16,8 @@
 import os
 from boundary_layer.plugins import BasePlugin, PluginPriority
 from .oozie_plugin import DefaultOozieParserPlugin
-from .preprocessors import DateStringToDatetime, BuildTimedelta, EnsureRenderedStringPattern, KubernetesPrep
+from .preprocessors import DateStringToDatetime, BuildTimedelta, EnsureRenderedStringPattern
+from .preprocessors import KubernetesPrep
 
 
 class DefaultPlugin(BasePlugin):

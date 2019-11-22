@@ -23,6 +23,7 @@ from boundary_layer.schemas.base import StrictSchema
 from boundary_layer.logger import logger
 from boundary_layer.util import GenericNamedParameterPasser
 
+
 class DateStringToDatetime(PropertyPreprocessor):
     type = "date_string_to_datetime"
 
@@ -42,23 +43,27 @@ class DateStringToDatetime(PropertyPreprocessor):
 
         return date
 
+
 class BuildKubernetesSchema(StrictSchema):
     class_name = ma.fields.String(required=True)
 
     @ma.validates_schema
     def check_valid_class(self, data):
-        ALLOWED_CLASS = ['airflow.contrib.kubernetes.volume.Volume', 'airflow.contrib.kubernetes.volume_mount.VolumeMount', 'airflow.contrib.kubernetes.secret.Secret', 'airflow.contrib.kubernetes.pod.Resources']
+        ALLOWED_CLASS = ['airflow.contrib.kubernetes.volume.Volume',
+                         'airflow.contrib.kubernetes.volume_mount.VolumeMount',
+                         'airflow.contrib.kubernetes.secret.Secret',
+                         'airflow.contrib.kubernetes.pod.Resources']
         if data.get('class_name') not in ALLOWED_CLASS:
             raise ma.ValidationError(
                 '`class_name` must be one of `{}`'.format(
                     '`, `'.join(ALLOWED_CLASS)),
                 ['class_name'])
 
-        
+
 class KubernetesPrep(PropertyPreprocessor):
     type = "kubernetes_prep"
-
     properties_schema_cls = BuildKubernetesSchema
+
     def imports(self):
         return {'modules': ['.'.join(self.properties['class_name'].split('.')[:-1])]}
 
@@ -66,15 +71,16 @@ class KubernetesPrep(PropertyPreprocessor):
         kube_objects = None
         try:
             if isinstance(arg, list):
-                kube_objects = [GenericNamedParameterPasser(self.properties['class_name'], a) for a in arg]
+                kube_objects = [GenericNamedParameterPasser(self.properties['class_name'], a)
+                                for a in arg]
             else:
                 kube_objects = GenericNamedParameterPasser(self.properties['class_name'], arg)
-        except :
+        except Exception as e:
             raise Exception(
                 'Error in preprocessor {} for argument `{}`: {}'.format(
                     self.type,
-                    arg
-                    ))
+                    arg,
+                    str(e)))
 
         return kube_objects
 
