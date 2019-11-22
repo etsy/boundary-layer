@@ -17,7 +17,7 @@ import datetime
 import six
 from six.moves import filter, map
 from boundary_layer.util import sanitize_operator_name
-from boundary_layer.util import GenericShell
+from boundary_layer.util import GenericNamedParameterPasser
 
 def verbatim(item):
     if isinstance(item, list):
@@ -122,7 +122,7 @@ def format_value(value):
     if isinstance(value, (int, float, type(None))):
         return str(value)
 
-    if isinstance(value, (datetime.datetime, datetime.timedelta, GenericShell)):
+    if isinstance(value, (datetime.datetime, datetime.timedelta, GenericNamedParameterPasser)):
         return format_value('<<{}>>'.format(repr(value)))
 
     if not isinstance(value, six.string_types):

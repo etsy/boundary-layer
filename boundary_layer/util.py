@@ -21,7 +21,7 @@ import six
 from boundary_layer.containers import ExecutionContext
 
 
-class GenericShell:
+class GenericNamedParameterPasser:
 
     def __init__(self,type,args):
         self.type = type

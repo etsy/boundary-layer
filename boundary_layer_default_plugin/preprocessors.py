@@ -21,7 +21,7 @@ import jinja2
 from boundary_layer.registry.types.preprocessor import PropertyPreprocessor
 from boundary_layer.schemas.base import StrictSchema
 from boundary_layer.logger import logger
-from boundary_layer.util import GenericShell
+from boundary_layer.util import GenericNamedParameterPasser
 
 class DateStringToDatetime(PropertyPreprocessor):
     type = "date_string_to_datetime"
@@ -66,9 +66,9 @@ class KubernetesPrep(PropertyPreprocessor):
         kube_objects = None
         try:
             if isinstance(arg, list):
-                kube_objects = [GenericShell(self.properties['class_name'], a) for a in arg]
+                kube_objects = [GenericNamedParameterPasser(self.properties['class_name'], a) for a in arg]
             else:
-                kube_objects = GenericShell(self.properties['class_name'], arg)
+                kube_objects = GenericNamedParameterPasser(self.properties['class_name'], arg)
         except :
             raise Exception(
                 'Error in preprocessor {} for argument `{}`: {}'.format(
