@@ -1,0 +1,119 @@
+# Copyright 2018 Etsy Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+
+# see: https://airflow.apache.org/code.html#airflow.operators.docker_operator.DockerOperator
+name: kubernetes
+operator_class: KubernetesPodOperator
+operator_class_module: airflow.contrib.operators.kubernetes_pod_operator 
+schema_extends: base
+parameters_jsonschema:
+    properties:
+        image:
+          type: string
+        namespace:
+          type: string
+        cmds:
+          type: array
+          items:
+            type: string
+        arguments:
+          type: array
+          items:
+            type: string
+        image_pull_policy:
+          type: string
+        image_pull_secrets:
+          type: string
+        labels:
+          type: object
+        startup_timeout_seconds:
+          type: integer
+        name:
+          type: string
+        env_vars:
+          type: object
+        in_cluster:
+          type: boolean
+        cluster_context:
+          type: string
+        get_logs:
+          type: boolean
+        annotations:
+          type: object
+        resources:
+          type: object
+        affinity:
+          type: object
+        node_selectors:
+          type: object
+        config_file:
+          type: string
+        xcom_push:
+          type: boolean
+        is_delete_operator_pod:
+          type: boolean
+        hostnetwork:
+          type: boolean
+        configmaps:
+          type: array
+          items:
+            type: string
+        dns_policy:
+          type: string
+        volumes:
+          type: array
+          items:
+            type: object
+        volume_mounts:
+          type: array
+          items:
+            type: object
+        secrets:
+          type: array
+          items:
+            type: object
+        tolerations:
+           type: array
+           items:
+             type: object
+    additionalProperties: false
+    required:
+      - image
+      - namespace
+      - name
+        
+        
+            
+property_preprocessors:
+  - type: kubernetes_prep
+    properties:
+      class_name: airflow.contrib.kubernetes.volume.Volume
+    apply_to_properties:
+      - volumes
+  - type: kubernetes_prep
+    properties:
+      class_name: airflow.contrib.kubernetes.volume_mount.VolumeMount
+    apply_to_properties:
+      - volume_mounts
+  - type: kubernetes_prep
+    properties:
+      class_name: airflow.contrib.kubernetes.secret.Secret
+    apply_to_properties:
+      - secrets
+  - type: kubernetes_prep
+    properties:
+      class_name: airflow.contrib.kubernetes.pod.Resources
+    apply_to_properties:
+      - resources
+  
