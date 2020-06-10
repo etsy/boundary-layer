@@ -38,6 +38,8 @@ parameters_jsonschema:
         scale_tier:
             type: string
             enum: [BASIC, STANDARD_1, PREMIUM_1, BASIC_GPU, BASIC_TPU, CUSTOM]
+        master_type:
+            type: string
         runtime_version:
             type: string
         python_version:
