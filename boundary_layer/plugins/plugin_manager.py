@@ -64,14 +64,15 @@ class PluginManager(object):
                 'Config schema for plugin {} is not a marshmallow Schema. '
                 'Found: {}'.format(plugin.name, plugin.config_schema_cls))
 
-        parsed_config = plugin.config_schema_cls().load(config or {})
-        if parsed_config.errors:
+        try:
+            parsed_config_data = plugin.config_schema_cls().load(config or {})
+        except ValidationError as err:
             raise Exception(
                 'Errors parsing configuration for plugin {}: {}'.format(
                     plugin.name,
-                    parsed_config.errors))
+                    err.messages))
 
-        return parsed_config.data
+        return parsed_config_data
 
     def insert_imports(self, plugin_config):
         objects = []

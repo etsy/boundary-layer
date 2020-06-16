@@ -14,6 +14,7 @@
 #     limitations under the License.
 
 import datetime
+from marshmallow import ValidationError
 import boundary_layer
 from boundary_layer.builders.base import DagBuilderBase
 from boundary_layer.schemas.dag import DagArgsSchema
@@ -28,16 +29,15 @@ class PrimaryDagBuilder(DagBuilderBase):
                 self.reference_path)
 
         template = self.get_jinja_template('primary_preamble.j2')
-
-        dag_args_dumped = DagArgsSchema(context={'for_dag_output': True}).dump(
-            self.dag.get('dag_args', {}))
-        if dag_args_dumped.errors:
+        try:
+            dag_args = DagArgsSchema(context={'for_dag_output': True}).dump(
+                self.dag.get('dag_args', {}))
+        except ValidationError as err:
             # should not happen because the schema was validated upon load,
             # but we should check
             raise Exception('Error serializing dag_args: {}'.format(
-                dag_args_dumped.errors))
+                err.messages))
 
-        dag_args = dag_args_dumped.data
         dag_args['dag_id'] = self.build_dag_id()
 
         default_task_args = self.dag.get('default_task_args', {})

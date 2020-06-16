@@ -42,7 +42,7 @@ setuptools.setup(
         'jsonschema>=2.6.0,<3.0',
         'jinja2>=2.8.1,<3.0',
         'pyyaml>=4.2b1',
-        'marshmallow>=2.13.6,<3.0',
+        'marshmallow>=3.0,<4.0',
         'networkx>=2.1,<2.3',
         'xmltodict>=0.11.0,<1.0',
         'six>=1.11.0,<2.0',
@@ -63,5 +63,5 @@ setuptools.setup(
     license = 'Apache License 2.0',
     keywords = 'airflow',
     zip_safe = False,
-    python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',
+    python_requires='>=3.5',
 )

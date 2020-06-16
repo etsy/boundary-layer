@@ -15,6 +15,7 @@
 
 import os
 from collections import namedtuple, Counter
+from marshmallow import ValidationError
 
 import six
 import yaml
@@ -288,14 +289,13 @@ class Workflow(object):
         """ Parse the DAG using the specified schema class.  Raise an exception
             if any errors are detected.
         """
-        loaded = schema_cls().load(dag)
-        if loaded.errors:
+        try:
+            parsed = schema_cls().load(dag)
+        except ValidationError as err:
             dag_description = 'primary' if issubclass(
                 schema_cls, PrimaryDagSchema) else 'sub'
             raise Exception('Found errors in {} dag: {}'.format(
-                dag_description, loaded.errors))
-
-        parsed = loaded.data
+                dag_description, err.messages))
 
         registries = {
             'resources': plugins.manager.resources,

@@ -7,3 +7,5 @@ coverage.xml
 .tox
 .*.sw[op]
 .idea/
+.eggs
+build

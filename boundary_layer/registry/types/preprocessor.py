@@ -14,6 +14,7 @@
 #     limitations under the License.
 
 import abc
+from marshmallow import ValidationError
 from boundary_layer.registry import Registry, RegistryNode, NodeTypes
 
 
@@ -43,14 +44,15 @@ class PropertyPreprocessor(object):
             self.properties = None
             return
 
-        loaded = self.properties_schema_cls().load(properties)
-        if loaded.errors:
+        try:
+            data = self.properties_schema_cls().load(properties)
+        except ValidationError as err:
             raise Exception(
-                'Error parsing properties for preprocessor `{}`: {}'.format(
+                'Error parsing properties for preprocessor {}: {}'.format(
                     self.type,
-                    loaded.errors))
+                    err.messages))
 
-        self.properties = loaded.data
+        self.properties = data
 
     @property
     def properties_schema_cls(self):

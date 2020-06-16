@@ -42,7 +42,7 @@ class GeneratorSchema(ReferenceSchema):
     regex_blocklist = fields.List(fields.String())
 
     @validates_schema
-    def check_task_id_mode(self, data):
+    def check_task_id_mode(self, data, **kwargs):
         if 'auto_task_id_mode' not in data:
             return
 
@@ -118,7 +118,7 @@ class DagArgsSchema(StrictSchema):
     access_control = fields.Dict()
 
     @validates_schema
-    def validate_callbacks(self, data):
+    def validate_callbacks(self, data, **kwargs):
         callbacks = ['sla_miss_callback', 'on_success_callback',
                      'on_failure_callback']
         for cb in callbacks:
@@ -130,7 +130,7 @@ class DagArgsSchema(StrictSchema):
                     [cb])
 
     @validates_schema
-    def validate_default_view(self, data):
+    def validate_default_view(self, data, **kwargs):
         if 'default_view' not in data:
             return
 
@@ -142,7 +142,7 @@ class DagArgsSchema(StrictSchema):
                 ['default_view'])
 
     @validates_schema
-    def validate_orientation(self, data):
+    def validate_orientation(self, data, **kwargs):
         if 'orientation' not in data:
             return
 
@@ -153,7 +153,7 @@ class DagArgsSchema(StrictSchema):
                 ['orientation'])
 
     @validates_schema
-    def validate_template_undefined(self, data):
+    def validate_template_undefined(self, data, **kwargs):
         if 'template_undefined' not in data:
             return
         if not re.compile('<<.+>>').match(data['template_undefined']):
@@ -162,7 +162,7 @@ class DagArgsSchema(StrictSchema):
                 ['template_undefined'])
 
     @post_dump
-    def dagrun_timeout_to_timedelta(self, data):
+    def dagrun_timeout_to_timedelta(self, data, **kwargs):
         if not self.context.get('for_dag_output'):
             return data
         if 'dagrun_timeout' in data:
@@ -189,7 +189,7 @@ class PrimaryDagSchema(BaseDagSchema):
     plugin_config = fields.Dict()
 
     @validates_schema
-    def validate_compatibility_version(self, data):
+    def validate_compatibility_version(self, data, **kwargs):
         if not data.get('compatibility_version'):
             return
 
@@ -215,7 +215,7 @@ class PrimaryDagSchema(BaseDagSchema):
                 ['compatibility_version'])
 
     @validates_schema
-    def validate_plugin_config(self, data):
+    def validate_plugin_config(self, data, **kwargs):
         from boundary_layer import plugins
         if 'plugin_config' not in data:
             return

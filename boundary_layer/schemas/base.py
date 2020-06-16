@@ -22,7 +22,7 @@ import marshmallow as ma
 
 class StrictSchema(ma.Schema):
     @ma.validates_schema(pass_original=True)
-    def check_no_unknowns(self, _, original_data):
+    def check_no_unknowns(self, _, original_data, **kwargs):
         def check_single_datum(datum):
             unknown = set(datum) - set(self.fields)
             if unknown:
