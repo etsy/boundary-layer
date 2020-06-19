@@ -16,77 +16,13 @@
 name: kubernetes
 operator_class: KubernetesPodOperator
 operator_class_module: airflow.contrib.operators.kubernetes_pod_operator 
-schema_extends: base
+schema_extends: kubernetes
 parameters_jsonschema:
     properties:
-        image:
-          type: string
-        namespace:
-          type: string
-        cmds:
-          type: array
-          items:
-            type: string
-        arguments:
-          type: array
-          items:
-            type: string
-        image_pull_policy:
-          type: string
-        image_pull_secrets:
-          type: string
-        labels:
-          type: object
-        startup_timeout_seconds:
-          type: integer
-        name:
-          type: string
-        env_vars:
-          type: object
-        in_cluster:
-          type: boolean
-        cluster_context:
-          type: string
-        get_logs:
-          type: boolean
-        annotations:
-          type: object
-        resources:
-          type: object
-        affinity:
-          type: object
-        node_selectors:
-          type: object
-        config_file:
-          type: string
         xcom_push:
           type: boolean
-        is_delete_operator_pod:
-          type: boolean
-        hostnetwork:
-          type: boolean
-        configmaps:
-          type: array
-          items:
-            type: string
         dns_policy:
           type: string
-        volumes:
-          type: array
-          items:
-            type: object
-        volume_mounts:
-          type: array
-          items:
-            type: object
-        secrets:
-          type: array
-          items:
-            type: object
-        tolerations:
-           type: array
-           items:
-             type: object
     additionalProperties: false
     required:
       - image
