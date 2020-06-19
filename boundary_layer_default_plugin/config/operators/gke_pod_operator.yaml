@@ -17,85 +17,15 @@
 name: gke_pod_operator
 operator_class: GKEPodOperator
 operator_class_module: airflow.contrib.operators.gcp_container_operator 
-schema_extends: base
+schema_extends: kubenetes
 parameters_jsonschema:
   properties:
-    location: 
+    task_id: 
       type: string
     project_id: 
       type: string
     cluster_name:
       type: string
-    name:
-      type: string
-    namespace:
-      type: string
-    gcp_conn_id: 
-      type: string
-    image:
-      type: string
-    cmds:
-      type: array
-      items:
-          type: string
-    arguments:
-      type: array
-      items:
-          type: string
-    image_pull_policy:
-      type: string
-    image_pull_secrets:
-      type: string
-    labels:
-      type: object
-    startup_timeout_seconds:
-      type: integer
-    env_vars:
-      type: object
-    in_cluster:
-      type: boolean
-    cluster_context:
-      type: string
-    get_logs:
-      type: boolean
-    annotations:
-      type: object
-    resources:
-      type: object
-    affinity:
-      type: object
-    node_selectors:
-      type: object
-    config_file:
-      type: string
-    xcom_push:
-      type: boolean
-    is_delete_operator_pod:
-      type: boolean
-    hostnetwork:
-      type: boolean
-    configmaps:
-      type: array
-      items:
-        type: string
-    dns_policy:
-      type: string
-    volumes:
-      type: array
-    items:
-      type: object
-    volume_mounts:
-      type: array
-      items:
-        type: object
-    secrets:
-      type: array
-      items:
-        type: object
-    tolerations:
-        type: array
-        items:
-          type: object
   additionalProperties: false
   required:
     - task_id
