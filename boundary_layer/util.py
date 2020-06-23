@@ -21,6 +21,17 @@ import six
 from boundary_layer.containers import ExecutionContext
 
 
+class GenericNamedParameterPasser(object):
+
+    def __init__(self, typ, args):
+        self.typ = typ
+        self.args = args
+
+    def __repr__(self):
+        return '{}({})'.format(self.typ,
+                               ",".join([k + "=" + repr(v) for k, v in self.args.items()]))
+
+
 def freeze(item):
     if isinstance(item, dict):
         return frozenset((key, freeze(value)) for (key, value) in six.iteritems(item))

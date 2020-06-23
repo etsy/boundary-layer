@@ -11,7 +11,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as _in:
 
 setuptools.setup(
     name = 'boundary-layer',
-    version='1.7.4-dev0',
+    version='1.7.12-dev0',
     author = 'Kevin McHale',
     author_email = 'kmchale@etsy.com',
     description = 'Builds Airflow DAGs from configuration files',
@@ -37,7 +37,7 @@ setuptools.setup(
         },
     extras_require = extras,
     install_requires = [
-        'enum34>=1.1.6,<2.0',
+        'enum34>=1.1.6,<2.0;python_version<"3.4"',
         'semver>=2.7.0,<3.0',
         'jsonschema>=2.6.0,<3.0',
         'jinja2>=2.8.1,<3.0',
