@@ -37,3 +37,4 @@ parameters_jsonschema:
 
     required:
         - instance
+        - body
