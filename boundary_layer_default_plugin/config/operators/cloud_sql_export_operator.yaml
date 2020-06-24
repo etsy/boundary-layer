@@ -24,8 +24,38 @@ parameters_jsonschema:
             type: string
         body:
             type: object
-            additionalProperties:
-                type: string
+            properties:
+                uri:
+                    type: string
+                databases:
+                    type: array
+                    items:
+                        type: string
+                kind:
+                    type: string
+                sqlExportOptions:
+                    type: object
+                    properties:
+                        tables:
+                            type: array
+                            items:
+                                type: string
+                        schemaOnly: 
+                            type: boolean
+                        mysqlExportOptions:
+                            type: object
+                            properties:
+                                masterData:
+                                    type: integer
+                csvExportOptions:
+                    type: object
+                    properties:
+                        selectQuery:
+                            type: string
+                fileType:
+                    type: string
+                offload:
+                    type: boolean
         project_id:
             type: string
         gcp_conn_id:
