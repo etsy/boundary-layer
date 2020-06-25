@@ -25,37 +25,40 @@ parameters_jsonschema:
         body:
             type: object
             properties:
-                uri:
-                    type: string
-                databases:
-                    type: array
-                    items:
-                        type: string
-                kind:
-                    type: string
-                sqlExportOptions:
+                exportContext:
                     type: object
                     properties:
-                        tables:
+                        uri:
+                            type: string
+                        databases:
                             type: array
                             items:
                                 type: string
-                        schemaOnly: 
-                            type: boolean
-                        mysqlExportOptions:
+                        kind:
+                            type: string
+                        sqlExportOptions:
                             type: object
                             properties:
-                                masterData:
-                                    type: integer
-                csvExportOptions:
-                    type: object
-                    properties:
-                        selectQuery:
+                                tables:
+                                    type: array
+                                    items:
+                                        type: string
+                                schemaOnly: 
+                                    type: boolean
+                                mysqlExportOptions:
+                                    type: object
+                                    properties:
+                                        masterData:
+                                            type: integer
+                        csvExportOptions:
+                            type: object
+                            properties:
+                                selectQuery:
+                                    type: string
+                        fileType:
                             type: string
-                fileType:
-                    type: string
-                offload:
-                    type: boolean
+                        offload:
+                            type: boolean
         project_id:
             type: string
         gcp_conn_id:
