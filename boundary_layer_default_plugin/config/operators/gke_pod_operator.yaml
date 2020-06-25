@@ -16,24 +16,24 @@
 
 name: gke_pod_operator
 operator_class: GKEPodOperator
-operator_class_module: airflow.contrib.operators.gcp_container_operator 
+operator_class_module: airflow.contrib.operators.gcp_container_operator
 schema_extends: kubernetes
 parameters_jsonschema:
     properties:
-        task_id
-          type:  str
-        project_id: 
-          type: str
-        location
-          type: str
+        task_id:
+          type: string
+        project_id:
+          type: string
+        location:
+          type: string
         cluster_name:
-          type: str
-      additionalProperties: false
-      required:
-      - task_id
-      - project_id
-      - location
-      - cluster_name
-      - name
-      - namespace
-      - image
+          type: string
+    additionalProperties: false
+    required:
+    - task_id
+    - project_id
+    - location
+    - cluster_name
+    - name
+    - namespace
+    - image
