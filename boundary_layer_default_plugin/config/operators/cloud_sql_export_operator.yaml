@@ -1,0 +1,73 @@
+# Copyright 2018 Etsy Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+
+# see: https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/operators/gcp_sql_operator.py
+
+name: cloud_sql_export_operator
+operator_class: CloudSqlInstanceExportOperator
+operator_class_module: airflow.contrib.operators.gcp_sql_operator 
+schema_extends: cloud_sql_base_operator
+parameters_jsonschema:
+    properties:
+        instance:
+            type: string
+        body:
+            type: object
+            properties:
+                exportContext:
+                    type: object
+                    properties:
+                        uri:
+                            type: string
+                        databases:
+                            type: array
+                            items:
+                                type: string
+                        kind:
+                            type: string
+                        sqlExportOptions:
+                            type: object
+                            properties:
+                                tables:
+                                    type: array
+                                    items:
+                                        type: string
+                                schemaOnly: 
+                                    type: boolean
+                                mysqlExportOptions:
+                                    type: object
+                                    properties:
+                                        masterData:
+                                            type: integer
+                        csvExportOptions:
+                            type: object
+                            properties:
+                                selectQuery:
+                                    type: string
+                        fileType:
+                            type: string
+                        offload:
+                            type: boolean
+        project_id:
+            type: string
+        gcp_conn_id:
+            type: string
+        api_version:
+            type: string
+        validate_body:
+            type: boolean
+
+    required:
+        - instance
+        - body
