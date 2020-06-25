@@ -179,9 +179,6 @@ class DagArgsSchema(StrictSchema):
 class PrimaryDagSchema(BaseDagSchema):
     compatibility_version = fields.String()
 
-    # jars parameter is the list of jar URIs required by the workflow
-    jars = fields.List(fields.String())
-
     dag_args = fields.Nested(DagArgsSchema)
 
     default_task_args = fields.Dict()
