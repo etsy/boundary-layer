@@ -17,6 +17,9 @@ import marshmallow as ma
 
 
 class OozieBaseSchema(ma.Schema):
+    class Meta:
+        unknown = ma.INCLUDE
+
     singletons_to_lists = []
 
     @ma.pre_load

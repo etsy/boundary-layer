@@ -85,7 +85,7 @@ class OperatorNode(RegistryNode):
         except ValidationError as err:
             raise Exception(
                 ('Internal error: processing `imports` config {} for '
-                'operator `{}`').format(
+                 'operator `{}`').format(
                  self.config.get('imports', {}),
                  self.name))
 
