@@ -49,7 +49,44 @@ parameters_jsonschema:
         schema_fields:
             type: array
             items:
-                type: string
+                type: object
+                properties:
+                    name:
+                        type: string
+                    type:
+                        type: string
+                        enum: [
+                            STRING,
+                            BYTES,
+                            INTEGER,
+                            INT64,
+                            FLOAT,
+                            FLOAT64,
+                            BOOL,
+                            BOOLEAN,
+                            TIMESTAMP,
+                            DATE,
+                            TIME,
+                            DATETIME,
+                            RECORD,
+                            STRUCT
+                        ]
+                    mode:
+                        type: string
+                        enum: [ NULLABLE, REQUIRED, REPEATED ]
+                    fields:
+                        type: array
+                        items:
+                            type: object
+                    description:
+                        type: string
+                    policyTags:
+                        type: object
+                        properties:
+                            names:
+                                type: array
+                                items:
+                                    type: string
         schema_object:
             type: string
         quote_character:
