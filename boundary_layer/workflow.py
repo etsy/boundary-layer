@@ -325,18 +325,34 @@ class Workflow(object):
         if imports:
             parsed['imports'] = imports
 
-        default_task_args = parsed.get('default_task_args', {})
+        default_task_args = Workflow._get_default_task_args(parsed, schema_cls)
         default_task_args.update(
             plugins.manager.insert_default_task_args(plugin_config))
         if default_task_args:
             parsed['default_task_args'] = default_task_args
 
-        dag_args = parsed.get('dag_args', {})
+        dag_args = Workflow._get_dag_args(parsed, schema_cls)
         dag_args.update(plugins.manager.insert_dag_args(plugin_config))
         if dag_args:
             parsed['dag_args'] = dag_args
 
         return parsed
+
+    @staticmethod
+    def _get_default_task_args(parsed, schema_cls):
+        default_task_args = parsed.get('default_task_args', {})
+        if default_task_args:
+            if not issubclass(schema_cls, PrimaryDagSchema):
+                raise Exception('Invalid property default_task_args found in subdag')
+        return default_task_args
+
+    @staticmethod
+    def _get_dag_args(parsed, schema_cls):
+        dag_args = parsed.get('dag_args', {})
+        if dag_args:
+            if not issubclass(schema_cls, PrimaryDagSchema):
+                raise Exception('Invalid property dag_args found in subdag')
+        return dag_args
 
     def build_dag(
             self,
