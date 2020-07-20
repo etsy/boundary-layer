@@ -128,13 +128,13 @@ def create_and_push_tag(remote_name, tag_name):
     )
 
     print(f'Pushing tag {tag_name}')
-    #subprocess.check_call(
-    #    shlex.split(
-    #        f'''
-    #            git push --tags {remote_name}
-    #        '''
-    #    )
-    #)
+    subprocess.check_call(
+        shlex.split(
+            f'''
+                git push --tags {remote_name}
+            '''
+        )
+    )
     print('Tag pushed successfully.')
 
 
