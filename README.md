@@ -69,20 +69,23 @@ There are a few other options supported by the `release.py` command, as describe
 ╰$ ./release.py --help
 usage: release.py [-h]
                   [--bump {major,minor,patch} | --force-version FORCE_VERSION]
-                  [--remote-branch-name REMOTE_BRANCH_NAME]
                   [--git-remote-name GIT_REMOTE_NAME]
+                  [--remote-branch-name REMOTE_BRANCH_NAME]
 
 optional arguments:
   -h, --help            show this help message and exit
   --bump {major,minor,patch}
+                        Select the portion of the version string to bump.
+                        default: `patch`
   --force-version FORCE_VERSION
                         Force the new version to this value. Must be a valid
                         semver.
+  --git-remote-name GIT_REMOTE_NAME
+                        Name of the git remote from which to release. default:
+                        `origin`
   --remote-branch-name REMOTE_BRANCH_NAME
                         Name of the remote branch to use as the basis for the
-                        release
-  --git-remote-name GIT_REMOTE_NAME
-                        Name of the git remote from which to release
+                        release. default: `master`
 ```
 
 # boundary-layer YAML configs
