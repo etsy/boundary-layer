@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
+"""
+
+This script is used for releasing boundary-layer.
+"""
 import argparse
 import re
 import shlex
 import subprocess
 import semver
-from versioneer import get_version
+import versioneer
 
 def build_parser():
     parser = argparse.ArgumentParser()
@@ -90,7 +94,7 @@ def check_git_state():
         )
 
 
-def push_tag(remote_name, tag_name):
+def create_and_push_tag(remote_name, tag_name):
     print(f'Creating tag {tag_name}')
     subprocess.check_call(
         shlex.split(
@@ -127,7 +131,22 @@ def get_current_branch():
     return m.groupdict()
 
 
-def verify_and_push_tag(remote_name, branch_name, tag_version):
+def get_version(bump_type, force_version):
+    current_version = semver.VersionInfo.parse(versioneer.get_version())
+
+    print(f'Current version is: {current_version}')
+
+    new_version = str(force_version) if force_version else bump_version(current_version, bump_type)
+    print('New version: {}'.format(new_version))
+
+    okay = input('Continue? [y/N] ')
+    if not okay.lower().startswith('y'):
+        raise Exception('Aborted by user')
+
+    return new_version
+
+
+def do_release(*, remote_name, branch_name, bump_type, force_version):
     check_remote(remote_name)
     fetch_latest(remote_name, branch_name)
 
@@ -140,7 +159,10 @@ def verify_and_push_tag(remote_name, branch_name, tag_version):
     try:
         git_checkout(remote_name, branch_name)
         check_git_state()
-        push_tag(remote_name, tag_version)
+        create_and_push_tag(
+            remote_name,
+            tag_name=get_version(bump_type, force_version),
+        )
     finally:
         original_branch = current_branch.get('branch_name')
         if original_branch:
@@ -150,15 +172,10 @@ def verify_and_push_tag(remote_name, branch_name, tag_version):
 if __name__ == '__main__':
     parser = build_parser()
     args = parser.parse_args()
-    current_version = semver.VersionInfo.parse(get_version())
 
-    print(f'Current version is: {current_version}')
-
-    new_version = str(args.force_version) if args.force_version else bump_version(current_version, args.bump)
-    print('New version: {}'.format(new_version))
-
-    okay = input('Continue? [y/N] ')
-    if okay.lower().startswith('y'):
-        verify_and_push_tag(args.git_remote_name, args.remote_branch_name, new_version)
-    else:
-        print('Aborting.')
+    do_release(
+        remote_name=args.git_remote_name,
+        branch_name=args.remote_branch_name,
+        bump_type=args.bump,
+        force_version=args.force_version,
+    )
