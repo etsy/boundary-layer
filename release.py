@@ -1,4 +1,5 @@
 import argparse
+import re
 import shlex
 import subprocess
 import semver
@@ -72,11 +73,9 @@ def fetch_latest(remote_name, branch_name):
 
 def git_checkout(remote_name, branch_name):
     print(f'Checking out {remote_name}/{branch_name}')
-    subprocess.check_call(
-        shlex.split(
-            f'git checkout {remote_name}/{branch_name}'
-        )
-    )
+
+    ref = f'{remote_name}/{branch_name}' if remote_name else branch_name
+    subprocess.check_call(shlex.split(f'git checkout {ref}'))
 
 
 def check_git_state():
@@ -111,12 +110,40 @@ def push_tag(tag_name):
     print('Tag pushed successfully.')
 
 
+def get_current_branch():
+    output = subprocess.check_output(
+        shlex.split('git status -b --porcelain'), encoding='utf-8'
+    ).strip().split('\n')[0]
+
+    # at this point, output has the form
+    # `## <branch-name>...<upstream> [<ahead|behind> <number-of-commits>]`
+
+    m = re.match(
+        r'## (?P<branch_name>[a-zA-Z0-9_/-]+)(\.\.\.(?P<remote>[a-z0-9A-Z_/-]+) (\[(?P<ahead_behind>(ahead|behind) \d+)\])?)?',
+        output
+    )
+
+    return m.groupdict()
+
+
 def verify_and_push_tag(remote_name, branch_name, tag_version):
     check_remote(remote_name)
     fetch_latest(remote_name, branch_name)
-    git_checkout(remote_name, branch_name)
-    check_git_state(remote_name, branch_name)
-    push_tag(version)
+
+    current_branch = get_current_branch()
+    if current_branch.get('remote') == f'{remote_name}/{branch_name}' and current_branch.get('ahead_behind'):
+        raise Exception(
+            'Local changes found on branch that tracks the remote that we are publishing!  This is probably an error'
+        )
+
+    try:
+        git_checkout(remote_name, branch_name)
+        check_git_state()
+        push_tag(version)
+    finally:
+        original_branch = current_branch.get('branch_name')
+        if original_branch:
+            git_checkout(None, original_branch)
 
 
 if __name__ == '__main__':
