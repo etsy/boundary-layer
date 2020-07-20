@@ -72,9 +72,9 @@ def fetch_latest(remote_name, branch_name):
 
 
 def git_checkout(remote_name, branch_name):
-    print(f'Checking out {remote_name}/{branch_name}')
-
     ref = f'{remote_name}/{branch_name}' if remote_name else branch_name
+    print(f'Checking out {ref}')
+
     subprocess.check_call(shlex.split(f'git checkout {ref}'))
 
 
@@ -153,6 +153,6 @@ if __name__ == '__main__':
 
     print(f'Current version is: {current_version}')
 
-    new_version = str(args.force_version) or bump_version(current_version, args.bump)
+    new_version = str(args.force_version) if args.force_version else bump_version(current_version, args.bump)
     print('New version: {}'.format(new_version))
     verify_and_push_tag(args.git_remote_name, args.remote_branch_name, new_version)
