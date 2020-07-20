@@ -32,3 +32,7 @@ def get_version_string():
 VERSION_STRING = get_version_string()
 VERSION = semver.parse_version_info(VERSION_STRING)
 MIN_SUPPORTED_VERSION = semver.parse_version_info('0.9.9')
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
