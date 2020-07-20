@@ -23,7 +23,7 @@ def _apply_prune_args(subparser):
         help='Delete all nodes except these before building the DAG')
 
 
-def parse_args():
+def build_parser():
     parser = argparse.ArgumentParser()
 
     subparsers = parser.add_subparsers(dest='cmd')
@@ -67,7 +67,7 @@ def parse_args():
 
     manager.register_oozie_parser_arguments(parser_oozie)
 
-    return parser.parse_args()
+    return parser
 
 
 def get_file_fetcher(_args):
@@ -95,7 +95,8 @@ def get_file_fetcher(_args):
 
 
 if __name__ == '__main__':
-    args = parse_args()
+    parser = build_parser()
+    args = parser.parse_args()
 
     if args.cmd == 'build-dag':
         workflow = Workflow.load(args.input_filename)
@@ -125,5 +126,7 @@ if __name__ == '__main__':
 
         workflow = oozie_parser.load_workflow(args.workflow_name, args)
         print(workflow.yaml_config)
+    elif args is None:
+        parser.print_help()
     else:
         raise NotImplementedError('Invalid command: {}'.format(args.cmd))
