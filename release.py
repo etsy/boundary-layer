@@ -99,7 +99,7 @@ def git_checkout(remote_name, branch_name):
 
 
 def get_git_state():
-    output = subprocess.check_output(
+    output_lines = subprocess.check_output(
         shlex.split('git status -b --porcelain'),
         encoding='utf-8'
     ).strip().split('\n')
