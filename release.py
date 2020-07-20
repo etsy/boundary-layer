@@ -167,7 +167,7 @@ def do_release(*, remote_name, branch_name, bump_type, force_version):
     current_branch = get_current_branch()
     if current_branch.get('remote') == f'{remote_name}/{branch_name}' and current_branch.get('ahead_behind'):
         raise Exception(
-            'Local changes found on branch that tracks the remote that we are publishing!  This is probably an error'
+            'Local changes found on branch that tracks the remote that we are publishing!  This is probably unintended.  Please reconcile your local state before proceeding.'
         )
 
     try:
