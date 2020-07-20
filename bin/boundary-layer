@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
         workflow = oozie_parser.load_workflow(args.workflow_name, args)
         print(workflow.yaml_config)
-    elif args is None:
+    elif args.cmd is None:
         parser.print_help()
     else:
         raise NotImplementedError('Invalid command: {}'.format(args.cmd))
