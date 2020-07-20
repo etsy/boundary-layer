@@ -21,7 +21,7 @@ parameters_jsonschema:
         external_dag_id:
             type: string
         external_task_id:
-            type: string
+            type: [string, "null"]
         execution_delta:
             type: integer
         allowed_states:
