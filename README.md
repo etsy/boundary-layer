@@ -49,7 +49,7 @@ optional arguments:
 ```
 
 ## Publishing updates to PyPI (admins only)
-`boundary-layer` is distributed via [PyPI](https://pypi.org/project/boundary-layer/).  We rely on an automated Github Actions [build](.github/workflows/python-publish.yaml) to publish updates.  The build runs every time a tag is pushed to the repository.  We have a [script](release.py) that automates the creation of these tags, making sure that they are versioned correctly and created for the intended commits.
+`boundary-layer` is distributed via [PyPI](https://pypi.org/project/boundary-layer/).  We rely on an automated Github Actions [build](.github/workflows/python-publish.yml) to publish updates.  The build runs every time a tag is pushed to the repository.  We have a [script](release.py) that automates the creation of these tags, making sure that they are versioned correctly and created for the intended commits.
 
 The recommended process for publishing a relatively minor boundary layer update is to simply run
 ```
