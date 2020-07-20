@@ -155,4 +155,9 @@ if __name__ == '__main__':
 
     new_version = str(args.force_version) if args.force_version else bump_version(current_version, args.bump)
     print('New version: {}'.format(new_version))
-    verify_and_push_tag(args.git_remote_name, args.remote_branch_name, new_version)
+
+    okay = input('Continue? [y/N] ')
+    if okay.lower().startswith('y'):
+        verify_and_push_tag(args.git_remote_name, args.remote_branch_name, new_version)
+    else:
+        print('Aborting.')
