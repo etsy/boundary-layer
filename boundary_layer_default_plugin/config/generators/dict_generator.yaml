@@ -20,7 +20,7 @@ imports:
               - namedtuple
 iterator_builder_method_code: |
     name_value = namedtuple('NameValue', ['name', 'value'])
-    return map(lambda (name, value): name_value(name, value), items.items())
+    return map(lambda name, value: name_value(name, value), items.items())
 item_name_builder_code: return item.name
 parameters_jsonschema:
     properties:
