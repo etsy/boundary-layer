@@ -141,6 +141,7 @@ def create_and_push_tag(remote_name, tag_name):
 def parse_current_branch(state):
     # state.branch has the form
     # `## <branch-name>...<upstream> [<ahead|behind> <number-of-commits>]`
+    # bu the upstream portion and the ahead/behind are all optional
 
     pattern = r'## (?P<branch_name>[a-zA-Z0-9_/-]+)(\.\.\.(?P<remote>[a-z0-9A-Z_/-]+)( \[(?P<ahead_behind>(ahead|behind) \d+)\])?)?'
     m = re.match(pattern, state.branch).groupdict()
