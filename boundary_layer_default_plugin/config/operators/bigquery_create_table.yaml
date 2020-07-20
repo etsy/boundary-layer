@@ -12,40 +12,18 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-name: gcs_to_bigquery
-operator_class: GoogleCloudStorageToBigQueryOperator
-operator_class_module: airflow.contrib.operators.gcs_to_bq
+name: bigquery_create_table
+operator_class: BigQueryCreateEmptyTableOperator
+operator_class_module: airflow.contrib.operators.bigquery_operator
 schema_extends: base
 parameters_jsonschema:
     properties:
-        bucket:
+        dataset_id:
             type: string
-        source_objects:
-            type: array
-            items:
-                type: string
-        source_format:
+        table_id:
             type: string
-            enum: [ AVRO, PARQUET, NEWLINE_DELIMITED_JSON, CSV ]
-        destination_project_dataset_table:
+        project_id:
             type: string
-        create_disposition:
-            type: string
-            enum: [ CREATE_IF_NEEDED, CREATE_NEVER ]
-        write_disposition:
-            type: string
-            enum: [ WRITE_EMPTY, WRITE_APPEND, WRITE_TRUNCATE ]
-        compression:
-            type: string
-            enum: [ GZIP, NONE ]
-        skip_leading_rows:
-            type: integer
-        field_delimiter:
-            type: string
-        max_bad_records:
-            type: integer
-        src_fmt_configs:
-            type: object
         schema_fields:
             type: array
             items:
@@ -87,43 +65,21 @@ parameters_jsonschema:
                                 type: array
                                 items:
                                     type: string
-        schema_object:
+        gcs_schema_object:
             type: string
-        quote_character:
-            type: string
-        ignore_unknown_values:
-            type: boolean
-        allow_quoted_newlines:
-            type: boolean
-        allow_jagged_rows:
-            type: boolean
-        max_id_key:
-            type: string
+        time_partitioning:
+            type: object
+            additionalProperties:
+                type: string
         bigquery_conn_id:
             type: string
         google_cloud_storage_conn_id:
             type: string
         delegate_to:
             type: string
-        schema_update_options:
-            type: array
-            items:
-                type: string
-        external_table:
-            type: boolean
-        time_partitioning:
+        labels:
             type: object
-            additionalProperties:
-                type: string
-        cluster_fields:
-            type: array
-            items:
-                type: string
-        autodetect:
-            type: boolean
-
     required:
-        - bucket
-        - source_objects
-        - source_format
-        - destination_project_dataset_table
+        - dataset_id
+        - table_id
+        - project_id
