@@ -171,7 +171,7 @@ def do_release(*, remote_name, branch_name, bump_type, force_version):
     check_remote(remote_name)
     fetch_latest(remote_name, branch_name)
 
-    current_branch = get_current_branch(get_git_state())
+    current_branch = parse_current_branch(get_git_state())
     if current_branch.remote == f'{remote_name}/{branch_name}' and current_branch.ahead_behind:
         raise Exception(
             f'Local changes found on branch `{current_branch.name}` which tracks `{remote_name}/{branch_name}`!  This is probably unintended.  Please reconcile your local state before proceeding.'
