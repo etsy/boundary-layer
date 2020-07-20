@@ -9,7 +9,7 @@ To create a release, run:
 
 This will:
     1. Fetch the remote state of the repository, to make sure that you have an up-to-date copy
-    2. If your local branch is set up to track the remote master branch, check to make sure that your local branch is in-sync with the remote, to help prevent you from executing a release that fails to capture your desired changes
+    2. Run some checks on your local state, comparing it to the remote state, to help prevent you from executing a release that fails to capture your desired changes
     3. Check out the local copy of the remote state
     4. Create a tag
     5. Push the tag
@@ -32,7 +32,7 @@ def build_parser():
         '--bump',
         choices=['major', 'minor', 'patch'],
         default='patch',
-
+        help='Select the portion of the version string to bump. default: `patch`'
     )
     bump_type.add_argument(
         '--force-version',
@@ -41,15 +41,15 @@ def build_parser():
     )
 
     parser.add_argument(
-        '--remote-branch-name',
-        default='master',
-        help='Name of the remote branch to use as the basis for the release'
+        '--git-remote-name',
+        default='origin',
+        help='Name of the git remote from which to release. default: `origin`'
     )
 
     parser.add_argument(
-        '--git-remote-name',
-        default='origin',
-        help='Name of the git remote from which to release'
+        '--remote-branch-name',
+        default='master',
+        help='Name of the remote branch to use as the basis for the release. default: `master`'
     )
 
     return parser
