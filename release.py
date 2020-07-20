@@ -137,10 +137,8 @@ def get_current_branch():
     # at this point, output has the form
     # `## <branch-name>...<upstream> [<ahead|behind> <number-of-commits>]`
 
-    m = re.match(
-        r'## (?P<branch_name>[a-zA-Z0-9_/-]+)(\.\.\.(?P<remote>[a-z0-9A-Z_/-]+) (\[(?P<ahead_behind>(ahead|behind) \d+)\])?)?',
-        output
-    )
+    pattern = r'## (?P<branch_name>[a-zA-Z0-9_/-]+)(\.\.\.(?P<remote>[a-z0-9A-Z_/-]+)( \[(?P<ahead_behind>(ahead|behind) \d+)\])?)?'
+    m = re.match(pattern, output)
 
     return m.groupdict()
 
@@ -167,7 +165,7 @@ def do_release(*, remote_name, branch_name, bump_type, force_version):
     current_branch = get_current_branch()
     if current_branch.get('remote') == f'{remote_name}/{branch_name}' and current_branch.get('ahead_behind'):
         raise Exception(
-            'Local changes found on branch that tracks the remote that we are publishing!  This is probably unintended.  Please reconcile your local state before proceeding.'
+            f'Local changes found on branch `{current_branch.get("branch_name")}` which tracks `{remote_name}/{branch_name}`!  This is probably unintended.  Please reconcile your local state before proceeding.'
         )
 
     try:
