@@ -93,6 +93,21 @@ class BaseDagSchema(StrictSchema):
     sub_dags = fields.List(fields.Nested(ReferenceSchema()))
     generators = fields.List(fields.Nested(GeneratorSchema()))
 
+    plugin_config = fields.Dict()
+
+    @validates_schema
+    def validate_plugin_config(self, data):
+        from boundary_layer import plugins
+        if 'plugin_config' not in data:
+            return
+
+        try:
+            plugins.manager.validate_config(data['plugin_config'])
+        except ValidationError as e:
+            raise e
+        except Exception as e:
+            raise ValidationError(str(e))
+
 
 class DagArgsSchema(StrictSchema):
     catchup = fields.Boolean(missing=True)
@@ -179,14 +194,9 @@ class DagArgsSchema(StrictSchema):
 class PrimaryDagSchema(BaseDagSchema):
     compatibility_version = fields.String()
 
-    # jars parameter is the list of jar URIs required by the workflow
-    jars = fields.List(fields.String())
-
     dag_args = fields.Nested(DagArgsSchema)
 
     default_task_args = fields.Dict()
-
-    plugin_config = fields.Dict()
 
     @validates_schema
     def validate_compatibility_version(self, data, **kwargs):
@@ -213,16 +223,3 @@ class PrimaryDagSchema(BaseDagSchema):
                 'is for the incompatible prior version {}. Use the '
                 'migrate-workflow script to update it.'.format(version),
                 ['compatibility_version'])
-
-    @validates_schema
-    def validate_plugin_config(self, data, **kwargs):
-        from boundary_layer import plugins
-        if 'plugin_config' not in data:
-            return
-
-        try:
-            plugins.manager.validate_config(data['plugin_config'])
-        except ValidationError as e:
-            raise e
-        except Exception as e:
-            raise ValidationError(str(e))
