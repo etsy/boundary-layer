@@ -4,7 +4,7 @@
 name: Upload Python Package
 
 on:
-  create:
+  push:
     tags:
     - '*'
 
