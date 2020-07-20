@@ -113,7 +113,7 @@ def get_git_state():
 def check_git_state(state):
     if state.files:
         raise Exception(
-            f'Cannot release: unclean git state:\n{output}'
+            f'Cannot release: unclean git state:\n{state.files}'
         )
 
 
