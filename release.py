@@ -1,7 +1,21 @@
 #!/usr/bin/env python3
 """
 
-This script is used for releasing boundary-layer.
+This script is used for releasing boundary-layer.  It can only be run by
+administrators of the repository at github.com/etsy/boundary-layer.
+
+To create a release, run:
+    ./release.py
+
+This will:
+    1. Fetch the remote state of the repository, to make sure that you have an up-to-date copy
+    2. If your local branch is set up to track the remote master branch, check to make sure that your local branch is in-sync with the remote, to help prevent you from executing a release that fails to capture your desired changes
+    3. Check out the local copy of the remote state
+    4. Create a tag
+    5. Push the tag
+    6. Return you to whatever branch you were on previously
+
+Once the tag is created remotely, a github actions workflow should run the publish build, and release the new version of boundary-layer to pypi.
 """
 import argparse
 import re
