@@ -69,7 +69,7 @@ def bump_version(version, bump_type):
 def check_remote(remote_name):
     """
     Print a warning if we are trying to deploy from a local clone of a fork, rather
-    than of a clone of the primary repository.
+    than from a clone of the primary repository.
     """
     output = subprocess.check_output(
         shlex.split(f'git remote get-url {remote_name}'),
