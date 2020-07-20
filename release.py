@@ -139,7 +139,7 @@ def verify_and_push_tag(remote_name, branch_name, tag_version):
     try:
         git_checkout(remote_name, branch_name)
         check_git_state()
-        push_tag(version)
+        push_tag(tag_version)
     finally:
         original_branch = current_branch.get('branch_name')
         if original_branch:
