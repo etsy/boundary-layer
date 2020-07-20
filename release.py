@@ -90,7 +90,7 @@ def check_git_state():
 
 
 def push_tag(tag_name):
-    print('Creating tag {tag_name}')
+    print(f'Creating tag {tag_name}')
     subprocess.check_call(
         shlex.split(
             f'''
@@ -99,7 +99,7 @@ def push_tag(tag_name):
         )
     )
 
-    print('Pushing tag {tag_name}')
+    print(f'Pushing tag {tag_name}')
     #subprocess.check_call(
     #    shlex.split(
     #        f'''
