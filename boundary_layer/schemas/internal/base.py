@@ -33,7 +33,7 @@ class BaseSpecSchema(StrictSchema):
     schema_extends = ma.fields.String()
 
     @ma.validates_schema
-    def jsonschema_or_extended(self, data):
+    def jsonschema_or_extended(self, data, **kwargs):
         if 'parameters_jsonschema' in data or 'schema_extends' in data:
             return
 
@@ -43,7 +43,7 @@ class BaseSpecSchema(StrictSchema):
                 data.get('name', data)))
 
     @ma.validates_schema
-    def check_jsonschema(self, data):
+    def check_jsonschema(self, data, **kwargs):
         if 'parameters_jsonschema' not in data:
             return
         # Make sure that `properties` is present, because it's not actually

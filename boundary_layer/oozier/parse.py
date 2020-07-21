@@ -18,6 +18,7 @@ import xmltodict
 import networkx as nx
 import six
 
+from marshmallow import ValidationError
 from boundary_layer.graph import _GraphUtil
 from boundary_layer.logger import logger
 from boundary_layer import exceptions, VERSION_STRING, plugins
@@ -120,20 +121,20 @@ class OozieWorkflowParser(object):
         parsed = xmltodict.parse(
             self.file_fetcher.fetch_file_content(filename))
 
-        loaded = OozieWorkflowSchema(context={
-            'cluster_config': cluster_config,
-            'oozie_plugin': oozie_config,
-            'macro_translator': JspMacroTranslator(oozie_config.jsp_macros()),
-            'production': self.production,
-        }).load(parsed)
-
-        if loaded.errors:
+        try:
+            data = OozieWorkflowSchema(context={
+                'cluster_config': cluster_config,
+                'oozie_plugin': oozie_config,
+                'macro_translator': JspMacroTranslator(oozie_config.jsp_macros()),
+                'production': self.production,
+            }).load(parsed)
+        except ValidationError as err:
             raise Exception('Errors parsing file {}: {}'.format(
                 filename,
-                loaded.errors))
+                err.messages))
 
-        data_copy = loaded.data.copy()
-        data_copy.update(self.partition_actions(loaded.data))
+        data_copy = data.copy()
+        data_copy.update(self.partition_actions(data))
 
         return data_copy
 

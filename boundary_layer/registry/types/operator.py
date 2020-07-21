@@ -14,6 +14,7 @@
 #     limitations under the License.
 
 import six
+from marshmallow import ValidationError
 from boundary_layer.logger import logger
 from boundary_layer.registry import ConfigFileRegistry, RegistryNode, NodeTypes
 from boundary_layer.schemas.internal.operators import OperatorSpecSchema
@@ -79,15 +80,14 @@ class OperatorNode(RegistryNode):
                 'resolve_properties() has not been called yet!'.format(
                     self))
 
-        loaded = ImportSchema().load(self.config.get('imports', {}))
-
-        assert not loaded.errors, \
-            ('Internal error: processing `imports` config {} for '
-             'operator `{}`').format(
+        try:
+            result = ImportSchema().load(self.config.get('imports', {}))
+        except ValidationError as err:
+            raise Exception(
+                ('Internal error: processing `imports` config {} for '
+                 'operator `{}`').format(
                  self.config.get('imports', {}),
-                 self.name)
-
-        result = loaded.data
+                 self.name))
 
         if self.operator_class:
             result.setdefault('objects', [])

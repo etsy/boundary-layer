@@ -17,6 +17,7 @@ import abc
 import os
 from enum import Enum
 import yaml
+from marshmallow import ValidationError
 
 from boundary_layer.logger import logger
 from boundary_layer import util
@@ -177,13 +178,13 @@ class ConfigFileRegistry(Registry):
 
         logger.debug('validating item %s against schema %s',
                      item, self.spec_schema_cls.__name__)
-
-        loaded = self.spec_schema_cls().load(item)
-        if loaded.errors:
+        try:
+            data = self.spec_schema_cls().load(item)
+        except ValidationError as err:
             raise InvalidConfig('Invalid config spec in file {}: {}'.format(
-                filename, loaded.errors))
+                filename, err.messages))
 
-        return loaded.data
+        return data
 
     def load_configs(self, config_paths):
         if not isinstance(config_paths, list):

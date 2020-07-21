@@ -53,11 +53,9 @@ class OozieActionBuilderWithSchema(OozieActionBuilder):
         pass
 
     def __init__(self, context, action_metadata, data):
-        loaded = self.schema(context=context).load(data)
-        if loaded.errors:
-            raise ma.ValidationError(loaded.errors)
+        loaded_data = self.schema(context=context).load(data)
 
-        super(OozieActionBuilderWithSchema, self).__init__(context, action_metadata, loaded.data)
+        super(OozieActionBuilderWithSchema, self).__init__(context, action_metadata, loaded_data)
 
     def get_action(self):
         result = self.action_metadata.copy()
@@ -67,7 +65,7 @@ class OozieActionBuilderWithSchema(OozieActionBuilder):
 
 
 class OozieSubWorkflowActionSchema(OozieBaseSchema):
-    app_path = ma.fields.String(required=True, load_from='app-path')
+    app_path = ma.fields.String(required=True, data_key='app-path')
     propagate_configuration = ma.fields.Dict(allow_none=True)
 
 

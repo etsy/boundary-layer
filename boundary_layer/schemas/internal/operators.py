@@ -32,7 +32,7 @@ class OperatorSpecSchema(BaseSpecSchema):
     property_preprocessors = ma.fields.List(ma.fields.Nested(PropertyPreprocessorSchema))
 
     @ma.validates_schema
-    def valid_preprocessor_property_names(self, data):
+    def valid_preprocessor_property_names(self, data, **kwargs):
         preprocessors = data.get('property_preprocessors', [])
 
         if not preprocessors:

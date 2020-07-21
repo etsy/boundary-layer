@@ -28,7 +28,7 @@ class OozieFileSystemSourceDestSchema(OozieBaseSchema):
 
 
 class OozieFileSystemPathSchema(OozieBaseSchema):
-    path = ma.fields.String(required=True, load_from='@path')
+    path = ma.fields.String(required=True, data_key='@path')
 
 
 class OozieFileSystemActionSchema(OozieBaseSchema):
@@ -83,7 +83,7 @@ class OozieHadoopConfigurationSchema(OozieBaseSchema):
     _property = ma.fields.List(
         ma.fields.Nested(OozieNameValueSchema),
         required=True,
-        load_from='property',
+        data_key='property',
         dump_to='property',
         attribute='property')
 
@@ -93,9 +93,9 @@ class OozieHadoopConfigurationSchema(OozieBaseSchema):
 class OozieMapReduceActionSchema(OozieBaseSchema):
     arg = ma.fields.List(ma.fields.String(), missing=[])
     configuration = ma.fields.Nested(OozieHadoopConfigurationSchema)
-    job_tracker = ma.fields.String(required=True, load_from='job-tracker')
-    name_node = ma.fields.String(required=True, load_from='name-node')
-    main_class = ma.fields.String(load_from='main-class')
+    job_tracker = ma.fields.String(required=True, data_key='job-tracker')
+    name_node = ma.fields.String(required=True, data_key='name-node')
+    main_class = ma.fields.String(data_key='main-class')
 
 
 class OozieMapReduceActionBuilder(OozieActionBuilderWithSchema):

@@ -17,10 +17,13 @@ import marshmallow as ma
 
 
 class OozieBaseSchema(ma.Schema):
+    class Meta:
+        unknown = ma.INCLUDE
+
     singletons_to_lists = []
 
     @ma.pre_load
-    def _convert_singletons_to_lists(self, data):
+    def _convert_singletons_to_lists(self, data, **kwargs):
         if all(isinstance(data.get(key, []), list) for key in self.singletons_to_lists):
             return data
 
@@ -34,15 +37,15 @@ class OozieBaseSchema(ma.Schema):
 
 
 class OozieNamedObjectSchema(OozieBaseSchema):
-    name = ma.fields.String(required=True, load_from='@name')
+    name = ma.fields.String(required=True, data_key='@name')
 
 
 class OozieFlowControlSchema(OozieBaseSchema):
-    to = ma.fields.String(required=True, load_from='@to')
+    to = ma.fields.String(required=True, data_key='@to')
 
 
 class OozieForkStartSchema(OozieBaseSchema):
-    start = ma.fields.String(required=True, load_from='@start')
+    start = ma.fields.String(required=True, data_key='@start')
 
 
 class OozieForkSchema(OozieNamedObjectSchema):
@@ -51,7 +54,7 @@ class OozieForkSchema(OozieNamedObjectSchema):
     singletons_to_lists = ['path']
 
     @ma.post_load
-    def add_base_operator(self, data):
+    def add_base_operator(self, data, **kwargs):
         operator = {
             'name': data['name'],
             'type': 'flow_control',
@@ -64,7 +67,7 @@ class OozieForkSchema(OozieNamedObjectSchema):
 
 class OozieJoinSchema(OozieNamedObjectSchema, OozieFlowControlSchema):
     @ma.post_load
-    def add_base_operator(self, data):
+    def add_base_operator(self, data, **kwargs):
         operator = {
             'name': data['name'],
             'type': 'flow_control',
@@ -101,7 +104,7 @@ class OozieActionSchema(OozieNamedObjectSchema):
         return keyed_action_builders[keys_present[0]]
 
     @ma.validates_schema(pass_original=True)
-    def one_action_type(self, _, original):
+    def one_action_type(self, _, original, **kwargs):
         """ Runs the validation checks to make sure that exactly one
             known action is present, and prints an error message based on
             the content of the original, unparsed input
@@ -109,7 +112,7 @@ class OozieActionSchema(OozieNamedObjectSchema):
         self._get_action_builder(original)
 
     @ma.post_load(pass_original=True)
-    def fetch_base_action(self, data, original):
+    def fetch_base_action(self, data, original, **kwargs):
         builder_cls = self._get_action_builder(original)
 
         return builder_cls(self.context, data, original[builder_cls.key])
@@ -120,7 +123,7 @@ class OozieKillSchema(OozieNamedObjectSchema):
 
 
 class OozieCaseSchema(OozieFlowControlSchema):
-    text = ma.fields.String(required=True, load_from='#text')
+    text = ma.fields.String(required=True, data_key='#text')
 
 
 class OozieSwitchSchema(OozieBaseSchema):
@@ -135,7 +138,7 @@ class OozieDecisionSchema(OozieNamedObjectSchema):
 
 
 class OozieWorkflowAppSchema(OozieNamedObjectSchema):
-    name = ma.fields.String(required=True, load_from='@name')
+    name = ma.fields.String(required=True, data_key='@name')
     action = ma.fields.List(ma.fields.Nested(OozieActionSchema), missing=[])
     join = ma.fields.List(ma.fields.Nested(OozieJoinSchema), missing=[])
     fork = ma.fields.List(ma.fields.Nested(OozieForkSchema), missing=[])
@@ -150,8 +153,8 @@ class OozieWorkflowAppSchema(OozieNamedObjectSchema):
 
 class OozieWorkflowSchema(OozieBaseSchema):
     workflow_app = ma.fields.Nested(
-        OozieWorkflowAppSchema, load_from='workflow-app', required=True)
+        OozieWorkflowAppSchema, data_key='workflow-app', required=True)
 
     @ma.post_load
-    def return_workflow(self, data):
+    def return_workflow(self, data, **kwargs):
         return data['workflow_app']

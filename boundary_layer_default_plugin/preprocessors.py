@@ -48,7 +48,7 @@ class BuildKubernetesSchema(StrictSchema):
     class_name = ma.fields.String(required=True)
 
     @ma.validates_schema
-    def check_valid_class(self, data):
+    def check_valid_class(self, data, **kwargs):
         ALLOWED_CLASS = ['airflow.contrib.kubernetes.volume.Volume',
                          'airflow.contrib.kubernetes.volume_mount.VolumeMount',
                          'airflow.contrib.kubernetes.secret.Secret',
@@ -89,7 +89,7 @@ class BuildTimedeltaSchema(StrictSchema):
     units = ma.fields.String(required=True)
 
     @ma.validates_schema
-    def check_valid_units(self, data):
+    def check_valid_units(self, data, **kwargs):
         ALLOWED_UNITS = ['seconds', 'minutes', 'hours', 'days']
         if data.get('units') not in ALLOWED_UNITS:
             raise ma.ValidationError(
