@@ -35,4 +35,5 @@ jobs:
         flake8 boundary_layer boundary_layer_default_plugin bin test --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with tox
       run: |
+        # py`echo ${{ matrix.python-version }} | tr -d '.'`  yields py27, py35, etc. which is what tox needs
         tox --recreate -e py`echo ${{ matrix.python-version }} | tr -d '.'` test
