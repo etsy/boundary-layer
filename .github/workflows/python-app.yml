@@ -37,3 +37,11 @@ jobs:
       run: |
         # py`echo ${{ matrix.python-version }} | tr -d '.'`  yields py27, py35, etc. which is what tox needs
         tox --recreate -e py`echo ${{ matrix.python-version }} | tr -d '.'` test
+  finish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
