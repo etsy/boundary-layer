@@ -67,13 +67,19 @@ def bump_version(version, bump_type):
 
 
 def check_remote(remote_name):
+    """
+    Print a warning if we are trying to deploy from a local clone of a fork, rather
+    than from a clone of the primary repository.
+    """
     output = subprocess.check_output(
         shlex.split(f'git remote get-url {remote_name}'),
         encoding='utf-8'
     ).strip()
 
+    # let's check this the dumbest way possible
     if output not in [
         'git@github.com:etsy/boundary-layer',
+        'git@github.com:etsy/boundary-layer.git',
         'https://github.com/etsy/boundary-layer',
         'https://www.github.com/etsy/boundary-layer',
     ]:
