@@ -260,11 +260,11 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
                     str(e)))
         return bin_string
 
-    def _json_handler(arg):
+    def _json_handler(self, arg):
         return json.dumps(json.loads(arg))
 
-    def _is_json(arg):
+    def _is_json(self, arg):
         return isinstance(arg, dict) or isinstance(arg, list)
 
-    def _verify_valid_arg_type(arg):
+    def _verify_valid_arg_type(self, arg):
         return self._is_json(arg) or isinstance(arg, str)
