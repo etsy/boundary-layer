@@ -31,6 +31,9 @@ parameters_jsonschema:
                         type: [string, object]
                     attributes:
                         type: object
+                anyOf:
+                - required: [data]
+                - required: [attributes]
         project_id:
             type: string
         gcp_conn_id:

@@ -222,10 +222,14 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
     """
     Converts pubsub message data with various python types 
     to binary strings.
-    Supported message data arg types: `list`, `dict`, and `str`
+    Supported message data arg types: `dict`, and `str`
 
-    If arg is `list` or `dict` that data will be converted
+    If arg is type `dict` that data will be converted
     into a json string, and then encoded into a binary string
+
+    This preprocessing is necessary as messages with the `data`
+    property are required to be binary strings to use airflow's
+    provided pubsub functionality
     """
     type = "pubsub_message_data_to_binary_string"
 
@@ -233,6 +237,10 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
         return {'modules': ['json']}
 
     def process_arg(self, arg, node, raw_args):
+        """
+        Given array of messages, if `data` property is present in
+        message objects, convert to binary string
+        """
         res = []
         for message in arg:
             if 'data' in message:
@@ -241,18 +249,15 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
         return res
 
     def _process_data_arg(self, arg):
+        """
+        Given either a dict or str:
+        - If str, encode to binary string
+        - If dict, convert to json and encode as binary string
+        """
         bin_string = None
-        # Only support dict, arr, str args
-        if not self._verify_valid_arg_type(arg):
-            raise Exception(
-                'Error in preprocessor {} for argument`{}` w/ unsupported type: {}'.format(
-                    self.type,
-                    arg,
-                    type(arg))
-                )
         try:
             res_str = arg if not self._is_json(arg) else self._json_handler(arg)
-            bin_string = b'{}'.format(res_str)
+            bin_string = res_str.encode('utf-8')
         except Exception as e:
             raise Exception(
                 'Error in preprocessor {} for argument `{}`: {}'.format(
@@ -262,10 +267,7 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
         return bin_string
 
     def _json_handler(self, arg):
-        return json.dumps(json.loads(arg))
+        return json.dumps(arg)
 
     def _is_json(self, arg):
-        return isinstance(arg, dict) or isinstance(arg, list)
-
-    def _verify_valid_arg_type(self, arg):
-        return self._is_json(arg) or isinstance(arg, str)
+        return isinstance(arg, dict)
