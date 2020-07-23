@@ -23,7 +23,14 @@ parameters_jsonschema:
         topic:
             type: string
         messages:
-            type: list
+            type: array
+            items:
+                type: object
+                properties:
+                    data:
+                        type: bytes
+                    attributes:
+                        type: object
         project_id:
             type: string
         gcp_conn_id:
