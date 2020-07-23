@@ -28,7 +28,10 @@ parameters_jsonschema:
                 type: object
                 properties:
                     data:
-                        type: bytes
+                        type:
+                            oneOf:
+                            - string
+                            - object
                     attributes:
                         type: object
         project_id:
@@ -42,3 +45,8 @@ parameters_jsonschema:
     required:
     - topic
     - messages
+
+property_preprocessors:
+    - type: to_binary_string
+      apply_to_properties:
+      - data

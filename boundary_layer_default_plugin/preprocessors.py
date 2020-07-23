@@ -216,3 +216,46 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
             context[field_name] = now
 
         return context
+
+class ToBinaryString(PropertyPreprocessor):
+    """
+    Converts various python types to binary strings.
+    Supported arg types: `list`, `dict`, and `str`
+
+    If arg is `list` or `dict` that data will be converted
+    into a json string, and then encoded into a binary string
+    """
+    type = "to_binary_string"
+
+    def imports(self):
+        return {'modules': ['json']}
+
+    def process_arg(self, arg, node, raw_args):
+        bin_string = None
+        # Only support dict, arr, str args
+        if not _verify_valid_arg_type(arg):
+            raise Exception(
+                'Error in preprocessor {} for argument`{}` w/ unsupported type {} : {}'.format(
+                    self.type,
+                    arg,
+                    type(arg),
+                    str(e)))
+        try:
+            res_str = arg if not _is_json(arg) else _json_handler(arg)
+            bin_string = b'{}'.format(res_str)
+        except Exception:
+            raise Exception(
+                'Error in preprocessor {} for argument `{}`: {}'.format(
+                    self.type,
+                    arg,
+                    str(e)))
+        return bin_string
+
+    def _json_handler(arg):
+        return json.dumps(json.loads(arg))
+
+    def _is_json(arg):
+        return isinstance(arg, dict) or isinstance(arg, list)
+
+    def _verify_valid_arg_type(arg):
+        return _is_json(arg) or isinstance(arg, str)
