@@ -240,7 +240,7 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
             res.append(message)
         return res
 
-    def _process_data_arg(self, arg, node, raw_args):
+    def _process_data_arg(self, arg):
         bin_string = None
         # Only support dict, arr, str args
         if not self._verify_valid_arg_type(arg):
