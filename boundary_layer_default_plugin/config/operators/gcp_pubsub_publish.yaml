@@ -28,10 +28,7 @@ parameters_jsonschema:
                 type: object
                 properties:
                     data:
-                        type:
-                            oneOf:
-                            - string
-                            - object
+                        type: [string, object]
                     attributes:
                         type: object
         project_id:
@@ -47,6 +44,6 @@ parameters_jsonschema:
     - messages
 
 property_preprocessors:
-    - type: to_binary_string
+    - type: pubsub_message_data_to_binary_string
       apply_to_properties:
-      - data
+      - messages

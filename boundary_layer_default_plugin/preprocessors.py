@@ -217,20 +217,29 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
 
         return context
 
-class ToBinaryString(PropertyPreprocessor):
+class PubsubMessageDataToBinaryString(PropertyPreprocessor):
     """
-    Converts various python types to binary strings.
-    Supported arg types: `list`, `dict`, and `str`
+    Converts pubsub message data with various python types 
+    to binary strings.
+    Supported message data arg types: `list`, `dict`, and `str`
 
     If arg is `list` or `dict` that data will be converted
     into a json string, and then encoded into a binary string
     """
-    type = "to_binary_string"
+    type = "pubsub_message_data_to_binary_string"
 
     def imports(self):
         return {'modules': ['json']}
 
     def process_arg(self, arg, node, raw_args):
+        res = []
+        for message in arg:
+            if 'data' in message:
+                message['data'] = self._process_data_arg(message['data'])
+            res.append(message)
+        return res
+
+    def _process_data_arg(self, arg, node, raw_args):
         bin_string = None
         # Only support dict, arr, str args
         if not _verify_valid_arg_type(arg):
