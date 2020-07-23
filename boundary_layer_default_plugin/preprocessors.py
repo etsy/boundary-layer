@@ -16,6 +16,7 @@
 import re
 import datetime
 from collections import namedtuple
+import json
 import marshmallow as ma
 import jinja2
 from boundary_layer.registry.types.preprocessor import PropertyPreprocessor
@@ -244,15 +245,15 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
         # Only support dict, arr, str args
         if not self._verify_valid_arg_type(arg):
             raise Exception(
-                'Error in preprocessor {} for argument`{}` w/ unsupported type {} : {}'.format(
+                'Error in preprocessor {} for argument`{}` w/ unsupported type: {}'.format(
                     self.type,
                     arg,
-                    type(arg),
-                    str(e)))
+                    type(arg))
+                )
         try:
             res_str = arg if not self._is_json(arg) else self._json_handler(arg)
             bin_string = b'{}'.format(res_str)
-        except Exception:
+        except Exception as e:
             raise Exception(
                 'Error in preprocessor {} for argument `{}`: {}'.format(
                     self.type,
