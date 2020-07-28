@@ -17,6 +17,7 @@ import re
 import datetime
 from collections import namedtuple
 import json
+import base64
 import marshmallow as ma
 import jinja2
 from boundary_layer.registry.types.preprocessor import PropertyPreprocessor
@@ -234,7 +235,7 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
     type = "pubsub_message_data_to_binary_string"
 
     def imports(self):
-        return {'modules': ['json']}
+        return {'modules': ['json', 'base64']}
 
     def process_arg(self, arg, node, raw_args):
         """
@@ -257,7 +258,7 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
         bin_string = None
         try:
             res_str = arg if not self._is_json(arg) else self._json_handler(arg)
-            bin_string = res_str.encode('utf-8')
+            bin_string = base64.b64encode(res_str.encode('utf-8'))
         except Exception as e:
             raise Exception(
                 'Error in preprocessor {} for argument `{}`: {}'.format(

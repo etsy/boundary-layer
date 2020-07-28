@@ -12,11 +12,11 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-# see: https://github.com/apache/airflow/blob/master/airflow/providers/google/cloud/operators/pubsub.py
+# see: https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/operators/pubsub_operator.py
 
 name: gcp_pubsub_publish
-operator_class: PubSubPublishMessageOperator
-operator_class_module: airflow.providers.google.cloud.operators.pubsub
+operator_class: PubSubPublishOperator
+operator_class_module: airflow.contrib.operators.pubsub_operator
 schema_extends: base
 parameters_jsonschema:
     properties:
@@ -34,17 +34,16 @@ parameters_jsonschema:
                 anyOf:
                 - required: [data]
                 - required: [attributes]
-        project_id:
+        project:
             type: string
         gcp_conn_id:
             type: string
         delegate_to:
             type: string
-        project:
-            type: string
     required:
     - topic
     - messages
+    - project
 
 property_preprocessors:
     - type: pubsub_message_data_to_binary_string
