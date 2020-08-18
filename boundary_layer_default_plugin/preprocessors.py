@@ -16,6 +16,8 @@
 import re
 import datetime
 from collections import namedtuple
+import json
+import base64
 import marshmallow as ma
 import jinja2
 from boundary_layer.registry.types.preprocessor import PropertyPreprocessor
@@ -216,3 +218,57 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
             context[field_name] = now
 
         return context
+
+class PubsubMessageDataToBinaryString(PropertyPreprocessor):
+    """
+    Converts pubsub message data with various python types 
+    to binary strings.
+    Supported message data arg types: `dict`, and `str`
+
+    If arg is type `dict` that data will be converted
+    into a json string, and then encoded into a binary string
+
+    This preprocessing is necessary as messages with the `data`
+    property are required to be binary strings to use airflow's
+    provided pubsub functionality
+    """
+    type = "pubsub_message_data_to_binary_string"
+
+    def imports(self):
+        return {'modules': ['json', 'base64']}
+
+    def process_arg(self, arg, node, raw_args):
+        """
+        Given array of messages, if `data` property is present in
+        message objects, convert to binary string
+        """
+        res = []
+        for message in arg:
+            if 'data' in message:
+                message['data'] = self._process_data_arg(message['data'])
+            res.append(message)
+        return res
+
+    def _process_data_arg(self, arg):
+        """
+        Given either a dict or str:
+        - If str, encode to binary string
+        - If dict, convert to json and encode as binary string
+        """
+        bin_string = None
+        try:
+            res_str = arg if not self._is_dict(arg) else self._json_handler(arg)
+            bin_string = base64.b64encode(res_str.encode('utf-8'))
+        except Exception as e:
+            raise Exception(
+                'Error in preprocessor {} for argument `{}`: {}'.format(
+                    self.type,
+                    arg,
+                    str(e)))
+        return bin_string
+
+    def _json_handler(self, arg):
+        return json.dumps(arg)
+
+    def _is_dict(self, arg):
+        return isinstance(arg, dict)

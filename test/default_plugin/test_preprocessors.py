@@ -63,3 +63,36 @@ def test_ensure_rendered_string_pattern(mocker):
 
     with pytest.raises(Exception):
         renderer.process_arg("My-<item.value>-cluster", None, {})
+
+def test_pubsub_message_to_binary_string_dictionary(mocker):
+    """
+    Given: User provides message with `dict` type data property
+    Assert: Data value is converted to json and encoded into binary string
+    """
+    preprocessed_obj = {'hello': 'world'}
+    preprocessed_messages = [
+        {
+            'data': preprocessed_obj,
+            'attributes': {'testing': 'is_cool'}
+        }
+    ]
+    expected_obj_str_encoded = base64.b64encode(json.dumps(preprocessed_obj).encode('utf-8'))
+    processor = PubsubMessageDataToBinaryString({})
+    res = processor.process_arg(preprocessed_messages, None, {})
+    assert res[0]['data'] == expected_obj_str_encoded
+
+def test_pubsub_message_to_binary_string_str(mocker):
+    """
+    Given: User provides message with `str` type data property
+    Assert: Data value is encoded into binary string
+    """
+    preprocessed_str = 'helloworld'
+    preprocessed_messages = [
+        {
+            'data': preprocessed_str
+        }
+    ]
+    expected_str_encoded = base64.b64encode(preprocessed_str.encode('utf-8'))
+    processor = PubsubMessageDataToBinaryString({})
+    res = processor.process_arg(preprocessed_messages, None, {})
+    assert res[0]['data'] == expected_str_encoded

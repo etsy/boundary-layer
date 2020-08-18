@@ -18,7 +18,7 @@ These are the steps for submitting a proposed contribution to boundary-layer:
 3. Make your changes
 4. Document new functionality as appropriate
 5. Add new tests if possible
-6. [Recommended] Run the test suite locally with `tox`
+6. [Recommended] Run the test suite locally with `tox --recreate test`
 7. Push your changes to your fork
 8. Send a pull request!
 

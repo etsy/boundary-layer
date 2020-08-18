@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/etsy/boundary-layer.svg?branch=master)](https://travis-ci.org/etsy/boundary-layer)[![Coverage Status](https://coveralls.io/repos/github/etsy/boundary-layer/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/etsy/boundary-layer?branch=master)
+[![Build Status](https://github.com/etsy/boundary-layer/workflows/Pull%20request%20test/badge.svg)](https://github.com/etsy/boundary-layer/actions?query=workflow%3A%22Pull+request+test%22)[![Coverage Status](https://coveralls.io/repos/github/etsy/boundary-layer/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/etsy/boundary-layer?branch=master)
 # boundary-layer
 `boundary-layer` is a tool for building [Airflow](https://www.github.com/apache/incubator-airflow) DAGs from human-friendly, structured, maintainable yaml configuration.  It includes first-class support for various usability enhancements that are not built into Airflow itself:
  - Managed resources created and destroyed by Airflow within a DAG: for example, ephemeral DAG-scoped hadoop clusters on [Dataproc](https://cloud.google.com/dataproc/)
@@ -46,6 +46,46 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+```
+
+## Publishing updates to PyPI (admins only)
+`boundary-layer` is distributed via [PyPI](https://pypi.org/project/boundary-layer/).  We rely on an automated Github Actions [build](.github/workflows/python-publish.yml) to publish updates.  The build runs every time a tag is pushed to the repository.  We have a [script](release.py) that automates the creation of these tags, making sure that they are versioned correctly and created for the intended commits.
+
+The recommended process for publishing a relatively minor boundary layer update is to simply run
+```
+./release.py
+```
+which will bump the patch version.
+
+For bigger changes, you can bump the minor (or major) versions, or you can force a specific version string, via one of the following commands:
+```
+./release.py --bump minor
+./release.py --bump major
+./release.py --force-version a.b.c
+```
+
+There are a few other options supported by the `release.py` command, as described by the usage string:
+```
+╰$ ./release.py --help
+usage: release.py [-h]
+                  [--bump {major,minor,patch} | --force-version FORCE_VERSION]
+                  [--git-remote-name GIT_REMOTE_NAME]
+                  [--remote-branch-name REMOTE_BRANCH_NAME]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --bump {major,minor,patch}
+                        Select the portion of the version string to bump.
+                        default: `patch`
+  --force-version FORCE_VERSION
+                        Force the new version to this value. Must be a valid
+                        semver.
+  --git-remote-name GIT_REMOTE_NAME
+                        Name of the git remote from which to release. default:
+                        `origin`
+  --remote-branch-name REMOTE_BRANCH_NAME
+                        Name of the remote branch to use as the basis for the
+                        release. default: `master`
 ```
 
 # boundary-layer YAML configs
@@ -181,7 +221,7 @@ This python DAG is now ready for ingestion directly into a running Airflow insta
 A few things to note:
  - `boundary-layer` converted the `start_date` parameter from a string to a python `datetime` object.  This is an example of the boundary-layer argument-preprocessor feature, which allows config parameters to be specified as user-friendly strings and converted to the necessary python data structures automatically.
  - `boundary-layer` added a `sentinel` node in parallel with the cluster-destroy node, which serves as an indicator to Airflow itself regarding the ultimate outcome of the Dag Run.  Airflow determines the Dag Run status from the leaf nodes of the DAG, and normally the cluster-destroy node will always execute (irrespective of upstream failures) and will likely succeed. This would cause DAGs with failures in critical nodes to be marked as successes, if not for the sentinel node.  The sentinel node will only trigger if all of its upstream dependencies succeed --- otherwise it will be marked as `upstream-failed`, which induces a failure state for the Dag Run.
- 
+
 # Oozie Migration tools
 
 In addition to allowing us to define Airflow workflows using YAML configurations, `boundary-layer` also provides a module for converting Oozie XML configuration files into `boundary-layer` YAML configurations, which can then be used to create Airflow DAGs.

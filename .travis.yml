@@ -17,7 +17,7 @@ matrix:
 install:
   - pip install --upgrade tox coveralls
 
-script: tox
+script: tox --recreate test
 
 after_success:
     - ./run_coveralls.sh
