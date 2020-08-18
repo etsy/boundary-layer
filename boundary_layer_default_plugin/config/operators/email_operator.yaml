@@ -12,7 +12,8 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-# see: https://airflow.apache.org/docs/stable/_modules/airflow/operators/email_operator.html
+# see: https://github.com/apache/airflow/blob/1.10.3/airflow/operators/email_operator.py
+
 name: email
 operator_class: EmailOperator
 operator_class_module: airflow.operators.email_operator
@@ -48,4 +49,6 @@ parameters_jsonschema:
             type: string
     required:
         - to
+        - subject
+        - html_content
 
