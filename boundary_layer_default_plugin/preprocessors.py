@@ -272,3 +272,25 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
 
     def _is_dict(self, arg):
         return isinstance(arg, dict)
+
+
+class StringifyObject(PropertyPreprocessor):
+    """
+    Converts non-string types within an objct to string types e.g., for use with
+    environment variables
+    """
+    type = "stringify_object"
+
+    def imports(self):
+        return {'modules': ['json']}
+
+    def process_arg(self, arg, node, raw_args):
+        scrubbed = {}
+        for k, v in arg.items():
+            if isinstance(v, bool):
+                scrubbed[k] = str(v).lower()
+            elif isinstance(v, (dict, list)):
+                scrubbed[k] = json.dumps(v)
+            else:
+                scrubbed[k] = str(v)
+        return scrubbed
