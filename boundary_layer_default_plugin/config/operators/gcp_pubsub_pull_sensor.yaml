@@ -25,11 +25,11 @@ parameters_jsonschema:
         subscription:
             type: string
         max_messages:
-            type: int
+            type: integer
         return_immediately:
-            type: bool
+            type: boolean
         ack_messages:
-            type: bool
+            type: boolean
         topic:
             type: string
         gcp_conn_id:
