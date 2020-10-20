@@ -143,9 +143,11 @@ class DagBuilderBase(object):
                 generator_nodes & downstream_deps,
                 node.name)
 
+        sorted_operator_args = {k: node.operator_args[k] for k in sorted(node.operator_args)}
+
         return template.render(
             node=node,
-            args=node.operator_args,
+            args=sorted_operator_args,
             upstream_dependencies=list(upstream_deps - generator_nodes),
             downstream_dependencies=list(downstream_deps - generator_nodes),
         )
@@ -203,7 +205,7 @@ class DagBuilderBase(object):
             referring_node=node,
             sub_dag_builder=self.sub_dag_builder,
             generator_builder=self.generator_builder,
-            )
+        )
 
         return builder.build()
 
