@@ -147,7 +147,7 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
         try:
             rendered_arg = self.render_template(arg, raw_args)
         except jinja2.exceptions.UndefinedError:
-            logger.warning(
+            logger.debug(
                 'Could not render template `%s`; cannot verify that the argument '
                 'matches the required pattern `%s`!',
                 arg,
@@ -161,7 +161,7 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
 
         VERBATIM_REGEX = '<<.+>>'
         if re.compile(VERBATIM_REGEX).search(rendered_arg):
-            logger.warning(
+            logger.debug(
                 'Argument generated from `%s` may not match the required pattern `%s` and fail.',
                 rendered_arg,
                 regex.pattern)
