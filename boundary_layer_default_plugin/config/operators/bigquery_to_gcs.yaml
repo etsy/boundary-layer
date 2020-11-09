@@ -27,7 +27,7 @@ parameters_jsonschema:
         compression:
             type: string
         export_format:
-            type: string
+            type: string # On tag 1.10.3, airflow natively supports these formats https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/hooks/bigquery_hook.py#L1096-L1098
         field_delimiter:
             type: string
         print_header:
