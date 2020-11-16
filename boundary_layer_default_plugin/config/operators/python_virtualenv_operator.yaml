@@ -1,0 +1,57 @@
+# Copyright 2020 Etsy Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+
+# see: https://github.com/apache/airflow/blob/1.10.3/airflow/operators/python_operator.py#L197
+
+name: python_virtualenv
+operator_class: PythonVirtualenvOperator
+operator_class_module: airflow.operators.python_operator
+schema_extends: python
+parameters_jsonschema:
+    properties:
+        python_callable:
+            type: string
+        requirements:
+            type: array
+            items:
+                type: string
+        python_version:
+            type: string
+        use_dill:
+            type: boolean
+        system_site_packages:
+            type: boolean
+        op_kwargs:
+            type: object
+        op_args:
+            type: array
+            items:
+                type: string
+        provide_context:
+            type: boolean
+        string_args:
+            type: array
+            items:
+                type: string
+        templates_dict:
+            type: object
+            additionalProperties:
+                type: string
+        templates_exts:
+            type: array
+            items:
+                type: string
+    required:
+        - python_callable
+        - python_version # we enforce python version here to avoid surprise.
