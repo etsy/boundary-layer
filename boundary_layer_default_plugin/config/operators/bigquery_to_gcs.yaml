@@ -12,7 +12,8 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-# see: https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/operators/bigquery_to_gcs.py
+# for the native operator, see: https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/operators/bigquery_to_gcs.py
+# for the export_format, see: https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/hooks/bigquery_hook.py#L1096-L1098\
 
 name: bigquery_to_gcs
 operator_class: BigQueryToCloudStorageOperator
@@ -28,6 +29,14 @@ parameters_jsonschema:
             type: string
         export_format:
             type: string
+            enum: [
+                CSV,
+                NEWLINE_DELIMITED_JSON,
+                AVRO,
+                GOOGLE_SHEETS,
+                DATASTORE_BACKUP,
+                PARQUET
+            ]
         field_delimiter:
             type: string
         print_header:
