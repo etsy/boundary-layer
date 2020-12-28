@@ -16,35 +16,35 @@ def test_ensure_rendered_string_pattern(mocker):
         {},
     ) == "my-cluster-{{execution_date.strftime('%Y-%m-%d')}}"
 
-    warning_mock = Mock()
-    mocker.patch.object(logger, 'warning', new=warning_mock)
+    debug_mock = Mock()
+    mocker.patch.object(logger, 'debug', new=debug_mock)
     assert renderer.process_arg(
         "my-cluster-{{task.task_id}}",
         None,
         {'task_id': 'my-task-id'},
     ) == "my-cluster-{{task.task_id}}"
-    warning_mock.assert_not_called()
+    debug_mock.assert_not_called()
 
     assert renderer.process_arg(
         "my-cluster-{{unknown_var.task_id}}",
         None,
         {'task_id': 'my-task-id'},
     ) == "my-cluster-{{unknown_var.task_id}}"
-    warning_mock.assert_called_once()
+    debug_mock.assert_called_once()
 
-    warning_mock = Mock()
-    mocker.patch.object(logger, 'warning', new=warning_mock)
+    debug_mock = Mock()
+    mocker.patch.object(logger, 'debug', new=debug_mock)
     assert renderer.process_arg(
         "my-<<item_name>>-cluster", None, {},
     ) == "my-<<item_name>>-cluster"
-    warning_mock.assert_called_once()
+    debug_mock.assert_called_once()
 
-    warning_mock = Mock()
-    mocker.patch.object(logger, 'warning', new=warning_mock)
+    debug_mock = Mock()
+    mocker.patch.object(logger, 'debug', new=debug_mock)
     assert renderer.process_arg(
         "my-cluster-<<item.value>>", None, {},
     ) == "my-cluster-<<item.value>>"
-    warning_mock.assert_called_once()
+    debug_mock.assert_called_once()
 
     with pytest.raises(Exception):
         renderer.process_arg("my-cluster-", None, {})
