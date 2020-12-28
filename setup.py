@@ -41,7 +41,6 @@ setuptools.setup(
         },
     extras_require = extras,
     install_requires = [
-        'enum34>=1.1.6,<2.0;python_version<"3.4"',
         'semver>=2.7.0,<3.0',
         'jsonschema>=2.6.0,<3.0',
         'jinja2>=2.8.1,<3.0',
@@ -58,7 +57,6 @@ setuptools.setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
@@ -67,5 +65,5 @@ setuptools.setup(
     license = 'Apache License 2.0',
     keywords = 'airflow',
     zip_safe = False,
-    python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',
+    python_requires='>=3.5',
 )
