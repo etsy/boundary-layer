@@ -207,7 +207,7 @@ class PrimaryDagSchema(BaseDagSchema):
 
         version = None
         try:
-            version = semver.parse_version_info(data['compatibility_version'])
+            version = semver.VersionInfo.parse(data['compatibility_version'])
         except ValueError:
             raise ValidationError('Must be a valid SemVer',
                                   ['compatibility_version'])
