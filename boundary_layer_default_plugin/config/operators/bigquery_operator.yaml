@@ -73,4 +73,3 @@ parameters_jsonschema:
 
     required:
         - sql
-        - destination_dataset_table

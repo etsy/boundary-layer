@@ -254,9 +254,7 @@ class Workflow(object):
         unused_defaults = frozenset(default_task_args) - frozenset(all_defaults_used)
 
         if unused_defaults:
-            logger.warning(
-                'Unused default task args: `%s`',
-                '`, `'.join(unused_defaults))
+            logger.debug('Unused default task args: `%s`', '`, `'.join(unused_defaults))
 
     @staticmethod
     def get_all_nodes(dag):
