@@ -36,7 +36,9 @@ parameters_jsonschema:
         api_version:
             type: string
         impersonation_chain:
-            type: Union[str, Sequence[str]]
+            type: array
+            items:
+                type: string
     required:
         - function_id
         - input_data
