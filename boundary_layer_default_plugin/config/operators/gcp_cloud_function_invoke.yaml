@@ -24,7 +24,9 @@ parameters_jsonschema:
         function_id:
             type: string
         input_data:
-            type: Dict
+            type: object
+            additionalProperties:
+                type: string
         location:
             type: string
         project_id:
