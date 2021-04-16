@@ -33,7 +33,7 @@ parameters_jsonschema:
                     type: string
                 maxWorkers:
                     type: string
-                    default: 1000
+                    default: '1000'
                 serviceAccountEmail:
                     type: string
                 tempLocation:
