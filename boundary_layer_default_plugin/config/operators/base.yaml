@@ -27,6 +27,10 @@ parameters_jsonschema:
             items:
                 type: string
                 format: email
+        email_on_failure:
+            type: boolean
+        email_on_retry:
+            type: boolean
         retries:
             type: integer
         retry_delay:
