@@ -11,6 +11,10 @@ parameters_jsonschema:
             type: string
         metastore_conn_id:
             type: string
+        schema:
+            type: string
+        poke_interval:
+            type: integer
     additionalProperties: false
     required:
         - table
