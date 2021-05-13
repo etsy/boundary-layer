@@ -1,0 +1,22 @@
+# This sensor detects hive partition changes
+name: hive_partition_sensor
+operator_class: HivePartitionSensor
+operator_class_module: airflow.sensors.hive_partition_sensor
+schema_extends: etsy_defaults_base
+parameters_jsonschema:
+    properties:
+        table:
+            type: string
+        partition:
+            type: string
+        metastore_conn_id:
+            type: string
+        schema:
+            type: string
+        poke_interval:
+            type: integer
+    additionalProperties: false
+    required:
+        - table
+        - partition
+        - metastore_conn_id
