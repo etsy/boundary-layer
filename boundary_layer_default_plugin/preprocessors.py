@@ -221,7 +221,7 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
 
 class PubsubMessageDataToBinaryString(PropertyPreprocessor):
     """
-    Converts pubsub message data with various python types 
+    Converts pubsub message data with various python types
     to binary strings.
     Supported message data arg types: `dict`, and `str`
 
@@ -287,9 +287,11 @@ class StringifyObject(PropertyPreprocessor):
     def process_arg(self, arg, node, raw_args):
         scrubbed = {}
         for k, v in arg.items():
-            if isinstance(v, bool):
+            if v == "":
+                scrubbed[k] = "null"
+            elif isinstance(v, bool):
                 scrubbed[k] = str(v).lower()
-            elif isinstance(v, (dict, list)):
+            elif isinstance(v, (dict, list, tuple)):
                 scrubbed[k] = json.dumps(v)
             else:
                 scrubbed[k] = str(v)
