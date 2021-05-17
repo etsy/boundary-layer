@@ -111,9 +111,3 @@ property_preprocessors:
       class_name: airflow.contrib.kubernetes.secret.Secret
     apply_to_properties:
       - secrets
-  - type: kubernetes_prep
-    properties:
-      class_name: airflow.contrib.kubernetes.pod.Resources
-    apply_to_properties:
-      - resources
-  
