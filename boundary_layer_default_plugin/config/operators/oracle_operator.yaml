@@ -1,0 +1,20 @@
+name: oracle
+operator_class: OracleOperator
+operator_class_module: airflow.providers.operators.oracle
+schema_extends: base
+parameters_jsonschema:
+    properties:
+        autocommit:
+            type: boolean
+        oracle_conn_id:
+            type: string
+        sql:
+            type: string
+        parameters:
+            type: array
+            items:
+                type: object
+    required:
+        - autocommit
+        - oracle_conn_id
+        - sql
