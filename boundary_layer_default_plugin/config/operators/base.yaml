@@ -14,7 +14,7 @@
 
 # This operator matches the airflow base operator.  For information on
 # its parameters, see:
-# https://github.com/apache/incubator-airflow/blob/1.9.0/airflow/models.py#L1986
+# https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/baseoperator/index.html
 name: base
 operator_class: BaseOperator
 operator_class_module: airflow.model
@@ -70,6 +70,8 @@ parameters_jsonschema:
             enum: [ all_success, all_failed, all_done, one_success, one_failed, dummy, none_skipped ]
         task_concurrency:
             type: integer
+        do_xcom_push:
+            type: boolean
         dag:
             type: string
         task_id:
