@@ -1,0 +1,107 @@
+# Copyright 2018 Etsy Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+#     Unless required by applicable law or agreed to in writing, software
+#     distributed under the License is distributed on an "AS IS" BASIS,
+#     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#     See the License for the specific language governing permissions and
+#     limitations under the License.
+
+# see: https://github.com/apache/airflow/blob/2.1.1/airflow/providers/google/cloud/operators/dataflow.py
+
+name: dataflow_start_flex_template
+operator_class: DataflowStartFlexTemplateOperator
+operator_class_module: airflow.providers.google.cloud.operators.dataflow
+schema_extends: base
+parameters_jsonschema:
+    properties:
+        body:
+            type: object
+            properties:
+                launchParameter:
+                    type: object
+                    properties:
+                        jobName:
+                            type: string
+                        parameters:
+                            type: object
+                            additionalProperties:
+                                type: string
+                        launchOptions:
+                            type: object
+                            additionalProperties:
+                                type: string
+                        environment:
+                            type: object
+                            properties:
+                                numWorkers:
+                                    type: integer
+                                maxWorkers:
+                                    type: integer
+                                zone:
+                                    type: string
+                                serviceAccountEmail:
+                                    type: string
+                                tempLocation:
+                                    type: string
+                                machineType:
+                                    type: string
+                                additionalExperiments:
+                                    type: array
+                                    items:
+                                        type: string
+                                network:
+                                    type: string
+                                subnetwork:
+                                    type: string
+                                additionalUserLabels:
+                                    type: object
+                                    additionalProperties:
+                                        type: string
+                                kmsKeyName:
+                                    type: string
+                                ipConfiguration:
+                                    type: string
+                                    enum: [ WORKER_IP_UNSPECIFIED, WORKER_IP_PUBLIC, WORKER_IP_PRIVATE ]
+                                workerRegion:
+                                    type: string
+                                workerZone:
+                                    type: string
+                                enableStreamingEngine:
+                                    type: boolean
+                                flexrsGoal:
+                                    type: string
+                                    enum: [ FLEXRS_UNSPECIFIED, FLEXRS_SPEED_OPTIMIZED, FLEXRS_COST_OPTIMIZED ]
+                        update:
+                            type: boolean
+                        transformNameMappings:
+                            type: object
+                            additionalProperties:
+                                type: string
+                        containerSpecGcsPath:
+                            type: string
+                    additionalProperties: false
+                validateOnly:
+                    type: boolean
+            additionalProperties: false
+        location:
+            type: string
+        project_id:
+            type: string
+        gcp_conn_id:
+            type: string
+        delegate_to:
+            type: string
+        drain_pipeline:
+            type: boolean
+        cancel_timeout:
+            type: integer
+    required:
+        - body
+        - location
+    additionalProperties: false
