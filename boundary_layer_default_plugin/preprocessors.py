@@ -258,7 +258,7 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
         bin_string = None
         try:
             res_str = arg if not self._is_dict(arg) else self._json_handler(arg)
-            bin_string = base64.b64encode(res_str.encode('utf-8'))
+            bin_string = base64.b64encode(res_str.encode('utf-8')).decode('utf-8')
         except Exception as e:
             raise Exception(
                 'Error in preprocessor {} for argument `{}`: {}'.format(
