@@ -120,7 +120,7 @@ def format_value(value):
 
         return '{{ {items} }}'.format(items=','.join(pairs))
 
-    if isinstance(value, (int, float, type(None))):
+    if isinstance(value, (int, float, type(None), bytes)):
         return str(value)
 
     if isinstance(value, (datetime.datetime, datetime.timedelta, GenericNamedParameterPasser)):
