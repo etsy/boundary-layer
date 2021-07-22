@@ -77,7 +77,8 @@ def test_pubsub_message_to_binary_string_dictionary(mocker):
             'attributes': {'testing': 'is_cool'}
         }
     ]
-    expected_obj_str_encoded = base64.b64encode(json.dumps(preprocessed_obj).encode('utf-8'))
+    expected_obj_str_encoded = \
+        base64.b64encode(json.dumps(preprocessed_obj).encode('utf-8')).decode('utf-8')
     processor = PubsubMessageDataToBinaryString({})
     res = processor.process_arg(preprocessed_messages, None, {})
     assert res[0]['data'] == expected_obj_str_encoded
@@ -94,7 +95,8 @@ def test_pubsub_message_to_binary_string_str(mocker):
             'data': preprocessed_str
         }
     ]
-    expected_str_encoded = base64.b64encode(preprocessed_str.encode('utf-8'))
+    expected_str_encoded = \
+        base64.b64encode(preprocessed_str.encode('utf-8')).decode('utf-8')
     processor = PubsubMessageDataToBinaryString({})
     res = processor.process_arg(preprocessed_messages, None, {})
     assert res[0]['data'] == expected_str_encoded
