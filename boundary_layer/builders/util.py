@@ -136,7 +136,10 @@ def format_value(value):
     if len(components) == 1:
         return components[0]
 
-    return '({})'.format(' + '.join(components))
+    result = '({})'.format(' + '.join(components))
+    if result == '()':
+        return "''"
+    return result
 
 
 def comment(value):

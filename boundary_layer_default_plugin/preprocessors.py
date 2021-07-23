@@ -219,6 +219,7 @@ class EnsureRenderedStringPattern(PropertyPreprocessor):
 
         return context
 
+
 class PubsubMessageDataToBinaryString(PropertyPreprocessor):
     """
     Converts pubsub message data with various python types
