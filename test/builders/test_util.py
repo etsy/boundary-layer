@@ -79,6 +79,8 @@ def test_format_value():
 
     assert util.format_value(None) == 'None'
 
+    assert util.format_value("") == "''"
+
     with pytest.raises(Exception):
         assert util.format_value(set(10))
 
