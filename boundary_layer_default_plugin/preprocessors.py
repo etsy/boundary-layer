@@ -241,7 +241,7 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
     def process_arg(self, arg, node, raw_args):
         """
         Given array of messages, if `data` property is present in
-        message objects, convert to binary string
+        message objects, convert to a b64 encoded ascii string
         """
         res = []
         for message in arg:
@@ -253,20 +253,22 @@ class PubsubMessageDataToBinaryString(PropertyPreprocessor):
     def _process_data_arg(self, arg):
         """
         Given either a dict or str:
-        - If str, encode to binary string
-        - If dict, convert to json and encode as binary string
+        - If str, b64 encode to string
+        - If dict, convert to json and b64 encode to ascii string
         """
-        bin_string = None
+        string = None
         try:
             res_str = arg if not self._is_dict(arg) else self._json_handler(arg)
-            bin_string = base64.b64encode(res_str.encode('utf-8')).decode('utf-8')
+            # The result of b64encode is bytes but we can convert the bytes
+            # to a string by decoding it to ascii characters
+            string = base64.b64encode(res_str.encode('utf-8')).decode('ascii')
         except Exception as e:
             raise Exception(
                 'Error in preprocessor {} for argument `{}`: {}'.format(
                     self.type,
                     arg,
                     str(e)))
-        return bin_string
+        return string
 
     def _json_handler(self, arg):
         return json.dumps(arg)
