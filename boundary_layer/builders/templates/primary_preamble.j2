@@ -33,6 +33,7 @@ You may obtain a copy of the License at
 import os
 import re
 from airflow import DAG
+from airflow.models import Variable
 
 {% for module in imports.modules %}
 import {{module}}
