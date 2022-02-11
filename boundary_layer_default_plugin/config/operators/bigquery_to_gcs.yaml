@@ -16,8 +16,8 @@
 # for the export_format, see: https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/hooks/bigquery_hook.py#L1096-L1098\
 
 name: bigquery_to_gcs
-operator_class: BigQueryToCloudStorageOperator
-operator_class_module: airflow.contrib.operators.bigquery_to_gcs 
+operator_class: BigQueryToGCSOperator
+operator_class_module: airflow.providers.google.cloud.transfers.bigquery_to_gcs 
 schema_extends: base
 parameters_jsonschema:
     properties:

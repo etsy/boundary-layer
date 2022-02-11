@@ -15,8 +15,8 @@
 # see: https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/operators/gcp_container_operator.py
 
 name: gke_pod_operator
-operator_class: GKEPodOperator
-operator_class_module: airflow.contrib.operators.gcp_container_operator
+operator_class: GKEStartPodOperator
+operator_class_module: airflow.providers.google.cloud.operators.container
 schema_extends: kubernetes
 parameters_jsonschema:
     properties:

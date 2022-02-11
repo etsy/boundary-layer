@@ -14,8 +14,8 @@
 
 # see: https://airflow.apache.org/code.html#airflow.contrib.operators.gcs_to_gcs.GoogleCloudStorageToGoogleCloudStorageOperator
 name: gcs_to_gcs
-operator_class: GoogleCloudStorageToGoogleCloudStorageOperator
-operator_class_module: airflow.contrib.operators.gcs_to_gcs
+operator_class: GCSToGCSOperator
+operator_class_module: airflow.providers.google.cloud.transfers.gcs_to_gcs
 schema_extends: base
 parameters_jsonschema:
     properties:

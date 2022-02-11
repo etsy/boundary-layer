@@ -1,7 +1,7 @@
 # This sensor detects hive partition changes
 name: hive_partition_sensor
 operator_class: HivePartitionSensor
-operator_class_module: airflow.sensors.hive_partition_sensor
+operator_class_module: airflow.providers.apache.hive.sensors.hive_partition
 schema_extends: etsy_defaults_base
 parameters_jsonschema:
     properties:

@@ -14,8 +14,8 @@
 
 # see: https://airflow.apache.org/code.html#airflow.contrib.operators.dataproc_operator.DataProcHadoopOperator
 name: dataproc_hadoop
-operator_class: DataProcHadoopOperator
-operator_class_module: airflow.contrib.operators.dataproc_operator
+operator_class: DataprocSubmitHadoopJobOperator
+operator_class_module: airflow.providers.google.cloud.operators.dataproc
 schema_extends: base
 parameters_jsonschema:
     properties:

@@ -14,6 +14,6 @@
 
 name: base
 operator_class: DummyOperator
-operator_class_module: airflow.operators.dummy_operator
+operator_class_module: airflow.operators.dummy
 parameters_jsonschema:
     additionalProperties: true

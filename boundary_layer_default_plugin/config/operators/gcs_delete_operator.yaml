@@ -15,8 +15,8 @@
 # see: https://github.com/apache/airflow/blob/1.10.4/airflow/contrib/operators/gcs_delete_operator.py
 
 name: gcs_delete_operator
-operator_class: GoogleCloudStorageDeleteOperator
-operator_class_module: airflow.contrib.operators.gcs_delete_operator 
+operator_class: GCSDeleteObjectsOperator
+operator_class_module: airflow.providers.google.cloud.operators.gcs 
 schema_extends: base
 parameters_jsonschema:
     properties:

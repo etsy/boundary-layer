@@ -14,8 +14,8 @@
 #
 # Operator documentation: https://airflow.apache.org/integration.html#mlenginetrainingoperator
 name: ml_engine_training
-operator_class: MLEngineTrainingOperator
-operator_class_module: airflow.contrib.operators.mlengine_operator
+operator_class: MLEngineStartTrainingJobOperator
+operator_class_module: airflow.providers.google.cloud.operators.mlengine
 schema_extends: base
 parameters_jsonschema:
     properties:

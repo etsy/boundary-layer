@@ -15,8 +15,8 @@
 # see: https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/operators/bigquery_operator.py
 
 name: bigquery_operator
-operator_class: BigQueryOperator
-operator_class_module: airflow.contrib.operators.bigquery_operator 
+operator_class: BigQueryExecuteQueryOperator
+operator_class_module: airflow.providers.google.cloud.operators.bigquery 
 schema_extends: base
 parameters_jsonschema:
     properties:

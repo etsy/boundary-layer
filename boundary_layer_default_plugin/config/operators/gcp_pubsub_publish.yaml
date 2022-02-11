@@ -15,8 +15,8 @@
 # see: https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/operators/pubsub_operator.py
 
 name: gcp_pubsub_publish
-operator_class: PubSubPublishOperator
-operator_class_module: airflow.contrib.operators.pubsub_operator
+operator_class: PubSubPublishMessageOperator
+operator_class_module: airflow.providers.google.cloud.operators.pubsub
 schema_extends: base
 parameters_jsonschema:
     properties:

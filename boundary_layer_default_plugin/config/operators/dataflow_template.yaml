@@ -13,8 +13,8 @@
 #     limitations under the License.
 
 name: dataflow_template
-operator_class: DataflowTemplateOperator
-operator_class_module: airflow.contrib.operators.dataflow_operator
+operator_class: DataflowTemplatedJobStartOperator
+operator_class_module: airflow.providers.google.cloud.operators.dataflow
 schema_extends: base
 parameters_jsonschema:
     properties:

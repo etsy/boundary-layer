@@ -14,7 +14,7 @@
 
 name: dataproc_cluster_create
 operator_class: DataprocClusterCreateOperator
-operator_class_module: airflow.contrib.operators.dataproc_operator
+operator_class_module: airflow.providers.google.cloud.operators.dataproc
 schema_extends: base
 parameters_jsonschema:
     properties:

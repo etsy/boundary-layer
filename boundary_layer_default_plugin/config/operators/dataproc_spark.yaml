@@ -14,8 +14,8 @@
 
 # see: https://airflow.apache.org/code.html#airflow.contrib.operators.dataproc_operator.DataProcSparkOperator
 name: dataproc_spark
-operator_class: DataProcSparkOperator
-operator_class_module: airflow.contrib.operators.dataproc_operator
+operator_class: DataprocSubmitSparkJobOperator
+operator_class_module: airflow.providers.google.cloud.operators.dataproc
 schema_extends: base
 parameters_jsonschema:
     properties:

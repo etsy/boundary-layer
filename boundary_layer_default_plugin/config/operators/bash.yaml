@@ -15,7 +15,7 @@
 # see: https://airflow.apache.org/code.html#airflow.operators.bash_operator.BashOperator
 name: bash
 operator_class: BashOperator
-operator_class_module: airflow.operators.bash_operator
+operator_class_module: airflow.operators.bash
 schema_extends: base
 parameters_jsonschema:
     properties:
