@@ -14,7 +14,7 @@
 
 name: allow_extra_properties
 operator_class: DummyOperator
-operator_class_module: airflow.operators.dummy_operator
+operator_class_module: airflow.operators.dummy
 schema_extends: base
 parameters_jsonschema:
     additionalProperties: true

@@ -13,8 +13,8 @@
 #     limitations under the License.
 
 name: gcs_to_bigquery
-operator_class: GoogleCloudStorageToBigQueryOperator
-operator_class_module: airflow.contrib.operators.gcs_to_bq
+operator_class: GCSToBigQueryOperator
+operator_class_module: airflow.providers.google.cloud.transfers.gcs_to_bigquery
 schema_extends: base
 parameters_jsonschema:
     properties:

@@ -14,7 +14,7 @@
 
 name: bigquery_create_table
 operator_class: BigQueryCreateEmptyTableOperator
-operator_class_module: airflow.contrib.operators.bigquery_operator
+operator_class_module: airflow.providers.google.cloud.operators.bigquery
 schema_extends: base
 parameters_jsonschema:
     properties:

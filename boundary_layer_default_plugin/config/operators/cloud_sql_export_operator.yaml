@@ -15,8 +15,8 @@
 # see: https://github.com/apache/airflow/blob/1.10.3/airflow/contrib/operators/gcp_sql_operator.py
 
 name: cloud_sql_export_operator
-operator_class: CloudSqlInstanceExportOperator
-operator_class_module: airflow.contrib.operators.gcp_sql_operator 
+operator_class: CloudSQLExportInstanceOperator
+operator_class_module: airflow.providers.google.cloud.operators.sql 
 schema_extends: cloud_sql_base_operator
 parameters_jsonschema:
     properties:

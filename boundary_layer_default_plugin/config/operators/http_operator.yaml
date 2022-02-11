@@ -15,7 +15,7 @@
 # see: https://github.com/apache/airflow/blob/1.10.3/airflow/operators/http_operator.py
 name: http_operator
 operator_class: SimpleHttpOperator
-operator_class_module: airflow.operators.http_operator
+operator_class_module: airflow.providers.http.operators.http
 schema_extends: base
 parameters_jsonschema:
     properties:

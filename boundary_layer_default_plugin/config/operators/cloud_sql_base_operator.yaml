@@ -16,7 +16,7 @@
 
 name: cloud_sql_base_operator
 operator_class: CloudSqlBaseOperator
-operator_class_module: airflow.contrib.operators.gcp_sql_operator 
+operator_class_module: airflow.providers.google.cloud.operators.sql 
 schema_extends: base
 parameters_jsonschema:
     properties:

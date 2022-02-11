@@ -14,7 +14,7 @@
 
 name: gcs_prefix_sensor
 operator_class: GoogleCloudStoragePrefixSensor
-operator_class_module: airflow.contrib.sensors.gcs_sensor
+operator_class_module: airflow.providers.google.cloud.sensors.gcs
 schema_extends: base_sensor
 parameters_jsonschema:
     properties:

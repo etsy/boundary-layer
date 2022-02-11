@@ -14,5 +14,5 @@
 
 name: flow_control
 operator_class: DummyOperator
-operator_class_module: airflow.operators.dummy_operator
+operator_class_module: airflow.operators.dummy
 schema_extends: dummy

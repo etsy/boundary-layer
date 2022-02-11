@@ -16,5 +16,5 @@
 
 name: branch_python
 operator_class: BranchPythonOperator
-operator_class_module: airflow.operators.python_operator
+operator_class_module: airflow.operators.python
 schema_extends: python

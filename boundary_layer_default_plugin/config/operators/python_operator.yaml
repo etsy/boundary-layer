@@ -16,7 +16,7 @@
 
 name: python
 operator_class: PythonOperator
-operator_class_module: airflow.operators.python_operator
+operator_class_module: airflow.operators.python
 schema_extends: base
 parameters_jsonschema:
     properties:
