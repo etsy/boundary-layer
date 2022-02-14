@@ -1,8 +1,6 @@
 import setuptools
-import versioneer
 import os
 
-import versioneer
 
 extras = {
         'github': [ 'github3.py>=1.1' ],
@@ -13,9 +11,8 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as _in:
     long_description = _in.read()
 
 setuptools.setup(
-    name = 'boundary-layer',
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
+    name = 'boundary-layer2',
+    version='2.0.0.dev1',
     author = 'Kevin McHale',
     author_email = 'kmchale@etsy.com',
     description = 'Builds Airflow DAGs from configuration files',
