@@ -15,7 +15,7 @@
 # see: https://airflow.apache.org/code.html#airflow.operators.docker_operator.DockerOperator
 name: kubernetes
 operator_class: KubernetesPodOperator
-operator_class_module: airflow.contrib.operators.kubernetes_pod_operator 
+operator_class_module: airflow.providers.cncf.kubernetes.operators.kubernetes_pod
 schema_extends: base
 parameters_jsonschema:
     properties:
@@ -92,28 +92,25 @@ parameters_jsonschema:
       - image
       - namespace
       - name
-        
-        
-            
+
 property_preprocessors:
   - type: kubernetes_prep
     properties:
-      class_name: airflow.contrib.kubernetes.volume.Volume
+      class_name: kubernetes.client.models.V1Volume
     apply_to_properties:
       - volumes
   - type: kubernetes_prep
     properties:
-      class_name: airflow.contrib.kubernetes.volume_mount.VolumeMount
+      class_name: kubernetes.client.models.V1VolumeMount
     apply_to_properties:
       - volume_mounts
   - type: kubernetes_prep
     properties:
-      class_name: airflow.contrib.kubernetes.secret.Secret
+      class_name: kubernetes.client.models.V1Secret
     apply_to_properties:
       - secrets
   - type: kubernetes_prep
     properties:
-      class_name: airflow.contrib.kubernetes.pod.Resources
+      class_name: airflow.providers.cncf.kubernetes.backcompat.pod.Resources
     apply_to_properties:
       - resources
-  

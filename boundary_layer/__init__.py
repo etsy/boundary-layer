@@ -18,15 +18,11 @@ import semver
 
 
 def get_version_string():
-    version = pkg_resources.get_distribution('boundary_layer').version
+    version = pkg_resources.get_distribution('boundary_layer2').version
 
     # Pip seems to replace '-' with '.' in the version strings, for some reason.
     # this makes semver unhappy, so we must replace .dev0 with -dev0
-    if not version.endswith('.dev0'):
-        return version
-
-    dev0_position = version.rindex('.dev0')
-    return version[:dev0_position] + '-' + version[1 + dev0_position:]
+    return version if not '.dev' in version else version.replace('.dev', '-dev')
 
 
 VERSION_STRING = get_version_string()
