@@ -49,6 +49,7 @@ setuptools.setup(
         'networkx>=2.4,<2.5',
         'xmltodict>=0.11.0,<1.0',
         'six>=1.11.0,<2.0',
+        'markupsafe==2.0.1',
     ],
     scripts = ['bin/boundary-layer'],
     classifiers = [
