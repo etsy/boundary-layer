@@ -51,10 +51,10 @@ class BuildKubernetesSchema(StrictSchema):
 
     @ma.validates_schema
     def check_valid_class(self, data):
-        ALLOWED_CLASS = ['airflow.contrib.kubernetes.volume.Volume',
-                         'airflow.contrib.kubernetes.volume_mount.VolumeMount',
-                         'airflow.contrib.kubernetes.secret.Secret',
-                         'airflow.contrib.kubernetes.pod.Resources']
+        ALLOWED_CLASS = ['kubernetes.client.models.V1Volume',
+                         'kubernetes.client.models.V1VolumeMount',
+                         'kubernetes.client.models.V1Secret',
+                         'airflow.providers.cncf.kubernetes.backcompat.pod.Resources']
         if data.get('class_name') not in ALLOWED_CLASS:
             raise ma.ValidationError(
                 '`class_name` must be one of `{}`'.format(
