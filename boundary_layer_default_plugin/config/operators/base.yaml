@@ -76,8 +76,6 @@ parameters_jsonschema:
             type: string
         params:
             type: object
-            additionalProperties:
-                type: string
     additionalProperties: false
     required:
         - dag
