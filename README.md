@@ -15,7 +15,7 @@ In addition, our migration from Oozie to Airflow relied heavily on `boundary-lay
 
 `boundary-layer` is _pluggable_, supporting custom configuration and extensions via plugins that are installed using `pip`.  The core package does not contain any etsy-specific customizations; instead, those are all defined in an internally-distributed etsy plugin package.
 
-For more information, see our article on Etsy's [Code as Craft](https://codeascraft.com/2018/11/14/boundary-layer%e2%80%89-declarative-airflow-workflows/) blog.
+For more information, see our article on Etsy's [Code as Craft](https://www.etsy.com/codeascraft/boundary-layer-declarative-airflow-workflows?ref=codeascraft) blog.
 
 ## Supported operators and Airflow versions
 
