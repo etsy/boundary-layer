@@ -78,7 +78,6 @@ parameters_jsonschema:
             type: object
     additionalProperties: false
     required:
-        - dag
         - task_id
 
 property_preprocessors:

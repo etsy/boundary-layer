@@ -193,7 +193,7 @@ class Workflow(object):
                     preprocessor_loader=plugins.manager.property_preprocessors,
                 )
                 all_defaults_used.update(set(create_properties.sources.default_task_args))
-                all_defaults_used.update(set(destroy_properties.sources.default_task_args))
+                #all_defaults_used.update(set(destroy_properties.sources.default_task_args))
 
             all_resources_created.update(set(dag_resources))
 

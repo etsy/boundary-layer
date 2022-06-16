@@ -14,7 +14,8 @@ You may obtain a copy of the License at
     limitations under the License.
 #}
 {% set operator_variable_name = node.name | sanitize_operator_name %}
-{{ operator_variable_name }} = {{ node.operator_class }}(
+    {{ operator_variable_name }} = {{ node.operator_class }}(
+{% set scrubbed_args = args | remove_deprecated_args(node.operator_class) %}
 {% for (arg_name, arg_value) in args.items() %}
         {{ arg_name }} = {{ arg_value | format_value }},
 {% endfor %}
@@ -22,5 +23,5 @@ You may obtain a copy of the License at
 
 {% for upstream_operator_name in upstream_dependencies %}
 {% set upstream_variable_name = upstream_operator_name | sanitize_operator_name %}
-{{ operator_variable_name }}.set_upstream({{ upstream_variable_name }})
+    {{ upstream_variable_name }} >> {{ operator_variable_name }}
 {% endfor %}

@@ -146,3 +146,33 @@ def comment(value):
     lines = value.split('\n')
     commented = ['# ' + line for line in lines]
     return '\n'.join(commented)
+
+
+def remove_deprecated_args(args, class_name):
+    # Perhaps we should store etsy-specific classes elsewhere?
+    # I couldn't find any other place tbh :shrug:
+    deprecated = {
+        'GCSObjectExistenceSensorAsync': ['mode', 'polling_interval'],
+        'GKEStartPodOperator': [
+            'project_id',
+            'namespace',
+            'image_pull_policy',
+            'startup_timeout_seconds',
+            'resources',
+            'is_delete_operator_pod',
+            'location',
+            'cluster_name'
+        ],
+        'EtsyDataprocSubmitSparkJobOperator': ['cluster_name', 'region'],
+        'EtsyDatedVisitsGcsSensor': ['mode'],
+    }
+
+    if class_name == 'EtsyDataprocBundle':
+        args['group_id'] = args.pop('task_id')
+
+    if class_name in deprecated:
+        target_fields = set(deprecated[class_name]) & set(args.keys())
+        for field in target_fields:
+            del args[field]
+
+    return args

@@ -407,9 +407,7 @@ class OperatorNode(RegistryNode):
         return result
 
     def _get_fixed_args(self):
-        return {
-            'dag': '<<dag>>',
-        }
+        return {}
 
     def _get_global_defaults(self, execution_context):
         return {

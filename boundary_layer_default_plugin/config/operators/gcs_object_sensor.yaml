@@ -13,8 +13,8 @@
 #     limitations under the License.
 
 name: gcs_object_sensor
-operator_class: GCSObjectExistenceSensor
-operator_class_module: airflow.providers.google.cloud.sensors.gcs
+operator_class: GCSObjectExistenceSensorAsync
+operator_class_module: astronomer.providers.google.cloud.sensors.gcs
 schema_extends: base_sensor
 parameters_jsonschema:
     properties:

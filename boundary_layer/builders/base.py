@@ -21,6 +21,7 @@ from boundary_layer.logger import logger
 from boundary_layer.registry import NodeTypes
 from boundary_layer.util import sanitize_operator_name
 from boundary_layer.containers import WorkflowMetadata
+from queue import Queue
 
 
 class DagBuilderBase(object):
@@ -49,6 +50,7 @@ class DagBuilderBase(object):
         jenv.filters['comment'] = util.comment
         jenv.filters['sanitize_operator_name'] = sanitize_operator_name
         jenv.filters['verbatim'] = util.verbatim
+        jenv.filters['remove_deprecated_args'] = util.remove_deprecated_args
 
         return jenv
 
@@ -110,6 +112,8 @@ class DagBuilderBase(object):
             template_filename = 'generator_operator.j2'
         elif node.type == NodeTypes.SUBDAG:
             template_filename = 'subdag_operator.j2'
+        elif node.type == NodeTypes.RESOURCE:
+            template_filename = 'resource.j2'
         else:
             template_filename = 'operator.j2'
 
@@ -143,9 +147,11 @@ class DagBuilderBase(object):
                 generator_nodes & downstream_deps,
                 node.name)
 
+        args = node.create_operator.operator_args if node.type == NodeTypes.RESOURCE else node.operator_args
+
         return template.render(
             node=node,
-            args=node.operator_args,
+            args=args,
             upstream_dependencies=list(upstream_deps - generator_nodes),
             downstream_dependencies=list(downstream_deps - generator_nodes),
         )
@@ -207,6 +213,23 @@ class DagBuilderBase(object):
 
         return builder.build()
 
+    def _attach_downstream_operators(self, node):
+        # Collect the downstream operators inside the resource block and
+        # attach their corresponding upstreams so the resource can be rendered
+        node_q = Queue()
+        node_q.put(node)
+        downstream_operators = []
+
+        while not node_q.empty():
+            for downstr in self.graph.downstream_dependency_set(node_q.get()):
+                if downstr.requires_resources and downstr not in downstream_operators:
+                    upstr = [u for u in self.graph.upstream_dependency_set(downstr) if u != node]
+                    downstr.upstream_operators = upstr
+                    downstream_operators.append(downstr)
+                    node_q.put(downstr)
+
+        node.downstream_operators = downstream_operators
+
     def build(self):
         # Keep track of which subdag and generator targets have been rendered.
         # These targets can be reused by multiple referring nodes.
@@ -232,6 +255,14 @@ class DagBuilderBase(object):
                 rendered_targets.add(node.target)
 
             elif node.type in NodeTypes:
+                # Skip operators that depend on resources, as they will be
+                # rendered by the resource node
+                if node.type == NodeTypes.OPERATOR and node.requires_resources:
+                    continue
+
+                if node.type == NodeTypes.RESOURCE:
+                    self._attach_downstream_operators(node)
+
                 operator = self.render_operator(node)
 
             else:

@@ -13,8 +13,8 @@
 #     limitations under the License.
 
 name: external_task_sensor
-operator_class: ExternalTaskSensor
-operator_class_module: airflow.sensors.external_task
+operator_class: ExternalTaskSensorAsync
+operator_class_module: astronomer.providers.core.sensors.external_task
 schema_extends: base_sensor
 parameters_jsonschema:
     properties:

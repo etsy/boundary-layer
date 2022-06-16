@@ -22,7 +22,13 @@ class ResourceNode(RegistryNode):
 
     def imports(self):
         create = self.create_operator.imports()
-        destroy = self.destroy_operator.imports()
+        if self.destroy_operator:
+            destroy = self.destroy_operator.imports()
+        else:
+            destroy = {
+                'modules': [],
+                'objects': [],
+            }
 
         return {
             'modules': create['modules'] + destroy['modules'],

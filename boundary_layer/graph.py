@@ -18,6 +18,7 @@ from six.moves import filter
 import networkx as nx
 from boundary_layer.logger import logger
 from boundary_layer.exceptions import CyclicWorkflowException, InvalidFlowControlNode
+from boundary_layer.registry import NodeTypes
 from boundary_layer import util
 
 
@@ -281,6 +282,60 @@ class _GraphUtil(object):
         }
 
     @staticmethod
+    def attach_resource_bundle(resource, graph, fc_node_builder):
+        graph.add_node(resource)
+
+        # visit-sensor + sensor1 + sensor2
+        upstream_boundary = \
+            _GraphUtil.upstream_resource_boundary(resource.name, graph)
+
+        logger.debug('upstream boundary nodes for resource `%s`: %s',
+                     resource.name, upstream_boundary)
+
+        bundler_nodes = _GraphUtil.insert_bundler_nodes(
+            upstream_boundary,
+            graph,
+            fc_node_builder,
+            resource)
+
+        for bundler_node in bundler_nodes.values():
+            if bundler_node == resource:
+                continue
+
+            graph.add_edge(bundler_node, resource)
+
+        # for each upstream sensor
+        for node in upstream_boundary:
+            dep_set = _GraphUtil.upstream_dependency_set(node, graph)
+            assert len(dep_set) <= 1, \
+                'Error: node {} has dependency set {}, but its ' \
+                'dependencies should have been bundled!'.format(
+                    node,
+                    dep_set)
+
+            bundler_node = list(dep_set)[0] if dep_set else None
+
+            # If the resource is functioning as the bundler
+            # node, then all necessary dependencies will have been set up
+            # already.
+            if bundler_node == resource:
+                continue
+
+            # Otherwise, we have to insert dependencies between the
+            # resource and the downstream node.
+            if not bundler_node:
+                logger.debug(
+                    'Adding edge between create_resource_node and dependency-free node %s',
+                    node)
+            else:
+                logger.debug(
+                    'Adding edge between create_resource_node and node %s with bundler node %s',
+                    node,
+                    bundler_node)
+
+            graph.add_edge(resource, node)
+
+    @staticmethod
     def attach_create_resource(resource, graph, fc_node_builder):
         create_resource_node = resource.create_operator
         graph.add_node(create_resource_node)
@@ -481,12 +536,31 @@ class OperatorGraph(object):
             for upstream_node in _GraphUtil.get_downstream_surface(main_graph):
                 self.graph.add_edge(upstream_node, downstream_node)
 
-        # Finally get all resources and figure out how to attach them to the
-        # graph
+        # Get all resources and figure out how to attach them to the graph
         for resource in resource_graph:
             logger.debug('Attaching resource %s to graph', resource)
-            _GraphUtil.attach_create_resource(resource, self.graph, self.fc_node_builder)
-            _GraphUtil.attach_destroy_resource(resource, self.graph, self.fc_node_builder)
+            _GraphUtil.attach_resource_bundle(resource, self.graph, self.fc_node_builder)
+
+        # Find operators that depend on other operators within a resource block
+        edges_to_replace = []
+        for source, dest in self.graph.edges:
+            if (
+                source.type == NodeTypes.OPERATOR and dest.type == NodeTypes.OPERATOR
+                and source.requires_resources and not dest.requires_resources
+            ):
+                # Iterate until we find a resource upstream
+                upstream = source
+                while upstream.type != NodeTypes.RESOURCE:
+                    upstream = [
+                        upstr for upstr, downstr in self.graph.in_edges(source)
+                    ][0]
+
+                edges_to_replace.append((source, upstream, dest))
+
+        # Replace link between operators with link resource -> operator
+        for original, new, dest in edges_to_replace:
+            self.graph.remove_edge(original, dest)
+            self.graph.add_edge(new, dest)
 
         self._attach_generator_flow_control()
 

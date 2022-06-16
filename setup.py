@@ -12,7 +12,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as _in:
 
 setuptools.setup(
     name = 'boundary-layer2',
-    version='2.0.0.dev5',
+    version='2.0.0.dev6',
     author = 'Kevin McHale',
     author_email = 'kmchale@etsy.com',
     description = 'Builds Airflow DAGs from configuration files',
@@ -55,13 +55,11 @@ setuptools.setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Utilities',
     ],
     license = 'Apache License 2.0',
     keywords = 'airflow',
     zip_safe = False,
-    python_requires='>=3.6',
+    python_requires='>=3.7',
 )

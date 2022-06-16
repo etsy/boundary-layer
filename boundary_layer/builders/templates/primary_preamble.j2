@@ -30,9 +30,7 @@ You may obtain a copy of the License at
 ###############################################################################
 #
 
-import kubernetes
 import os
-import re
 from airflow import DAG
 from airflow.models import Variable
 
@@ -48,16 +46,19 @@ from {{ module }} import {{ ', '.join(objects) }}
 {% endif %}
 {% endfor %}
 
+from etsy.utils.defaults import patch_all
+patch_all()
+
 DEFAULT_TASK_ARGS = {
 {% for (arg_name, arg_value) in default_task_args.items() %}
-        '{{ arg_name }}': {{ arg_value | format_value }},
+    '{{ arg_name }}': {{ arg_value | format_value }},
 {% endfor %}
-    }
+}
 
-dag = DAG(
+with DAG(
 {% for (arg_name, arg_value) in dag_args.items() %}
-        {{ arg_name }} = {{ arg_value | format_value }},
+    {{ arg_name }} = {{ arg_value | format_value }},
 {% endfor %}
-        default_args = DEFAULT_TASK_ARGS,
-    )
+    default_args = DEFAULT_TASK_ARGS,
+) as dag:
 
