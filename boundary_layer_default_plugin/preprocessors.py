@@ -46,6 +46,25 @@ class DateStringToDatetime(PropertyPreprocessor):
         return date
 
 
+class TimeStringToTime(PropertyPreprocessor):
+    type = "to_time"
+
+    def imports(self):
+        return {'modules': ['datetime']}
+
+    def process_arg(self, arg, node, raw_args):
+        time = None
+        try:
+            time = datetime.datetime.strptime(arg, '%H:%M').time()
+        except ValueError as e:
+            raise Exception(
+                'Error in preprocessor {} for argument `{}`: {}'.format(
+                    self.type,
+                    arg,
+                    str(e)))
+
+        return time
+
 class BuildKubernetesSchema(StrictSchema):
     class_name = ma.fields.String(required=True)
 

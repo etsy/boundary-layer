@@ -37,6 +37,7 @@ class DefaultPlugin(BasePlugin):
     property_preprocessors = [
         BuildTimedelta,
         DateStringToDatetime,
+	TimeStringToTime,
         EnsureRenderedStringPattern,
         KubernetesPrep,
         PubsubMessageDataToBinaryString,
