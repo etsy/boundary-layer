@@ -19,6 +19,7 @@ from .oozie_plugin import DefaultOozieParserPlugin
 from .preprocessors import (
     BuildTimedelta,
     DateStringToDatetime,
+    TimeStringToTime,
     EnsureRenderedStringPattern,
     KubernetesPrep,
     PubsubMessageDataToBinaryString,
@@ -37,6 +38,7 @@ class DefaultPlugin(BasePlugin):
     property_preprocessors = [
         BuildTimedelta,
         DateStringToDatetime,
+	TimeStringToTime,
         EnsureRenderedStringPattern,
         KubernetesPrep,
         PubsubMessageDataToBinaryString,
