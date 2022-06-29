@@ -123,7 +123,7 @@ def format_value(value):
     if isinstance(value, (int, float, type(None))):
         return str(value)
 
-    if isinstance(value, (datetime.datetime, datetime.timedelta, GenericNamedParameterPasser)):
+    if isinstance(value, (datetime.datetime, datetime.timedelta, datetime.time, GenericNamedParameterPasser)):
         return format_value('<<{}>>'.format(repr(value)))
 
     if not isinstance(value, six.string_types):
