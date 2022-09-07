@@ -1,6 +1,7 @@
 import pytest
 from boundary_layer.logger import logger
 from boundary_layer_default_plugin.preprocessors import *
+from datetime import timedelta
 from mock import Mock
 
 
@@ -122,6 +123,22 @@ def test_stringify_env_args():
         'ENV_VAR_LIST_OF_DICTS': '[{"a": "b"}]',
     }
     processor = StringifyObject({})
+    res = processor.process_arg(preprocessed_messages, None, {})
+
+    assert res == expected
+
+
+def test_to_timedelta():
+    preprocessed_messages = 3600
+    expected = timedelta(seconds=3600)
+    processor = BuildTimedelta({"units": "seconds"})
+    res = processor.process_arg(preprocessed_messages, None, {})
+
+    assert res == expected
+
+    preprocessed_messages = None
+    expected = None
+    processor = BuildTimedelta({"units": "seconds"})
     res = processor.process_arg(preprocessed_messages, None, {})
 
     assert res == expected
