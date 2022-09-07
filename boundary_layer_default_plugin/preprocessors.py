@@ -130,6 +130,9 @@ class BuildTimedelta(PropertyPreprocessor):
     def process_arg(self, arg, node, raw_args):
         delta = None
 
+        if arg is None:
+            return delta
+
         try:
             timedelta_arg = {self.properties['units']: arg}
             delta = datetime.timedelta(**timedelta_arg)
