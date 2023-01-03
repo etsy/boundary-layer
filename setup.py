@@ -43,7 +43,7 @@ setuptools.setup(
     install_requires = [
         'semver>=2.7.0,<3.0',
         'jsonschema>=2.6.0,<3.0',
-        'jinja2>=2.8.1,<3.0',
+        'jinja2>=2.8.1',
         'pyyaml>=4.2b1',
         'marshmallow>=2.13.6,<3.0',
         'networkx>=2.4,<2.5',
